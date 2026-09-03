@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  />
+  >
 
-  <title> Owajid & Bokul Trading Assistant</title>
+  <title>Owajid & Bokul Trading Assistant</title>
 
-  <!-- Lightweight Charts v5 -->
-  <script
-    src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"
-  ></script>
+  <!-- TradingView Lightweight Charts -->
+  <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
   <style>
     * {
@@ -40,8 +39,7 @@
     }
 
     button,
-    input,
-    select {
+    input {
       font: inherit;
     }
 
@@ -52,13 +50,11 @@
     .app {
       width: 100%;
       max-width: 1500px;
-      margin: 0 auto;
+      margin: auto;
       padding: 14px;
     }
 
-    /* =====================================================
-       HEADER
-       ===================================================== */
+    /* ================= HEADER ================= */
 
     .header {
       display: flex;
@@ -71,38 +67,43 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 11px;
     }
 
     .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 13px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(
-        135deg,
-        #18d6a3,
-        #1677ff
-      );
+
+      background:
+        linear-gradient(
+          135deg,
+          #18d6a3,
+          #176cff
+        );
+
       color: white;
-      font-weight: 900;
-      font-size: 18px;
+      font-size: 14px;
+      font-weight: 1000;
+
       box-shadow:
-        0 8px 30px rgba(22, 119, 255, 0.25);
+        0 8px 30px rgba(22, 119, 255, .25);
     }
 
     .brand h1 {
       margin: 0;
-      font-size: 20px;
-      line-height: 1.1;
+      font-size: 21px;
+      line-height: 1.15;
     }
 
     .brand small {
-      color: #7e94a8;
       display: block;
-      margin-top: 3px;
+      margin-top: 4px;
+      color: #7e94a8;
       font-size: 11px;
     }
 
@@ -110,10 +111,14 @@
       display: flex;
       align-items: center;
       gap: 7px;
-      padding: 8px 11px;
+
+      padding: 8px 12px;
+
       border: 1px solid #173041;
       border-radius: 999px;
+
       background: #0b1721;
+
       color: #9fb3c4;
       font-size: 11px;
     }
@@ -127,16 +132,15 @@
 
     .dot.online {
       background: #16d49b;
-      box-shadow: 0 0 12px rgba(22, 212, 155, 0.7);
+      box-shadow:
+        0 0 12px rgba(22, 212, 155, .7);
     }
 
     .dot.error {
       background: #ff5d6c;
     }
 
-    /* =====================================================
-       SEARCH
-       ===================================================== */
+    /* ================= SEARCH ================= */
 
     .search-panel {
       background: #0b1721;
@@ -154,38 +158,46 @@
     .search-input {
       flex: 1;
       min-width: 0;
+
       background: #071018;
       color: #eef7ff;
+
       border: 1px solid #203746;
       border-radius: 11px;
+
       padding: 12px 13px;
+
       outline: none;
     }
 
     .search-input:focus {
       border-color: #287cff;
+
       box-shadow:
-        0 0 0 3px rgba(40, 124, 255, 0.1);
+        0 0 0 3px
+        rgba(40, 124, 255, .1);
     }
 
     .search-btn {
       border: 0;
       border-radius: 11px;
+
       padding: 0 17px;
+
       color: white;
       background: #1669e8;
-      font-weight: 700;
-    }
 
-    .search-btn:active {
-      transform: scale(0.98);
+      font-weight: 800;
     }
 
     .category-row {
       display: flex;
       gap: 7px;
+
       overflow-x: auto;
+
       padding-top: 10px;
+
       scrollbar-width: none;
     }
 
@@ -195,13 +207,18 @@
 
     .category-btn {
       flex: 0 0 auto;
+
       background: #0f202c;
       border: 1px solid #1d384a;
+
       color: #91a7b9;
+
       border-radius: 999px;
-      padding: 7px 11px;
+
+      padding: 7px 12px;
+
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .category-btn.active {
@@ -212,10 +229,14 @@
 
     .search-results {
       display: none;
+
       margin-top: 10px;
+
       max-height: 270px;
       overflow-y: auto;
+
       border-top: 1px solid #173041;
+
       padding-top: 8px;
     }
 
@@ -225,12 +246,19 @@
 
     .result-item {
       width: 100%;
+
       border: 1px solid transparent;
+
       background: transparent;
+
       color: #dce8f1;
+
       text-align: left;
+
       border-radius: 10px;
+
       padding: 10px;
+
       margin-bottom: 4px;
     }
 
@@ -246,43 +274,54 @@
     }
 
     .result-symbol {
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .result-type {
       font-size: 9px;
+
       border: 1px solid #294354;
+
       color: #8eabc0;
+
       border-radius: 999px;
+
       padding: 3px 6px;
-      white-space: nowrap;
     }
 
     .result-name {
       margin-top: 4px;
+
       color: #8198aa;
+
       font-size: 11px;
     }
 
     .result-meta {
       margin-top: 3px;
+
       color: #5f7789;
+
       font-size: 9px;
     }
 
-    /* =====================================================
-       ASSET BAR
-       ===================================================== */
+    /* ================= ASSET ================= */
 
     .asset-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       gap: 10px;
+
       background: #0b1721;
+
       border: 1px solid #173041;
+
       border-radius: 16px;
+
       padding: 12px;
+
       margin-bottom: 12px;
     }
 
@@ -292,14 +331,16 @@
 
     .asset-symbol {
       font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      font-weight: 1000;
     }
 
     .asset-name {
-      color: #7991a4;
-      font-size: 11px;
       margin-top: 3px;
+
+      color: #7991a4;
+
+      font-size: 11px;
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -308,70 +349,91 @@
     .timeframes {
       display: flex;
       gap: 5px;
-      flex: 0 0 auto;
     }
 
     .tf-btn {
       background: #0d202d;
+
       color: #8da4b7;
+
       border: 1px solid #1b3546;
+
       border-radius: 8px;
-      padding: 8px 10px;
+
+      padding: 8px 11px;
+
       font-size: 11px;
-      font-weight: 800;
+
+      font-weight: 900;
     }
 
     .tf-btn.active {
       color: white;
+
       background: #15528d;
+
       border-color: #277dc4;
     }
 
-    /* =====================================================
-       MAIN GRID
-       ===================================================== */
+    /* ================= GRID ================= */
 
     .main-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        340px;
+
       gap: 12px;
     }
 
     .card {
       background: #0b1721;
+
       border: 1px solid #173041;
+
       border-radius: 16px;
+
       overflow: hidden;
     }
 
     .card-header {
       padding: 11px 13px;
+
       border-bottom: 1px solid #173041;
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
       gap: 10px;
     }
 
     .card-title {
       font-size: 12px;
+
       font-weight: 900;
-      letter-spacing: 0.4px;
+
+      letter-spacing: .4px;
     }
 
     .card-subtitle {
       color: #6f8799;
+
       font-size: 9px;
     }
 
-    /* =====================================================
-       CHART
-       ===================================================== */
+    /* ================= CHART ================= */
 
     .chart-wrap {
       position: relative;
+
       width: 100%;
+
       height: 520px;
+
       background: #071018;
     }
 
@@ -382,14 +444,24 @@
 
     .chart-loading {
       position: absolute;
+
       inset: 0;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
-      background: rgba(7, 16, 24, 0.65);
+
+      background:
+        rgba(7, 16, 24, .65);
+
       color: #8da4b7;
+
       font-size: 12px;
+
       pointer-events: none;
+
       z-index: 5;
     }
 
@@ -399,16 +471,26 @@
 
     .chart-error {
       position: absolute;
+
       left: 12px;
       right: 12px;
       top: 12px;
+
       z-index: 6;
+
       padding: 10px;
+
       border-radius: 9px;
-      background: rgba(117, 25, 35, 0.92);
+
+      background:
+        rgba(117, 25, 35, .92);
+
       border: 1px solid #9e3b47;
+
       color: #ffdce0;
+
       font-size: 11px;
+
       display: none;
     }
 
@@ -416,9 +498,7 @@
       display: block;
     }
 
-    /* =====================================================
-       SIGNAL CARD
-       ===================================================== */
+    /* ================= SIGNAL ================= */
 
     .signal-card {
       padding: 13px;
@@ -426,24 +506,35 @@
 
     .signal-status {
       border-radius: 13px;
+
       padding: 15px;
+
       text-align: center;
+
       border: 1px solid #213746;
+
       background: #09151e;
+
       margin-bottom: 10px;
     }
 
     .signal-label {
       color: #70889a;
+
       font-size: 9px;
+
       letter-spacing: 1px;
+
       font-weight: 900;
     }
 
     .signal-value {
       margin-top: 5px;
+
       font-size: 30px;
+
       line-height: 1;
+
       font-weight: 1000;
     }
 
@@ -461,65 +552,79 @@
 
     .signal-prob {
       margin-top: 8px;
+
       color: #8ca4b6;
+
       font-size: 10px;
     }
 
     .metrics {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+
+      grid-template-columns:
+        1fr 1fr;
+
       gap: 7px;
     }
 
     .metric {
       background: #09151e;
+
       border: 1px solid #173041;
+
       border-radius: 10px;
+
       padding: 9px;
     }
 
     .metric-label {
       color: #667f91;
+
       font-size: 9px;
     }
 
     .metric-value {
       margin-top: 4px;
+
       color: #e8f1f7;
+
       font-size: 12px;
+
       font-weight: 800;
-      word-break: break-word;
     }
 
-    /* =====================================================
-       TRADE PLAN
-       ===================================================== */
+    /* ================= TRADE PLAN ================= */
 
     .trade-plan {
       padding: 12px;
+
       border-top: 1px solid #173041;
     }
 
     .trade-plan-title {
       color: #7d95a7;
+
       font-size: 10px;
+
       font-weight: 900;
-      letter-spacing: 0.8px;
+
+      letter-spacing: .8px;
+
       margin-bottom: 8px;
     }
 
     .price-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid #112532;
-      font-size: 10px;
-    }
 
-    .price-row:last-child {
-      border-bottom: 0;
+      justify-content: space-between;
+
+      align-items: center;
+
+      padding: 7px 0;
+
+      border-bottom: 1px solid #112532;
+
+      font-size: 10px;
     }
 
     .price-name {
@@ -542,28 +647,35 @@
       color: #1edaa1;
     }
 
-    /* =====================================================
-       ZONES / MAGNET
-       ===================================================== */
+    /* ================= ZONES ================= */
 
     .zone-section {
       padding: 12px;
+
       border-top: 1px solid #173041;
     }
 
     .zone-title {
       font-size: 10px;
+
       font-weight: 900;
+
       color: #8198aa;
+
       margin-bottom: 8px;
-      letter-spacing: 0.7px;
+
+      letter-spacing: .7px;
     }
 
     .zone-box {
       border: 1px solid #1c3646;
+
       background: #09151e;
+
       border-radius: 10px;
+
       padding: 9px;
+
       margin-bottom: 7px;
     }
 
@@ -577,8 +689,11 @@
 
     .zone-top {
       display: flex;
+
       justify-content: space-between;
+
       gap: 8px;
+
       font-size: 10px;
     }
 
@@ -592,22 +707,33 @@
 
     .zone-data {
       display: flex;
+
       gap: 10px;
+
       flex-wrap: wrap;
+
       margin-top: 5px;
+
       color: #6e8799;
+
       font-size: 9px;
     }
 
+    /* ================= MAGNET ================= */
+
     .magnet {
       padding: 11px;
+
       background: #09151e;
+
       border: 1px solid #263b4a;
+
       border-radius: 11px;
     }
 
     .magnet-direction {
       font-size: 14px;
+
       font-weight: 1000;
     }
 
@@ -616,77 +742,83 @@
     }
 
     .magnet-down {
-      color: #ff6571;
+      color: #ff6370;
     }
 
     .magnet-details {
       margin-top: 7px;
+
       display: grid;
-      grid-template-columns: 1fr 1fr;
+
+      grid-template-columns:
+        1fr 1fr;
+
       gap: 5px;
+
       color: #718a9c;
+
       font-size: 9px;
     }
 
-    /* =====================================================
-       DIAGNOSTICS
-       ===================================================== */
+    /* ================= DIAGNOSTICS ================= */
 
     .diagnostics {
       margin-top: 12px;
+
       padding: 12px;
     }
 
     .diag-grid {
       display: grid;
+
       grid-template-columns:
         repeat(6, minmax(0, 1fr));
+
       gap: 7px;
     }
 
     .diag {
       background: #09151e;
+
       border: 1px solid #173041;
+
       border-radius: 9px;
+
       padding: 8px;
-      min-width: 0;
     }
 
     .diag-title {
       color: #5f7789;
+
       font-size: 8px;
+
       text-transform: uppercase;
     }
 
     .diag-value {
       margin-top: 4px;
+
       font-size: 11px;
+
       font-weight: 900;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    /* =====================================================
-       FOOTER
-       ===================================================== */
+    /* ================= FOOTER ================= */
 
     .footer {
       padding: 15px 3px 5px;
+
       color: #506879;
+
       font-size: 9px;
+
       text-align: center;
     }
 
-    .footer a {
-      color: #6f9fc4;
-      text-decoration: none;
-    }
-
-    /* =====================================================
-       RESPONSIVE
-       ===================================================== */
+    /* ================= MOBILE ================= */
 
     @media (max-width: 1050px) {
+
       .main-grid {
         grid-template-columns: 1fr;
       }
@@ -695,9 +827,11 @@
         grid-template-columns:
           repeat(3, minmax(0, 1fr));
       }
+
     }
 
     @media (max-width: 650px) {
+
       .app {
         padding: 8px;
       }
@@ -706,14 +840,22 @@
         align-items: flex-start;
       }
 
+      .brand h1 {
+        font-size: 17px;
+      }
+
+      .brand small {
+        font-size: 10px;
+      }
+
       .connection {
         font-size: 9px;
         padding: 6px 8px;
       }
 
       .asset-bar {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .timeframes {
@@ -733,9 +875,6 @@
           repeat(2, minmax(0, 1fr));
       }
 
-      .brand h1 {
-        font-size: 17px;
-      }
     }
   </style>
 </head>
@@ -744,23 +883,26 @@
 
 <div class="app">
 
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
+  <!-- ================= HEADER ================= -->
 
   <header class="header">
 
     <div class="brand">
 
       <div class="logo">
-        L
+        O&B
       </div>
 
       <div>
-        <h1>LONA Trading Assistant</h1>
+
+        <h1>
+          Owajid & Bokul Trading Assistant
+        </h1>
+
         <small>
           Strong SD Magnet • Personal Market Workstation
         </small>
+
       </div>
 
     </div>
@@ -781,9 +923,7 @@
   </header>
 
 
-  <!-- =====================================================
-       SEARCH
-       ===================================================== -->
+  <!-- ================= SEARCH ================= -->
 
   <section class="search-panel">
 
@@ -795,7 +935,7 @@
         type="search"
         placeholder="Search BTC, ETH, Gold, Oil, EUR/USD, AAPL..."
         autocomplete="off"
-      />
+      >
 
       <button
         id="searchBtn"
@@ -872,9 +1012,7 @@
   </section>
 
 
-  <!-- =====================================================
-       CURRENT ASSET
-       ===================================================== -->
+  <!-- ================= ASSET ================= -->
 
   <section class="asset-bar">
 
@@ -918,9 +1056,7 @@
   </section>
 
 
-  <!-- =====================================================
-       MAIN
-       ===================================================== -->
+  <!-- ================= MAIN ================= -->
 
   <main class="main-grid">
 
@@ -941,7 +1077,7 @@
             id="chartSubtitle"
             class="card-subtitle"
           >
-            15M • Strong SD Magnet
+            15M STRUCTURE • Strong SD Magnet
           </div>
 
         </div>
@@ -958,9 +1094,7 @@
 
       <div class="chart-wrap">
 
-        <div
-          id="chart"
-        ></div>
+        <div id="chart"></div>
 
         <div
           id="chartLoading"
@@ -979,7 +1113,7 @@
     </section>
 
 
-    <!-- SIDE PANEL -->
+    <!-- SIGNAL PANEL -->
 
     <aside class="card">
 
@@ -1002,7 +1136,6 @@
       <div class="signal-card">
 
         <div
-          id="signalStatus"
           class="signal-status"
         >
 
@@ -1030,75 +1163,98 @@
         <div class="metrics">
 
           <div class="metric">
+
             <div class="metric-label">
               Price
             </div>
+
             <div
               id="metricPrice"
               class="metric-value"
             >
               —
             </div>
+
           </div>
 
+
           <div class="metric">
+
             <div class="metric-label">
               ATR
             </div>
+
             <div
               id="metricAtr"
               class="metric-value"
             >
               —
             </div>
+
           </div>
 
+
           <div class="metric">
+
             <div class="metric-label">
               15M
             </div>
+
             <div
               id="metric15"
               class="metric-value"
             >
               WAIT
             </div>
+
           </div>
 
+
           <div class="metric">
+
             <div class="metric-label">
               5M
             </div>
+
             <div
               id="metric5"
               class="metric-value"
             >
               WAIT
             </div>
+
           </div>
 
+
           <div class="metric">
+
             <div class="metric-label">
               SD Score
             </div>
+
             <div
               id="metricScore"
               class="metric-value"
             >
               —
             </div>
+
           </div>
 
+
           <div class="metric">
+
             <div class="metric-label">
               Retests
             </div>
+
             <div
               id="metricRetests"
               class="metric-value"
             >
               —
             </div>
+
           </div>
 
         </div>
@@ -1118,6 +1274,7 @@
           <span class="price-name">
             Entry
           </span>
+
           <span
             id="tradeEntry"
             class="price-value entry"
@@ -1130,6 +1287,7 @@
           <span class="price-name">
             Stop Loss
           </span>
+
           <span
             id="tradeSL"
             class="price-value sl"
@@ -1142,6 +1300,7 @@
           <span class="price-name">
             TP1
           </span>
+
           <span
             id="tradeTP1"
             class="price-value tp"
@@ -1154,6 +1313,7 @@
           <span class="price-name">
             TP2
           </span>
+
           <span
             id="tradeTP2"
             class="price-value tp"
@@ -1166,6 +1326,7 @@
           <span class="price-name">
             TP3
           </span>
+
           <span
             id="tradeTP3"
             class="price-value tp"
@@ -1177,7 +1338,7 @@
       </div>
 
 
-      <!-- ZONES -->
+      <!-- SUPPLY -->
 
       <div class="zone-section">
 
@@ -1185,16 +1346,18 @@
           15M SUPPLY
         </div>
 
-        <div
-          id="supplyZone"
-        >
+        <div id="supplyZone">
+
           <div class="zone-box supply">
             No active Supply zone
           </div>
+
         </div>
 
       </div>
 
+
+      <!-- DEMAND -->
 
       <div class="zone-section">
 
@@ -1202,12 +1365,12 @@
           15M DEMAND
         </div>
 
-        <div
-          id="demandZone"
-        >
+        <div id="demandZone">
+
           <div class="zone-box demand">
             No active Demand zone
           </div>
+
         </div>
 
       </div>
@@ -1225,11 +1388,13 @@
           id="magnetBox"
           class="magnet"
         >
+
           <div class="magnet-direction">
             NONE
           </div>
 
           <div class="magnet-details">
+
             <div>
               Source: —
             </div>
@@ -1245,7 +1410,9 @@
             <div>
               Probability: —
             </div>
+
           </div>
+
         </div>
 
       </div>
@@ -1255,9 +1422,7 @@
   </main>
 
 
-  <!-- =====================================================
-       DIAGNOSTICS
-       ===================================================== -->
+  <!-- ================= DIAGNOSTICS ================= -->
 
   <section class="card diagnostics">
 
@@ -1376,18 +1541,13 @@
   </section>
 
 
+  <!-- ================= FOOTER ================= -->
+
   <footer class="footer">
 
-    LONA Trading Assistant • Personal use •
-    Market data provided by Twelve Data •
-    Charting by
-    <a
-      href="https://www.tradingview.com/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      TradingView Lightweight Charts
-    </a>
+    Owajid & Bokul Trading Assistant •
+    Personal use •
+    Market data provided by Twelve Data
 
   </footer>
 
@@ -1395,23 +1555,30 @@
 
 
 <script>
+
 /* =========================================================
-   LONA FRONTEND
+   CONFIG
    ========================================================= */
 
 const API = "/api/market";
 
 let currentSymbol = "XAU/USD";
-let currentName = "Gold / US Dollar";
-let currentTimeframe = "15min";
 
-let market15 = null;
-let market5 = null;
+let currentName =
+  "Gold / US Dollar";
+
+let currentTimeframe = "15min";
 
 let selectedCategory = "all";
 
+let market15 = null;
+
+let market5 = null;
+
 let chart = null;
+
 let candleSeries = null;
+
 let markerPlugin = null;
 
 let priceLines = [];
@@ -1422,7 +1589,7 @@ let searchTimer = null;
 
 
 /* =========================================================
-   DOM
+   SHORT DOM HELPER
    ========================================================= */
 
 const $ = id =>
@@ -1430,79 +1597,116 @@ const $ = id =>
 
 
 /* =========================================================
-   INITIALIZE CHART
+   CREATE CHART
    ========================================================= */
 
-function createLonaChart() {
+function createChart() {
 
   const container =
     $("chart");
+
 
   chart =
     LightweightCharts.createChart(
       container,
       {
+
         layout: {
+
           background: {
             type: "solid",
             color: "#071018"
           },
+
           textColor: "#8ea5b7"
+
         },
 
+
         grid: {
+
           vertLines: {
             color: "#0d1d27"
           },
+
           horzLines: {
             color: "#0d1d27"
           }
+
         },
 
+
         crosshair: {
+
           vertLine: {
             color: "#31566d",
             width: 1,
             style: 2,
-            labelBackgroundColor: "#16354a"
+            labelBackgroundColor:
+              "#16354a"
           },
 
           horzLine: {
             color: "#31566d",
             width: 1,
             style: 2,
-            labelBackgroundColor: "#16354a"
+            labelBackgroundColor:
+              "#16354a"
           }
+
         },
 
+
         rightPriceScale: {
+
           borderColor: "#173041",
+
           scaleMargins: {
             top: 0.08,
             bottom: 0.08
           }
+
         },
+
 
         timeScale: {
+
           borderColor: "#173041",
+
           timeVisible: true,
+
           secondsVisible: false,
+
           rightOffset: 5,
+
           barSpacing: 7
+
         },
+
 
         handleScroll: {
+
           mouseWheel: true,
+
           pressedMouseMove: true,
+
           horzTouchDrag: true,
+
           vertTouchDrag: true
+
         },
 
+
         handleScale: {
+
           mouseWheel: true,
+
           pinch: true,
+
           axisPressedMouseMove: true
+
         }
+
       }
     );
 
@@ -1511,17 +1715,21 @@ function createLonaChart() {
     chart.addSeries(
       LightweightCharts.CandlestickSeries,
       {
+
         upColor: "#16c995",
+
         downColor: "#f15b68",
 
         borderVisible: false,
 
         wickUpColor: "#16c995",
+
         wickDownColor: "#f15b68",
 
         priceLineVisible: true,
 
         lastValueVisible: true
+
       }
     );
 
@@ -1533,42 +1741,31 @@ function createLonaChart() {
     );
 
 
-  const resize =
+  window.addEventListener(
+    "resize",
     () => {
-
-      if (!chart) {
-        return;
-      }
 
       chart.resize(
         container.clientWidth,
         container.clientHeight
       );
 
-    };
-
-
-  window.addEventListener(
-    "resize",
-    resize
+    }
   );
 
 }
 
 
 /* =========================================================
-   TIME CONVERSION
+   TIME
    ========================================================= */
 
 function toChartTime(value) {
 
   if (
-    typeof value ===
-    "number"
+    typeof value === "number"
   ) {
-
     return value;
-
   }
 
 
@@ -1577,47 +1774,34 @@ function toChartTime(value) {
   }
 
 
-  /*
-   * Twelve Data normally returns:
-   * YYYY-MM-DD HH:mm:ss
-   *
-   * We convert it to a UTC timestamp.
-   * This preserves candle ordering and gives
-   * Lightweight Charts a numeric time value.
-   */
-
   const normalized =
     String(value)
       .trim()
       .replace(" ", "T");
 
 
-  const parsed =
+  const timestamp =
     Date.parse(
       normalized + "Z"
     );
 
 
   if (
-    !Number.isFinite(
-      parsed
-    )
+    !Number.isFinite(timestamp)
   ) {
-
     return null;
-
   }
 
 
   return Math.floor(
-    parsed / 1000
+    timestamp / 1000
   );
 
 }
 
 
 /* =========================================================
-   CLEAN CANDLES
+   NORMALIZE CANDLES
    ========================================================= */
 
 function normalizeCandles(
@@ -1625,51 +1809,47 @@ function normalizeCandles(
 ) {
 
   if (
-    !Array.isArray(
-      candles
-    )
+    !Array.isArray(candles)
   ) {
-
     return [];
-
   }
 
 
   return candles
-    .map(c => {
 
-      const time =
-        toChartTime(
-          c.time
-        );
+    .map(c => ({
 
+      time:
+        toChartTime(c.time),
 
-      return {
+      open:
+        Number(c.open),
 
-        time,
+      high:
+        Number(c.high),
 
-        open:
-          Number(c.open),
+      low:
+        Number(c.low),
 
-        high:
-          Number(c.high),
+      close:
+        Number(c.close)
 
-        low:
-          Number(c.low),
+    }))
 
-        close:
-          Number(c.close)
-
-      };
-
-    })
     .filter(c =>
+
       c.time &&
+
       Number.isFinite(c.open) &&
+
       Number.isFinite(c.high) &&
+
       Number.isFinite(c.low) &&
+
       Number.isFinite(c.close)
+
     )
+
     .sort(
       (a, b) =>
         a.time - b.time
@@ -1684,9 +1864,7 @@ function normalizeCandles(
 
 function clearPriceLines() {
 
-  if (
-    !candleSeries
-  ) {
+  if (!candleSeries) {
     return;
   }
 
@@ -1713,15 +1891,14 @@ function clearPriceLines() {
 
 
 /* =========================================================
-   ADD PRICE LINE
+   PRICE LINE
    ========================================================= */
 
 function addPriceLine(
   price,
   title,
   color,
-  lineStyle = 2,
-  lineWidth = 1
+  width = 1
 ) {
 
   if (
@@ -1729,9 +1906,7 @@ function addPriceLine(
       Number(price)
     )
   ) {
-
     return;
-
   }
 
 
@@ -1743,12 +1918,12 @@ function addPriceLine(
 
       color,
 
-      lineWidth,
+      lineWidth:
+        width,
 
-      lineStyle,
+      lineStyle: 2,
 
-      axisLabelVisible:
-        true,
+      axisLabelVisible: true,
 
       title
 
@@ -1763,24 +1938,22 @@ function addPriceLine(
 
 
 /* =========================================================
-   DRAW ZONES
+   ZONES
    ========================================================= */
 
-function drawZoneLines(
+function drawZones(
   zones,
   type
 ) {
 
   if (
-    !Array.isArray(
-      zones
-    )
+    !Array.isArray(zones)
   ) {
     return;
   }
 
 
-  const maxZones =
+  const max =
     Math.min(
       zones.length,
       3
@@ -1789,7 +1962,7 @@ function drawZoneLines(
 
   for (
     let i = 0;
-    i < maxZones;
+    i < max;
     i++
   ) {
 
@@ -1797,18 +1970,18 @@ function drawZoneLines(
       zones[i];
 
 
-    const isSupply =
+    const supply =
       type === "Supply";
 
 
     const color =
-      isSupply
+      supply
         ? "#e84f5e"
         : "#16c995";
 
 
     const prefix =
-      isSupply
+      supply
         ? "S"
         : "D";
 
@@ -1816,18 +1989,14 @@ function drawZoneLines(
     addPriceLine(
       zone.top,
       `${prefix}${i + 1} TOP`,
-      color,
-      2,
-      1
+      color
     );
 
 
     addPriceLine(
       zone.bottom,
       `${prefix}${i + 1} BOT`,
-      color,
-      2,
-      1
+      color
     );
 
   }
@@ -1836,115 +2005,7 @@ function drawZoneLines(
 
 
 /* =========================================================
-   DRAW TRADE PLAN
-   ========================================================= */
-
-function drawTradePlan(
-  signal
-) {
-
-  if (!signal) {
-    return;
-  }
-
-
-  if (
-    signal.entry
-  ) {
-
-    addPriceLine(
-      signal.entry.low,
-      "ENTRY LOW",
-      "#4aa8ff",
-      2,
-      1
-    );
-
-    addPriceLine(
-      signal.entry.high,
-      "ENTRY HIGH",
-      "#4aa8ff",
-      2,
-      1
-    );
-
-  }
-
-
-  if (
-    Number.isFinite(
-      Number(
-        signal.stopLoss
-      )
-    )
-  ) {
-
-    addPriceLine(
-      signal.stopLoss,
-      "SL",
-      "#ff5968",
-      2,
-      1
-    );
-
-  }
-
-
-  if (
-    Number.isFinite(
-      Number(signal.tp1)
-    )
-  ) {
-
-    addPriceLine(
-      signal.tp1,
-      "TP1",
-      "#1edaa1",
-      2,
-      1
-    );
-
-  }
-
-
-  if (
-    Number.isFinite(
-      Number(signal.tp2)
-    )
-  ) {
-
-    addPriceLine(
-      signal.tp2,
-      "TP2",
-      "#1edaa1",
-      2,
-      1
-    );
-
-  }
-
-
-  if (
-    Number.isFinite(
-      Number(signal.tp3)
-    )
-  ) {
-
-    addPriceLine(
-      signal.tp3,
-      "TP3",
-      "#1edaa1",
-      2,
-      1
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   DRAW MAGNET
+   MAGNET
    ========================================================= */
 
 function drawMagnet(
@@ -1956,39 +2017,37 @@ function drawMagnet(
   }
 
 
-  const source =
-    magnet.source;
-
-
-  const target =
-    magnet.target;
-
-
-  if (source) {
+  if (magnet.source) {
 
     addPriceLine(
-      source.mid,
+
+      magnet.source.mid,
+
       magnet.direction === "UP"
         ? "MAGNET BUY"
         : "MAGNET SELL",
+
       magnet.direction === "UP"
         ? "#18d69e"
         : "#ff6370",
-      1,
+
       2
+
     );
 
   }
 
 
-  if (target) {
+  if (magnet.target) {
 
     addPriceLine(
-      target.mid,
+
+      magnet.target.mid,
+
       "MAGNET TARGET",
-      "#d0a85b",
-      1,
-      1
+
+      "#d0a85b"
+
     );
 
   }
@@ -1997,7 +2056,68 @@ function drawMagnet(
 
 
 /* =========================================================
-   DRAW SIGNAL MARKER
+   TRADE PLAN
+   ========================================================= */
+
+function drawTradePlan(
+  signal
+) {
+
+  if (!signal) {
+    return;
+  }
+
+
+  if (signal.entry) {
+
+    addPriceLine(
+      signal.entry.low,
+      "ENTRY LOW",
+      "#4aa8ff"
+    );
+
+
+    addPriceLine(
+      signal.entry.high,
+      "ENTRY HIGH",
+      "#4aa8ff"
+    );
+
+  }
+
+
+  addPriceLine(
+    signal.stopLoss,
+    "SL",
+    "#ff5968"
+  );
+
+
+  addPriceLine(
+    signal.tp1,
+    "TP1",
+    "#1edaa1"
+  );
+
+
+  addPriceLine(
+    signal.tp2,
+    "TP2",
+    "#1edaa1"
+  );
+
+
+  addPriceLine(
+    signal.tp3,
+    "TP3",
+    "#1edaa1"
+  );
+
+}
+
+
+/* =========================================================
+   SIGNAL MARKER
    ========================================================= */
 
 function drawSignalMarker(
@@ -2005,30 +2125,20 @@ function drawSignalMarker(
   signal
 ) {
 
-  if (
-    !markerPlugin
-  ) {
+  if (!markerPlugin) {
     return;
   }
 
 
   if (
-    !signal
-  ) {
-
-    markerPlugin.setMarkers(
-      []
-    );
-
-    return;
-
-  }
-
-
-  if (
+    !signal ||
     !candles.length
   ) {
+
+    markerPlugin.setMarkers([]);
+
     return;
+
   }
 
 
@@ -2038,9 +2148,8 @@ function drawSignalMarker(
     ];
 
 
-  const isBuy =
-    signal.direction ===
-    "BUY";
+  const buy =
+    signal.direction === "BUY";
 
 
   markerPlugin.setMarkers([
@@ -2051,22 +2160,22 @@ function drawSignalMarker(
         last.time,
 
       position:
-        isBuy
+        buy
           ? "belowBar"
           : "aboveBar",
 
       shape:
-        isBuy
+        buy
           ? "arrowUp"
           : "arrowDown",
 
       color:
-        isBuy
+        buy
           ? "#16d995"
           : "#ff5968",
 
       text:
-        isBuy
+        buy
           ? "BUY"
           : "SELL",
 
@@ -2102,9 +2211,7 @@ function renderChart(
     );
 
 
-  if (
-    !candles.length
-  ) {
+  if (!candles.length) {
 
     showChartError(
       "No valid candle data received."
@@ -2127,17 +2234,16 @@ function renderChart(
 
 
   const engine =
-    data.engine ||
-    {};
+    data.engine || {};
 
 
-  drawZoneLines(
+  drawZones(
     engine.supply,
     "Supply"
   );
 
 
-  drawZoneLines(
+  drawZones(
     engine.demand,
     "Demand"
   );
@@ -2184,13 +2290,18 @@ function renderChart(
 
 
   $("chartSubtitle").textContent =
-    `${timeframe === "15min" ? "15M STRUCTURE" : "5M ENTRY"} • Strong SD Magnet`;
+
+    timeframe === "15min"
+
+      ? "15M STRUCTURE • Strong SD Magnet"
+
+      : "5M ENTRY • Strong SD Magnet";
 
 }
 
 
 /* =========================================================
-   PRICE FORMAT
+   FORMAT PRICE
    ========================================================= */
 
 function formatPrice(
@@ -2202,9 +2313,7 @@ function formatPrice(
       Number(value)
     )
   ) {
-
     return "—";
-
   }
 
 
@@ -2213,32 +2322,16 @@ function formatPrice(
 
 
   if (
-    Math.abs(n) >=
-    1000
+    Math.abs(n) >= 100
   ) {
-
     return n.toFixed(2);
-
   }
 
 
   if (
-    Math.abs(n) >=
-    100
+    Math.abs(n) >= 1
   ) {
-
-    return n.toFixed(2);
-
-  }
-
-
-  if (
-    Math.abs(n) >=
-    1
-  ) {
-
     return n.toFixed(4);
-
   }
 
 
@@ -2248,7 +2341,7 @@ function formatPrice(
 
 
 /* =========================================================
-   API FETCH
+   FETCH MARKET
    ========================================================= */
 
 async function fetchMarket(
@@ -2292,19 +2385,14 @@ async function fetchMarket(
 
 
 /* =========================================================
-   LOAD CURRENT MARKET
+   LOAD MARKET
    ========================================================= */
 
 async function loadMarket(
   options = {}
 ) {
 
-  const {
-    silent = false
-  } = options;
-
-
-  if (!silent) {
+  if (!options.silent) {
 
     showChartLoading();
 
@@ -2315,13 +2403,6 @@ async function loadMarket(
 
 
   try {
-
-    /*
-     * We fetch 15M and 5M.
-     *
-     * 15M = structure
-     * 5M  = entry confirmation
-     */
 
     const [
       data15,
@@ -2350,22 +2431,11 @@ async function loadMarket(
       data5;
 
 
-    /*
-     * Connection
-     */
+    setConnection(true);
 
-    setConnection(
-      true
-    );
-
-
-    /*
-     * Current timeframe
-     */
 
     const current =
-      currentTimeframe ===
-      "15min"
+      currentTimeframe === "15min"
         ? market15
         : market5;
 
@@ -2392,14 +2462,10 @@ async function loadMarket(
 
   } catch (error) {
 
-    console.error(
-      error
-    );
+    console.error(error);
 
 
-    setConnection(
-      false
-    );
+    setConnection(false);
 
 
     showChartError(
@@ -2417,7 +2483,7 @@ async function loadMarket(
 
 
 /* =========================================================
-   UPDATE ASSET HEADER
+   ASSET HEADER
    ========================================================= */
 
 function updateAssetHeader(
@@ -2434,13 +2500,7 @@ function updateAssetHeader(
 
 
   if (
-    data &&
-    data.engine &&
-    Number.isFinite(
-      Number(
-        data.engine.price
-      )
-    )
+    data?.engine?.price
   ) {
 
     $("lastPrice").textContent =
@@ -2454,51 +2514,45 @@ function updateAssetHeader(
 
 
 /* =========================================================
-   UPDATE SIGNAL PANEL
+   SIGNAL PANEL
    ========================================================= */
 
 function updateSignalPanel() {
 
-  const engine15 =
+  const e15 =
     market15?.engine || {};
 
 
-  const engine5 =
+  const e5 =
     market5?.engine || {};
 
 
-  const signal15 =
-    engine15.signal;
+  const s15 =
+    e15.signal;
 
 
-  const signal5 =
-    engine5.signal;
+  const s5 =
+    e5.signal;
 
-
-  /*
-   * IMPORTANT:
-   *
-   * We do NOT invent a 5M signal.
-   *
-   * Current backend exposes full SD Magnet
-   * signals for both timeframes.
-   *
-   * Final signal requires agreement.
-   */
 
   let finalSignal =
     null;
 
 
+  /*
+   * Confirmed final signal:
+   * 15M + 5M must agree.
+   */
+
   if (
-    signal15 &&
-    signal5 &&
-    signal15.direction ===
-    signal5.direction
+    s15 &&
+    s5 &&
+    s15.direction ===
+    s5.direction
   ) {
 
     finalSignal =
-      signal15;
+      s15;
 
   }
 
@@ -2519,6 +2573,7 @@ function updateSignalPanel() {
 
   signalValue.className =
     "signal-value " +
+
     (
       status === "BUY"
         ? "buy"
@@ -2528,12 +2583,10 @@ function updateSignalPanel() {
     );
 
 
-  if (
-    finalSignal
-  ) {
+  if (finalSignal) {
 
     $("signalProbability").textContent =
-      `Confirmed on 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
+      `Confirmed 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
 
   } else {
 
@@ -2544,10 +2597,9 @@ function updateSignalPanel() {
 
 
   const primary =
-    currentTimeframe ===
-    "15min"
-      ? engine15
-      : engine5;
+    currentTimeframe === "15min"
+      ? e15
+      : e5;
 
 
   $("metricPrice").textContent =
@@ -2563,49 +2615,46 @@ function updateSignalPanel() {
 
 
   $("metric15").textContent =
-    engine15.status ||
+    e15.status ||
     "WAIT";
 
 
   $("metric5").textContent =
-    engine5.status ||
+    e5.status ||
     "WAIT";
 
 
-  const primarySignal =
-    primary.signal;
-
-
   $("metricScore").textContent =
-    primarySignal
+    primary.signal
+
       ? (
-          primarySignal.sourceScore ??
-          primarySignal.confidence ??
+          primary.signal.sourceScore ??
+          primary.signal.confidence ??
           "—"
         )
+
       : "—";
 
 
   $("metricRetests").textContent =
-    primarySignal
+    primary.signal
+
       ? (
-          primarySignal.sourceTouches ??
+          primary.signal.sourceTouches ??
           "—"
         )
+
       : "—";
 
 
-  /*
-   * Trade plan
-   */
-
-  if (
-    finalSignal
-  ) {
+  if (finalSignal) {
 
     $("tradeEntry").textContent =
+
       finalSignal.entry
+
         ? `${formatPrice(finalSignal.entry.low)} – ${formatPrice(finalSignal.entry.high)}`
+
         : "—";
 
 
@@ -2652,37 +2701,29 @@ function updateSignalPanel() {
   }
 
 
-  /*
-   * 15M zones
-   */
-
   renderZone(
     $("supplyZone"),
-    engine15.supply?.[0],
+    e15.supply?.[0],
     "Supply"
   );
 
 
   renderZone(
     $("demandZone"),
-    engine15.demand?.[0],
+    e15.demand?.[0],
     "Demand"
   );
 
 
-  /*
-   * Magnet
-   */
-
   renderMagnet(
-    engine15.magnets?.[0]
+    e15.magnets?.[0]
   );
 
 }
 
 
 /* =========================================================
-   RENDER ZONE
+   ZONE UI
    ========================================================= */
 
 function renderZone(
@@ -2694,8 +2735,15 @@ function renderZone(
   if (!zone) {
 
     container.innerHTML =
-      `<div class="zone-box ${type === "Supply" ? "supply" : "demand"}">
+
+      `<div class="zone-box ${
+        type === "Supply"
+          ? "supply"
+          : "demand"
+      }">
+
         No active ${type} zone
+
       </div>`;
 
     return;
@@ -2703,20 +2751,15 @@ function renderZone(
   }
 
 
-  const status =
-    zone.status ||
-    "ACTIVE";
+  container.innerHTML =
 
+    `
 
-  container.innerHTML = `
-
-    <div
-      class="zone-box ${
-        type === "Supply"
-          ? "supply"
-          : "demand"
-      }"
-    >
+    <div class="zone-box ${
+      type === "Supply"
+        ? "supply"
+        : "demand"
+    }">
 
       <div class="zone-top">
 
@@ -2730,35 +2773,39 @@ function renderZone(
 
       </div>
 
+
       <div class="zone-data">
 
         <span>
-          Top: ${formatPrice(zone.top)}
+          Top:
+          ${formatPrice(zone.top)}
         </span>
 
         <span>
-          Bottom: ${formatPrice(zone.bottom)}
+          Bottom:
+          ${formatPrice(zone.bottom)}
         </span>
 
         <span>
-          Retests: ${zone.retests ?? 0}
+          Retests:
+          ${zone.retests ?? 0}
         </span>
 
         <span>
-          ${status}
+          ${zone.status || "ACTIVE"}
         </span>
 
       </div>
 
     </div>
 
-  `;
+    `;
 
 }
 
 
 /* =========================================================
-   RENDER MAGNET
+   MAGNET UI
    ========================================================= */
 
 function renderMagnet(
@@ -2771,7 +2818,9 @@ function renderMagnet(
 
   if (!magnet) {
 
-    box.innerHTML = `
+    box.innerHTML =
+
+      `
 
       <div class="magnet-direction">
         NONE
@@ -2797,7 +2846,7 @@ function renderMagnet(
 
       </div>
 
-    `;
+      `;
 
     return;
 
@@ -2805,21 +2854,27 @@ function renderMagnet(
 
 
   const up =
-    magnet.direction ===
-    "UP";
+    magnet.direction === "UP";
 
 
-  box.innerHTML = `
+  box.innerHTML =
 
-    <div
-      class="magnet-direction ${
+    `
+
+    <div class="magnet-direction ${
+      up
+        ? "magnet-up"
+        : "magnet-down"
+    }">
+
+      ${
         up
-          ? "magnet-up"
-          : "magnet-down"
-      }"
-    >
-      ${up ? "↑ UP MAGNET" : "↓ DOWN MAGNET"}
+          ? "↑ UP MAGNET"
+          : "↓ DOWN MAGNET"
+      }
+
     </div>
+
 
     <div class="magnet-details">
 
@@ -2845,7 +2900,7 @@ function renderMagnet(
 
     </div>
 
-  `;
+    `;
 
 }
 
@@ -2878,21 +2933,27 @@ function updateDiagnostics() {
 
 
   $("diag15Score").textContent =
+
     s15
+
       ? (
           s15.sourceScore ??
           s15.confidence ??
           "—"
         )
+
       : "—";
 
 
   $("diag15Retests").textContent =
+
     s15
+
       ? (
           s15.sourceTouches ??
           "—"
         )
+
       : "—";
 
 
@@ -2901,17 +2962,17 @@ function updateDiagnostics() {
     "WAIT";
 
 
-  const magnet =
-    e15.magnets?.[0];
-
-
   $("diagMagnet").textContent =
-    magnet
-      ? magnet.direction
+
+    e15.magnets?.[0]
+
+      ? e15.magnets[0].direction
+
       : "NONE";
 
 
   const aligned =
+
     s15 &&
     s5 &&
     s15.direction ===
@@ -2919,8 +2980,11 @@ function updateDiagnostics() {
 
 
   $("diagAlignment").textContent =
+
     aligned
+
       ? s15.direction
+
       : "WAIT";
 
 }
@@ -2932,19 +2996,17 @@ function updateDiagnostics() {
 
 function updateEngineTime() {
 
-  const now =
-    new Date();
-
-
   $("engineTime").textContent =
-    now.toLocaleTimeString(
-      [],
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      }
-    );
+
+    new Date()
+      .toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        }
+      );
 
 }
 
@@ -3011,7 +3073,7 @@ function hideChartLoading() {
 
 
 /* =========================================================
-   CHART ERROR
+   ERROR
    ========================================================= */
 
 function showChartError(
@@ -3055,9 +3117,7 @@ async function searchSymbols(
       .trim();
 
 
-  if (
-    q.length < 1
-  ) {
+  if (!q) {
 
     hideSearchResults();
 
@@ -3066,33 +3126,37 @@ async function searchSymbols(
   }
 
 
-  const resultsBox =
+  const box =
     $("searchResults");
 
 
-  resultsBox.innerHTML =
-    `<div style="padding:10px;color:#71899b;font-size:10px;">
+  box.innerHTML =
+
+    `<div style="
+      padding:10px;
+      color:#71899b;
+      font-size:10px;
+    ">
       Searching...
     </div>`;
 
 
-  resultsBox.classList.add(
+  box.classList.add(
     "show"
   );
 
 
   try {
 
-    const url =
-      `${API}?action=search&q=${encodeURIComponent(q)}`;
-
-
     const response =
       await fetch(
-        url,
+
+        `${API}?action=search&q=${encodeURIComponent(q)}`,
+
         {
           cache: "no-store"
         }
+
       );
 
 
@@ -3121,27 +3185,14 @@ async function searchSymbols(
         : [];
 
 
-    /*
-     * Apply selected category.
-     */
-
     results =
       filterResultsByCategory(
         results
       );
 
 
-    /*
-     * Sort crypto / forex / commodity
-     * results ahead of generic stock matches
-     * when searching.
-     */
-
     results.sort(
-      (
-        a,
-        b
-      ) =>
+      (a, b) =>
         resultPriority(b) -
         resultPriority(a)
     );
@@ -3154,8 +3205,13 @@ async function searchSymbols(
 
   } catch (error) {
 
-    resultsBox.innerHTML =
-      `<div style="padding:10px;color:#ff7b86;font-size:10px;">
+    box.innerHTML =
+
+      `<div style="
+        padding:10px;
+        color:#ff7b86;
+        font-size:10px;
+      ">
         ${escapeHtml(
           error.message
         )}
@@ -3167,7 +3223,7 @@ async function searchSymbols(
 
 
 /* =========================================================
-   CATEGORY FILTER
+   FILTER
    ========================================================= */
 
 function filterResultsByCategory(
@@ -3186,9 +3242,7 @@ function filterResultsByCategory(
 
   return results.filter(
     item =>
-      classifyInstrument(
-        item
-      ) ===
+      classifyInstrument(item) ===
       selectedCategory
   );
 
@@ -3196,7 +3250,7 @@ function filterResultsByCategory(
 
 
 /* =========================================================
-   RESULT PRIORITY
+   PRIORITY
    ========================================================= */
 
 function resultPriority(
@@ -3213,69 +3267,49 @@ function resultPriority(
     category ===
     selectedCategory
   ) {
-
     return 100;
-
   }
 
 
   if (
-    category ===
-    "crypto"
+    category === "crypto"
   ) {
+    return 90;
+  }
 
+
+  if (
+    category === "forex"
+  ) {
     return 80;
-
   }
 
 
   if (
-    category ===
-    "forex"
+    category === "metals"
   ) {
-
     return 70;
-
   }
 
 
   if (
-    category ===
-    "metals"
+    category === "energy"
   ) {
-
-    return 65;
-
-  }
-
-
-  if (
-    category ===
-    "energy"
-  ) {
-
     return 60;
-
   }
 
 
   if (
-    category ===
-    "stocks"
+    category === "stocks"
   ) {
-
     return 50;
-
   }
 
 
   if (
-    category ===
-    "etf"
+    category === "etf"
   ) {
-
     return 40;
-
   }
 
 
@@ -3285,7 +3319,7 @@ function resultPriority(
 
 
 /* =========================================================
-   CLASSIFY INSTRUMENT
+   CLASSIFY
    ========================================================= */
 
 function classifyInstrument(
@@ -3297,16 +3331,14 @@ function classifyInstrument(
       item?.instrument_type ||
       item?.type ||
       ""
-    )
-      .toLowerCase();
+    ).toLowerCase();
 
 
   const symbol =
     String(
       item?.symbol ||
       ""
-    )
-      .toUpperCase();
+    ).toUpperCase();
 
 
   const name =
@@ -3314,8 +3346,7 @@ function classifyInstrument(
       item?.instrument_name ||
       item?.name ||
       ""
-    )
-      .toLowerCase();
+    ).toLowerCase();
 
 
   /*
@@ -3323,26 +3354,25 @@ function classifyInstrument(
    */
 
   if (
-    type.includes(
-      "digital"
-    ) ||
-    type.includes(
-      "crypto"
-    ) ||
+
+    type.includes("crypto") ||
+
+    type.includes("digital") ||
+
     type.includes(
       "cryptocurrency"
     ) ||
-    symbol.includes(
-      "/USD"
-    ) &&
-    (
-      name.includes("bitcoin") ||
-      name.includes("ethereum") ||
-      name.includes("solana") ||
-      name.includes("xrp") ||
-      name.includes("dogecoin") ||
-      name.includes("crypto")
-    )
+
+    name.includes("bitcoin") ||
+
+    name.includes("ethereum") ||
+
+    name.includes("solana") ||
+
+    name.includes("dogecoin") ||
+
+    name.includes("crypto")
+
   ) {
 
     return "crypto";
@@ -3355,9 +3385,7 @@ function classifyInstrument(
    */
 
   if (
-    type.includes(
-      "etf"
-    )
+    type.includes("etf")
   ) {
 
     return "etf";
@@ -3370,16 +3398,14 @@ function classifyInstrument(
    */
 
   if (
-    type.includes(
-      "forex"
-    ) ||
+
+    type.includes("forex") ||
+
     (
-      symbol.includes("/") &&
-      symbol.length === 7 &&
-      /^[A-Z]{3}\/[A-Z]{3}$/.test(
-        symbol
-      )
+      /^[A-Z]{3}\/[A-Z]{3}$/
+        .test(symbol)
     )
+
   ) {
 
     return "forex";
@@ -3392,30 +3418,23 @@ function classifyInstrument(
    */
 
   if (
-    symbol.startsWith(
-      "XAU/"
-    ) ||
-    symbol.startsWith(
-      "XAG/"
-    ) ||
-    symbol.startsWith(
-      "XPT/"
-    ) ||
-    symbol.startsWith(
-      "XPD/"
-    ) ||
-    name.includes(
-      "gold"
-    ) ||
-    name.includes(
-      "silver"
-    ) ||
-    name.includes(
-      "platinum"
-    ) ||
-    name.includes(
-      "palladium"
-    )
+
+    symbol.startsWith("XAU/") ||
+
+    symbol.startsWith("XAG/") ||
+
+    symbol.startsWith("XPT/") ||
+
+    symbol.startsWith("XPD/") ||
+
+    name.includes("gold") ||
+
+    name.includes("silver") ||
+
+    name.includes("platinum") ||
+
+    name.includes("palladium")
+
   ) {
 
     return "metals";
@@ -3428,24 +3447,15 @@ function classifyInstrument(
    */
 
   if (
-    name.includes(
-      "crude"
-    ) ||
-    name.includes(
-      "oil"
-    ) ||
-    name.includes(
-      "brent"
-    ) ||
-    name.includes(
-      "wti"
-    ) ||
-    symbol.includes(
-      "WTI"
-    ) ||
-    symbol.includes(
-      "BRENT"
-    )
+
+    name.includes("oil") ||
+
+    name.includes("crude") ||
+
+    name.includes("brent") ||
+
+    name.includes("wti")
+
   ) {
 
     return "energy";
@@ -3458,12 +3468,11 @@ function classifyInstrument(
    */
 
   if (
-    type.includes(
-      "stock"
-    ) ||
-    type.includes(
-      "common"
-    )
+
+    type.includes("stock") ||
+
+    type.includes("common")
+
   ) {
 
     return "stocks";
@@ -3477,7 +3486,7 @@ function classifyInstrument(
 
 
 /* =========================================================
-   RENDER SEARCH RESULTS
+   SEARCH RESULTS UI
    ========================================================= */
 
 function renderSearchResults(
@@ -3488,13 +3497,16 @@ function renderSearchResults(
     $("searchResults");
 
 
-  if (
-    !results.length
-  ) {
+  if (!results.length) {
 
     box.innerHTML =
-      `<div style="padding:10px;color:#71899b;font-size:10px;">
-        No matching instruments found for this category.
+
+      `<div style="
+        padding:10px;
+        color:#71899b;
+        font-size:10px;
+      ">
+        No matching instruments found.
       </div>`;
 
     box.classList.add(
@@ -3520,80 +3532,65 @@ function renderSearchResults(
             );
 
 
-          const symbol =
-            item.symbol ||
-            "";
-
-
-          const name =
-            item.instrument_name ||
-            item.name ||
-            "";
-
-
-          const exchange =
-            item.exchange ||
-            "";
-
-
-          const currency =
-            item.currency ||
-            "";
-
-
           return `
 
-            <button
-              class="result-item"
-              data-index="${index}"
-            >
+          <button
+            class="result-item"
+            data-index="${index}"
+          >
 
-              <div class="result-main">
+            <div class="result-main">
 
-                <span
-                  class="result-symbol"
-                >
-                  ${escapeHtml(
-                    symbol
-                  )}
-                </span>
+              <span class="result-symbol">
 
-                <span
-                  class="result-type"
-                >
-                  ${escapeHtml(
-                    category.toUpperCase()
-                  )}
-                </span>
-
-              </div>
-
-              <div
-                class="result-name"
-              >
                 ${escapeHtml(
-                  name
+                  item.symbol || ""
                 )}
-              </div>
 
-              <div
-                class="result-meta"
-              >
+              </span>
+
+              <span class="result-type">
+
                 ${escapeHtml(
-                  exchange
+                  category.toUpperCase()
                 )}
-                ${
-                  currency
-                    ? " • " +
-                      escapeHtml(
-                        currency
-                      )
-                    : ""
-                }
 
-              </div>
+              </span>
 
-            </button>
+            </div>
+
+
+            <div class="result-name">
+
+              ${escapeHtml(
+                item.instrument_name ||
+                item.name ||
+                ""
+              )}
+
+            </div>
+
+
+            <div class="result-meta">
+
+              ${escapeHtml(
+                item.exchange || ""
+              )}
+
+              ${
+                item.currency
+
+                  ? " • " +
+                    escapeHtml(
+                      item.currency
+                    )
+
+                  : ""
+              }
+
+            </div>
+
+          </button>
 
           `;
 
@@ -3616,14 +3613,8 @@ function renderSearchResults(
           "click",
           () => {
 
-            const item =
-              results[
-                index
-              ];
-
-
             selectAsset(
-              item
+              results[index]
             );
 
           }
@@ -3694,7 +3685,7 @@ function hideSearchResults() {
 
 
 /* =========================================================
-   ESCAPE HTML
+   ESCAPE
    ========================================================= */
 
 function escapeHtml(
@@ -3704,22 +3695,27 @@ function escapeHtml(
   return String(
     value ?? ""
   )
+
     .replace(
       /&/g,
       "&amp;"
     )
+
     .replace(
       /</g,
       "&lt;"
     )
+
     .replace(
       />/g,
       "&gt;"
     )
+
     .replace(
       /"/g,
       "&quot;"
     )
+
     .replace(
       /'/g,
       "&#039;"
@@ -3729,7 +3725,7 @@ function escapeHtml(
 
 
 /* =========================================================
-   CATEGORY BUTTONS
+   CATEGORY EVENTS
    ========================================================= */
 
 document
@@ -3772,9 +3768,7 @@ document
 
           if (q) {
 
-            searchSymbols(
-              q
-            );
+            searchSymbols(q);
 
           }
 
@@ -3786,7 +3780,7 @@ document
 
 
 /* =========================================================
-   TIMEFRAME BUTTONS
+   TIMEFRAME EVENTS
    ========================================================= */
 
 document
@@ -3824,7 +3818,9 @@ document
           const data =
             currentTimeframe ===
             "15min"
+
               ? market15
+
               : market5;
 
 
@@ -3848,7 +3844,7 @@ document
 
 
 /* =========================================================
-   SEARCH EVENTS
+   SEARCH BUTTON
    ========================================================= */
 
 $("searchBtn")
@@ -3863,6 +3859,10 @@ $("searchBtn")
     }
   );
 
+
+/* =========================================================
+   SEARCH ENTER
+   ========================================================= */
 
 $("searchInput")
   .addEventListener(
@@ -3884,6 +3884,10 @@ $("searchInput")
   );
 
 
+/* =========================================================
+   LIVE SEARCH
+   ========================================================= */
+
 $("searchInput")
   .addEventListener(
     "input",
@@ -3899,9 +3903,7 @@ $("searchInput")
           .trim();
 
 
-      if (
-        value.length < 1
-      ) {
+      if (!value) {
 
         hideSearchResults();
 
@@ -3916,12 +3918,16 @@ $("searchInput")
             searchSymbols(
               value
             ),
-          450
+          500
         );
 
     }
   );
 
+
+/* =========================================================
+   CLOSE SEARCH
+   ========================================================= */
 
 document.addEventListener(
   "click",
@@ -3954,9 +3960,7 @@ document.addEventListener(
 
 function startAutoRefresh() {
 
-  if (
-    refreshTimer
-  ) {
+  if (refreshTimer) {
 
     clearInterval(
       refreshTimer
@@ -3964,13 +3968,6 @@ function startAutoRefresh() {
 
   }
 
-
-  /*
-   * 60 seconds.
-   *
-   * This is intentionally conservative
-   * to avoid wasting API credits.
-   */
 
   refreshTimer =
     setInterval(
@@ -3988,14 +3985,14 @@ function startAutoRefresh() {
 
 
 /* =========================================================
-   START
+   START APP
    ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
 
-    createLonaChart();
+    createChart();
 
     loadMarket();
 
@@ -4007,4 +4004,4 @@ document.addEventListener(
 </script>
 
 </body>
-  </html>
+</html>
