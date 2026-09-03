@@ -120,6 +120,11 @@
       transform: scale(.98);
     }
 
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
     .signal-card {
       background: #0d121a;
       border: 1px solid #202a38;
@@ -174,6 +179,7 @@
       border-radius: 12px;
       font-size: 12px;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .metrics {
@@ -304,6 +310,30 @@
       color: #27c07a;
     }
 
+    .zone-content {
+      display: grid;
+      gap: 8px;
+    }
+
+    .zone-stat {
+      background: #111821;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .zone-stat span:first-child {
+      color: #778497;
+    }
+
+    .zone-stat span:last-child {
+      font-weight: 700;
+      text-align: right;
+    }
+
     .empty {
       border: 1px dashed #293544;
       border-radius: 11px;
@@ -311,6 +341,67 @@
       text-align: center;
       color: #667386;
       font-size: 12px;
+    }
+
+    .magnet-card {
+      margin-top: 10px;
+      background: #0d121a;
+      border: 1px solid #202a38;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .magnet-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    .magnet-item {
+      background: #111821;
+      border-radius: 11px;
+      padding: 11px;
+    }
+
+    .magnet-item small {
+      display: block;
+      color: #778497;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+
+    .magnet-item strong {
+      font-size: 13px;
+    }
+
+    .probability {
+      margin-top: 12px;
+      background: #111821;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .probability-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #778497;
+      margin-bottom: 7px;
+    }
+
+    .bar {
+      width: 100%;
+      height: 7px;
+      background: #202a35;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 0%;
+      height: 100%;
+      background: #27c07a;
+      transition: width .3s ease;
     }
 
     .error-box {
@@ -325,6 +416,10 @@
       line-height: 1.5;
     }
 
+    .loading {
+      opacity: .65;
+    }
+
     footer {
       text-align: center;
       color: #5f6b7b;
@@ -333,6 +428,7 @@
     }
 
     @media (max-width: 760px) {
+
       .app {
         padding: 10px;
       }
@@ -369,6 +465,10 @@
         grid-template-columns: 1fr;
       }
 
+      .magnet-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
       .signal {
         font-size: 38px;
       }
@@ -381,6 +481,7 @@
 <div class="app">
 
   <header class="header">
+
     <div class="brand">
       <h1>LONA Trading Assistant</h1>
       <p>Strong SD Magnet Market Intelligence</p>
@@ -390,31 +491,49 @@
       <span id="statusDot" class="status-dot"></span>
       <span id="statusText">Connecting...</span>
     </div>
+
   </header>
+
 
   <section class="controls">
 
     <div class="control">
+
       <label>Instrument</label>
 
       <select id="instrument">
+
         <option value="XAU/USD">XAU/USD — Gold</option>
+
         <option value="WTI">WTI — Oil</option>
+
         <option value="BRENT">Brent — Oil</option>
+
         <option value="GBP/USD">GBP/USD</option>
+
         <option value="GBP/JPY">GBP/JPY</option>
+
         <option value="GBP/CHF">GBP/CHF</option>
+
       </select>
+
     </div>
+
 
     <div class="control">
-      <label>Timeframe</label>
+
+      <label>Display Timeframe</label>
 
       <select id="timeframe">
+
         <option value="15min">15 Minutes — Structure</option>
+
         <option value="5min">5 Minutes — Entry</option>
+
       </select>
+
     </div>
+
 
     <button id="refreshBtn">
       Refresh Market
@@ -422,20 +541,27 @@
 
   </section>
 
+
+  <!-- SIGNAL -->
+
   <section class="signal-card">
 
     <div class="signal-header">
 
       <div>
-        <div class="eyebrow">Current Trading Signal</div>
+
+        <div class="eyebrow">
+          Current Trading Signal
+        </div>
 
         <div id="signal" class="signal wait">
           WAIT
         </div>
 
         <div id="signalDescription" class="signal-description">
-          Real market data is being analyzed.
+          Waiting for 15M structure and 5M confirmation.
         </div>
+
       </div>
 
       <div class="engine-badge">
@@ -443,6 +569,7 @@
       </div>
 
     </div>
+
 
     <div class="metrics">
 
@@ -468,56 +595,104 @@
 
     </div>
 
+
     <div id="errorBox" class="error-box"></div>
 
   </section>
 
-  <h2 class="section-title">Selected Market</h2>
+
+  <!-- SELECTED MARKET -->
+
+  <h2 class="section-title">
+    Selected Market
+  </h2>
+
 
   <section class="market-grid">
 
     <div class="market-card">
+
       <div class="market-top">
-        <span id="selectedName" class="market-name">XAU/USD</span>
-        <span id="selectedTf" class="market-tf">15M</span>
+
+        <span id="selectedName" class="market-name">
+          XAU/USD
+        </span>
+
+        <span id="selectedTf" class="market-tf">
+          15M
+        </span>
+
       </div>
 
-      <div id="selectedPrice" class="market-price">—</div>
+      <div id="selectedPrice" class="market-price">
+        —
+      </div>
 
       <div id="selectedMeta" class="market-meta">
         Loading market data...
       </div>
+
     </div>
 
+
     <div class="market-card">
+
       <div class="market-top">
-        <span class="market-name">Last Candle</span>
-        <span class="market-tf">OHLC</span>
+
+        <span class="market-name">
+          Last Candle
+        </span>
+
+        <span class="market-tf">
+          OHLC
+        </span>
+
       </div>
 
-      <div id="lastCandleClose" class="market-price">—</div>
+      <div id="lastCandleClose" class="market-price">
+        —
+      </div>
 
       <div id="lastCandleTime" class="market-meta">
         Waiting...
       </div>
+
     </div>
 
+
     <div class="market-card">
+
       <div class="market-top">
-        <span class="market-name">Data Status</span>
-        <span class="market-tf">API</span>
+
+        <span class="market-name">
+          Data Status
+        </span>
+
+        <span class="market-tf">
+          API
+        </span>
+
       </div>
 
-      <div id="dataStatus" class="market-price">—</div>
+      <div id="dataStatus" class="market-price">
+        —
+      </div>
 
       <div id="dataAge" class="market-meta">
         Waiting...
       </div>
+
     </div>
 
   </section>
 
-  <h2 class="section-title">Market Data</h2>
+
+  <!-- MARKET DATA -->
+
+  <h2 class="section-title">
+    Market Data
+  </h2>
+
 
   <section class="data-box">
 
@@ -553,62 +728,120 @@
 
   </section>
 
-  <h2 class="section-title">Strong SD Magnet Zones</h2>
+
+  <!-- SD ZONES -->
+
+  <h2 class="section-title">
+    Strong SD Magnet Zones — 15M
+  </h2>
+
 
   <section class="zones">
 
     <div class="zone">
+
       <div class="zone-title supply">
         Supply — SELL Area
       </div>
 
-      <div class="empty">
-        SD Magnet engine will calculate Supply zones here.
+      <div id="supplyZone" class="empty">
+        Waiting for SD Magnet engine...
       </div>
+
     </div>
 
+
     <div class="zone">
+
       <div class="zone-title demand">
         Demand — BUY Area
       </div>
 
-      <div class="empty">
-        SD Magnet engine will calculate Demand zones here.
+      <div id="demandZone" class="empty">
+        Waiting for SD Magnet engine...
       </div>
+
     </div>
 
   </section>
 
-  <h2 class="section-title">Engine</h2>
+
+  <!-- MAGNET -->
+
+  <h2 class="section-title">
+    SD Magnet Pull
+  </h2>
+
+
+  <section class="magnet-card">
+
+    <div id="magnetContent" class="empty">
+      Waiting for valid magnet setup...
+    </div>
+
+  </section>
+
+
+  <!-- ENGINE -->
+
+  <h2 class="section-title">
+    Engine Confirmation
+  </h2>
+
 
   <section class="data-box">
 
     <div class="data-row">
       <span>15M Structure</span>
-      <span>Pending SD Magnet Engine</span>
+      <span id="structure15">
+        WAITING
+      </span>
     </div>
 
     <div class="data-row">
       <span>5M Confirmation</span>
-      <span>Pending SD Magnet Engine</span>
+      <span id="confirmation5">
+        WAITING
+      </span>
+    </div>
+
+    <div class="data-row">
+      <span>15M Score</span>
+      <span id="score15">
+        —
+      </span>
+    </div>
+
+    <div class="data-row">
+      <span>5M Score</span>
+      <span id="score5">
+        —
+      </span>
     </div>
 
     <div class="data-row">
       <span>Strong Zone Threshold</span>
-      <span>7.0 / 10</span>
+      <span>
+        7.0 / 10
+      </span>
     </div>
 
     <div class="data-row">
       <span>Magnet Source</span>
-      <span>≥ 6.5 + Retest</span>
+      <span>
+        ≥ 6.5 + Retest
+      </span>
     </div>
 
     <div class="data-row">
       <span>Magnet Target</span>
-      <span>≥ 5.0</span>
+      <span>
+        ≥ 5.0
+      </span>
     </div>
 
   </section>
+
 
   <footer>
     LONA Trading Assistant · Strong SD Magnet Engine
@@ -616,19 +849,41 @@
 
 </div>
 
+
 <script>
 
-  const instrumentEl = document.getElementById("instrument");
-  const timeframeEl = document.getElementById("timeframe");
-  const refreshBtn = document.getElementById("refreshBtn");
+  const instrumentEl =
+    document.getElementById("instrument");
 
-  const statusDot = document.getElementById("statusDot");
-  const statusText = document.getElementById("statusText");
+  const timeframeEl =
+    document.getElementById("timeframe");
 
-  const signalEl = document.getElementById("signal");
-  const signalDescription = document.getElementById("signalDescription");
+  const refreshBtn =
+    document.getElementById("refreshBtn");
 
-  const errorBox = document.getElementById("errorBox");
+  const statusDot =
+    document.getElementById("statusDot");
+
+  const statusText =
+    document.getElementById("statusText");
+
+  const signalEl =
+    document.getElementById("signal");
+
+  const signalDescription =
+    document.getElementById("signalDescription");
+
+  const errorBox =
+    document.getElementById("errorBox");
+
+
+  let market15 = null;
+  let market5 = null;
+
+
+  /* =========================
+     BASIC HELPERS
+  ========================= */
 
   function setStatus(type, text) {
 
@@ -645,36 +900,30 @@
     statusText.textContent = text;
   }
 
+
   function showError(message) {
 
     errorBox.style.display = "block";
+
     errorBox.textContent = message;
   }
+
 
   function hideError() {
 
     errorBox.style.display = "none";
+
     errorBox.textContent = "";
   }
 
-  function resetSignal() {
-
-    signalEl.textContent = "WAIT";
-
-    signalEl.className = "signal wait";
-
-    signalDescription.textContent =
-      "Real market data is being analyzed.";
-
-    document.getElementById("entry").textContent = "—";
-    document.getElementById("sl").textContent = "—";
-    document.getElementById("tp1").textContent = "—";
-    document.getElementById("tp23").textContent = "—";
-  }
 
   function formatPrice(value) {
 
-    if (value === null || value === undefined || Number.isNaN(value)) {
+    if (
+      value === null ||
+      value === undefined ||
+      Number.isNaN(Number(value))
+    ) {
       return "—";
     }
 
@@ -687,152 +936,1027 @@
     return number.toFixed(5);
   }
 
+
+  function formatScore(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      Number.isNaN(Number(value))
+    ) {
+      return "—";
+    }
+
+    return Number(value).toFixed(1) + " / 10";
+  }
+
+
+  function formatProbability(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      Number.isNaN(Number(value))
+    ) {
+      return "—";
+    }
+
+    let number = Number(value);
+
+    if (number <= 1) {
+      number *= 100;
+    }
+
+    return Math.round(number) + "%";
+  }
+
+
   function formatTime(value) {
 
     if (!value) {
       return "—";
     }
 
-    const date = new Date(value.replace(" ", "T") + "Z");
+    const raw = String(value);
+
+    const date = new Date(
+      raw.includes("T")
+        ? raw
+        : raw.replace(" ", "T") + "Z"
+    );
 
     if (Number.isNaN(date.getTime())) {
-      return value;
+      return raw;
     }
 
     return date.toLocaleString();
   }
 
-  function updateData(candles) {
 
-    if (!candles || candles.length === 0) {
-      throw new Error("No candle data received.");
+  function safe(value, fallback = "—") {
+
+    return (
+      value === undefined ||
+      value === null ||
+      value === ""
+    )
+      ? fallback
+      : value;
+  }
+
+
+  function getDirection(engine) {
+
+    if (!engine) {
+      return "WAIT";
     }
 
-    const last = candles[candles.length - 1];
+    const signal =
+      engine.signal;
 
-    document.getElementById("selectedName").textContent =
+    if (typeof signal === "string") {
+      return signal.toUpperCase();
+    }
+
+    if (signal && signal.direction) {
+      return String(
+        signal.direction
+      ).toUpperCase();
+    }
+
+    if (engine.direction) {
+      return String(
+        engine.direction
+      ).toUpperCase();
+    }
+
+    return "WAIT";
+  }
+
+
+  function getSignalObject(engine) {
+
+    if (!engine) {
+      return {};
+    }
+
+    if (
+      engine.signal &&
+      typeof engine.signal === "object"
+    ) {
+      return engine.signal;
+    }
+
+    return engine;
+  }
+
+
+  /* =========================
+     SIGNAL RESET
+  ========================= */
+
+  function resetSignal() {
+
+    signalEl.textContent = "WAIT";
+
+    signalEl.className =
+      "signal wait";
+
+    signalDescription.textContent =
+      "Waiting for 15M structure and 5M confirmation.";
+
+    document.getElementById("entry").textContent = "—";
+
+    document.getElementById("sl").textContent = "—";
+
+    document.getElementById("tp1").textContent = "—";
+
+    document.getElementById("tp23").textContent = "—";
+  }
+
+
+  /* =========================
+     MARKET DATA UI
+  ========================= */
+
+  function updateSelectedMarket(data) {
+
+    if (
+      !data ||
+      !data.candles ||
+      !data.candles.length
+    ) {
+      throw new Error(
+        "No candle data received."
+      );
+    }
+
+    const candles =
+      data.candles;
+
+    const last =
+      candles[candles.length - 1];
+
+    const selectedTf =
+      timeframeEl.value === "15min"
+        ? "15M"
+        : "5M";
+
+
+    document.getElementById(
+      "selectedName"
+    ).textContent =
       instrumentEl.value;
 
-    document.getElementById("selectedTf").textContent =
-      timeframeEl.value === "15min" ? "15M" : "5M";
 
-    document.getElementById("selectedPrice").textContent =
+    document.getElementById(
+      "selectedTf"
+    ).textContent =
+      selectedTf;
+
+
+    document.getElementById(
+      "selectedPrice"
+    ).textContent =
       formatPrice(last.close);
 
-    document.getElementById("selectedMeta").textContent =
-      "Real OHLC data";
 
-    document.getElementById("lastCandleClose").textContent =
+    document.getElementById(
+      "selectedMeta"
+    ).textContent =
+      "Market OHLC data";
+
+
+    document.getElementById(
+      "lastCandleClose"
+    ).textContent =
       formatPrice(last.close);
 
-    document.getElementById("lastCandleTime").textContent =
+
+    document.getElementById(
+      "lastCandleTime"
+    ).textContent =
       formatTime(last.time);
 
-    document.getElementById("ohlcOpen").textContent =
+
+    document.getElementById(
+      "ohlcOpen"
+    ).textContent =
       formatPrice(last.open);
 
-    document.getElementById("ohlcHigh").textContent =
+
+    document.getElementById(
+      "ohlcHigh"
+    ).textContent =
       formatPrice(last.high);
 
-    document.getElementById("ohlcLow").textContent =
+
+    document.getElementById(
+      "ohlcLow"
+    ).textContent =
       formatPrice(last.low);
 
-    document.getElementById("ohlcClose").textContent =
+
+    document.getElementById(
+      "ohlcClose"
+    ).textContent =
       formatPrice(last.close);
 
-    document.getElementById("ohlcVolume").textContent =
-      last.volume || "0";
 
-    document.getElementById("candleCount").textContent =
+    document.getElementById(
+      "ohlcVolume"
+    ).textContent =
+      safe(last.volume, "0");
+
+
+    document.getElementById(
+      "candleCount"
+    ).textContent =
       candles.length;
 
-    document.getElementById("dataStatus").textContent =
+
+    document.getElementById(
+      "dataStatus"
+    ).textContent =
       "CONNECTED";
 
-    document.getElementById("dataAge").textContent =
+
+    document.getElementById(
+      "dataAge"
+    ).textContent =
       "Latest candle received";
+  }
+
+
+  /* =========================
+     ZONE UI
+  ========================= */
+
+  function renderZone(
+    elementId,
+    zone,
+    type
+  ) {
+
+    const element =
+      document.getElementById(
+        elementId
+      );
+
+    if (!zone) {
+
+      element.className =
+        "empty";
+
+      element.innerHTML =
+        "No valid active zone found.";
+
+      return;
+    }
+
+
+    const top =
+      zone.top ??
+      zone.high ??
+      zone.upper;
+
+
+    const bottom =
+      zone.bottom ??
+      zone.low ??
+      zone.lower;
+
+
+    const score =
+      zone.score ??
+      zone.strength;
+
+
+    const touches =
+      zone.touches ??
+      zone.retests ??
+      0;
+
+
+    const pivot =
+      zone.pivot ??
+      zone.price ??
+      zone.level;
+
+
+    element.className =
+      "zone-content";
+
+
+    element.innerHTML = `
+
+      <div class="zone-stat">
+        <span>Zone</span>
+        <span>
+          ${formatPrice(bottom)}
+          —
+          ${formatPrice(top)}
+        </span>
+      </div>
+
+      <div class="zone-stat">
+        <span>Pivot</span>
+        <span>
+          ${formatPrice(pivot)}
+        </span>
+      </div>
+
+      <div class="zone-stat">
+        <span>Strength</span>
+        <span>
+          ${formatScore(score)}
+        </span>
+      </div>
+
+      <div class="zone-stat">
+        <span>Retests</span>
+        <span>
+          ${touches}
+        </span>
+      </div>
+
+      <div class="zone-stat">
+        <span>Type</span>
+        <span>
+          ${type}
+        </span>
+      </div>
+    `;
+  }
+
+
+  /* =========================
+     MAGNET UI
+  ========================= */
+
+  function renderMagnet(engine) {
+
+    const element =
+      document.getElementById(
+        "magnetContent"
+      );
+
+
+    const magnet =
+      engine?.magnet ||
+      engine?.magnetPull ||
+      null;
+
+
+    if (!magnet) {
+
+      element.className =
+        "empty";
+
+      element.innerHTML =
+        "No valid SD Magnet Pull detected.";
+
+      return;
+    }
+
+
+    const source =
+      magnet.sourceType ??
+      magnet.source ??
+      "—";
+
+
+    const target =
+      magnet.targetType ??
+      magnet.target ??
+      "—";
+
+
+    const score =
+      magnet.score ??
+      magnet.pullScore;
+
+
+    const probability =
+      magnet.probability ??
+      magnet.pullProbability;
+
+
+    const fired =
+      magnet.fired ??
+      magnet.active ??
+      true;
+
+
+    element.className =
+      "";
+
+
+    element.innerHTML = `
+
+      <div class="magnet-grid">
+
+        <div class="magnet-item">
+          <small>STATUS</small>
+          <strong>
+            ${fired ? "ACTIVE" : "WAIT"}
+          </strong>
+        </div>
+
+        <div class="magnet-item">
+          <small>SOURCE</small>
+          <strong>
+            ${safe(source)}
+          </strong>
+        </div>
+
+        <div class="magnet-item">
+          <small>TARGET</small>
+          <strong>
+            ${safe(target)}
+          </strong>
+        </div>
+
+        <div class="magnet-item">
+          <small>PULL SCORE</small>
+          <strong>
+            ${formatScore(score)}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="probability">
+
+        <div class="probability-top">
+
+          <span>
+            Magnet Probability
+          </span>
+
+          <span>
+            ${formatProbability(probability)}
+          </span>
+
+        </div>
+
+        <div class="bar">
+
+          <div
+            id="probabilityBar"
+            class="bar-fill"
+            style="width:${getProbabilityPercent(probability)}%"
+          ></div>
+
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  function getProbabilityPercent(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      Number.isNaN(Number(value))
+    ) {
+      return 0;
+    }
+
+    let number =
+      Number(value);
+
+    if (number <= 1) {
+      number *= 100;
+    }
+
+    return Math.max(
+      0,
+      Math.min(100, number)
+    );
+  }
+
+
+  /* =========================
+     15M + 5M SIGNAL ENGINE
+  ========================= */
+
+  function calculateFinalSignal() {
 
     resetSignal();
+
+
+    if (!market15 || !market5) {
+      return;
+    }
+
+
+    const engine15 =
+      market15.engine || {};
+
+
+    const engine5 =
+      market5.engine || {};
+
+
+    const direction15 =
+      getDirection(engine15);
+
+
+    const direction5 =
+      getDirection(engine5);
+
+
+    const signal15 =
+      getSignalObject(engine15);
+
+
+    const signal5 =
+      getSignalObject(engine5);
+
+
+    document.getElementById(
+      "structure15"
+    ).textContent =
+      direction15;
+
+
+    document.getElementById(
+      "confirmation5"
+    ).textContent =
+      direction5;
+
+
+    document.getElementById(
+      "score15"
+    ).textContent =
+      formatScore(
+        signal15.score ??
+        engine15.score
+      );
+
+
+    document.getElementById(
+      "score5"
+    ).textContent =
+      formatScore(
+        signal5.score ??
+        engine5.score
+      );
+
+
+    /*
+      IMPORTANT:
+
+      15M = Main Structure
+      5M  = Entry Confirmation
+
+      BUY only when BOTH say BUY.
+      SELL only when BOTH say SELL.
+      Otherwise WAIT.
+    */
+
+
+    let finalDirection =
+      "WAIT";
+
+
+    if (
+      direction15 === "BUY" &&
+      direction5 === "BUY"
+    ) {
+
+      finalDirection =
+        "BUY";
+
+    } else if (
+      direction15 === "SELL" &&
+      direction5 === "SELL"
+    ) {
+
+      finalDirection =
+        "SELL";
+    }
+
+
+    if (
+      finalDirection === "WAIT"
+    ) {
+
+      signalEl.textContent =
+        "WAIT";
+
+      signalEl.className =
+        "signal wait";
+
+
+      if (
+        direction15 !== "WAIT" &&
+        direction5 !== "WAIT" &&
+        direction15 !== direction5
+      ) {
+
+        signalDescription.textContent =
+          "15M and 5M direction are not aligned. No trade.";
+
+      } else {
+
+        signalDescription.textContent =
+          "Waiting for confirmed SD Magnet structure and entry confirmation.";
+      }
+
+      return;
+    }
+
+
+    const finalSignal =
+      finalDirection === "BUY"
+        ? signal15
+        : signal15;
+
+
+    signalEl.textContent =
+      finalDirection;
+
+
+    signalEl.className =
+      "signal " +
+      finalDirection.toLowerCase();
+
+
+    signalDescription.textContent =
+      finalDirection === "BUY"
+        ? "15M Demand + bullish SD Magnet confirmed by 5M."
+        : "15M Supply + bearish SD Magnet confirmed by 5M.";
+
+
+    document.getElementById(
+      "entry"
+    ).textContent =
+      formatTradeValue(
+        finalSignal.entry ??
+        finalSignal.entryZone ??
+        finalSignal.entryPrice
+      );
+
+
+    document.getElementById(
+      "sl"
+    ).textContent =
+      formatTradeValue(
+        finalSignal.sl ??
+        finalSignal.stopLoss
+      );
+
+
+    document.getElementById(
+      "tp1"
+    ).textContent =
+      formatTradeValue(
+        finalSignal.tp1 ??
+        finalSignal.takeProfit1
+      );
+
+
+    const tp2 =
+      finalSignal.tp2 ??
+      finalSignal.takeProfit2;
+
+
+    const tp3 =
+      finalSignal.tp3 ??
+      finalSignal.takeProfit3;
+
+
+    document.getElementById(
+      "tp23"
+    ).textContent =
+      formatTradeValue(tp2) +
+      " / " +
+      formatTradeValue(tp3);
   }
+
+
+  function formatTradeValue(value) {
+
+    if (
+      value === null ||
+      value === undefined
+    ) {
+      return "—";
+    }
+
+
+    if (
+      typeof value === "object"
+    ) {
+
+      if (
+        value.low !== undefined &&
+        value.high !== undefined
+      ) {
+
+        return (
+          formatPrice(value.low) +
+          " — " +
+          formatPrice(value.high)
+        );
+      }
+
+      if (
+        value.min !== undefined &&
+        value.max !== undefined
+      ) {
+
+        return (
+          formatPrice(value.min) +
+          " — " +
+          formatPrice(value.max)
+        );
+      }
+
+      if (
+        value.price !== undefined
+      ) {
+
+        return formatPrice(
+          value.price
+        );
+      }
+    }
+
+
+    return formatPrice(value);
+  }
+
+
+  /* =========================
+     API
+  ========================= */
+
+  async function fetchMarket(
+    symbol,
+    interval
+  ) {
+
+    const url =
+      "/api/market?symbol=" +
+      encodeURIComponent(symbol) +
+      "&interval=" +
+      encodeURIComponent(interval) +
+      "&outputsize=200";
+
+
+    const response =
+      await fetch(url, {
+        method: "GET",
+        cache: "no-store"
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Market API returned an error."
+      );
+    }
+
+
+    return data;
+  }
+
+
+  /* =========================
+     LOAD EVERYTHING
+  ========================= */
 
   async function loadMarket() {
 
     hideError();
 
-    refreshBtn.textContent = "Loading...";
+    refreshBtn.disabled =
+      true;
 
-    setStatus("normal", "Connecting...");
+    refreshBtn.textContent =
+      "Loading...";
+
+
+    setStatus(
+      "normal",
+      "Analyzing Market..."
+    );
+
+
+    document.body.classList.add(
+      "loading"
+    );
+
 
     try {
 
-      const symbol = instrumentEl.value;
-      const interval = timeframeEl.value;
+      const symbol =
+        instrumentEl.value;
 
-      const url =
-        "/api/market?symbol=" +
-        encodeURIComponent(symbol) +
-        "&interval=" +
-        encodeURIComponent(interval) +
-        "&outputsize=200";
 
-      const response = await fetch(url, {
-        method: "GET",
-        cache: "no-store"
-      });
+      /*
+        Fetch both timeframes.
 
-      const data = await response.json();
+        15M = Structure
+        5M  = Confirmation
+      */
 
-      if (!response.ok || !data.success) {
+      const results =
+        await Promise.all([
+          fetchMarket(
+            symbol,
+            "15min"
+          ),
+          fetchMarket(
+            symbol,
+            "5min"
+          )
+        ]);
 
-        throw new Error(
-          data.error || "Market API returned an error."
-        );
-      }
 
-      updateData(data.candles);
+      market15 =
+        results[0];
+
+
+      market5 =
+        results[1];
+
+
+      /*
+        Display selected timeframe.
+      */
+
+      const selectedData =
+        timeframeEl.value === "15min"
+          ? market15
+          : market5;
+
+
+      updateSelectedMarket(
+        selectedData
+      );
+
+
+      /*
+        Render 15M SD zones.
+      */
+
+      const engine15 =
+        market15.engine || {};
+
+
+      renderZone(
+        "supplyZone",
+        engine15.supply,
+        "SUPPLY / SELL"
+      );
+
+
+      renderZone(
+        "demandZone",
+        engine15.demand,
+        "DEMAND / BUY"
+      );
+
+
+      /*
+        Render magnet.
+      */
+
+      renderMagnet(
+        engine15
+      );
+
+
+      /*
+        Calculate final signal.
+      */
+
+      calculateFinalSignal();
+
 
       setStatus(
         "live",
         "Market Data Connected"
       );
 
+
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "LONA Market Error:",
+        error
+      );
+
+
+      market15 = null;
+      market5 = null;
+
+
+      resetSignal();
+
 
       setStatus(
         "error",
         "Market Data Error"
       );
 
-      document.getElementById("dataStatus").textContent =
+
+      document.getElementById(
+        "dataStatus"
+      ).textContent =
         "ERROR";
+
 
       showError(
         "Market data connection failed: " +
         error.message
       );
 
+
     } finally {
 
-      refreshBtn.textContent = "Refresh Market";
+      refreshBtn.disabled =
+        false;
+
+      refreshBtn.textContent =
+        "Refresh Market";
+
+
+      document.body.classList.remove(
+        "loading"
+      );
     }
   }
+
+
+  /* =========================
+     EVENTS
+  ========================= */
 
   instrumentEl.addEventListener(
     "change",
     loadMarket
   );
 
+
   timeframeEl.addEventListener(
     "change",
-    loadMarket
+    function () {
+
+      if (!market15 || !market5) {
+        loadMarket();
+        return;
+      }
+
+
+      const selectedData =
+        timeframeEl.value === "15min"
+          ? market15
+          : market5;
+
+
+      updateSelectedMarket(
+        selectedData
+      );
+    }
   );
+
 
   refreshBtn.addEventListener(
     "click",
     loadMarket
   );
+
+
+  /*
+    Auto refresh:
+    every 60 seconds
+  */
+
+  setInterval(
+    loadMarket,
+    60000
+  );
+
+
+  /*
+    Initial load
+  */
 
   loadMarket();
 
