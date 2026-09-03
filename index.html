@@ -14,201 +14,213 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: #080b10;
+      background: #070a0f;
       color: #eef2f7;
       min-height: 100vh;
     }
 
     .app {
-      max-width: 1200px;
+      width: min(1200px, 100%);
       margin: auto;
-      padding: 18px;
+      padding: 14px;
     }
 
-    /* Header */
     .header {
+      background: #0d121a;
+      border: 1px solid #202a38;
+      border-radius: 20px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 15px;
-      margin-bottom: 20px;
-      padding: 18px;
-      border: 1px solid #1d2633;
-      border-radius: 18px;
-      background: #0d1219;
+      margin-bottom: 14px;
     }
 
     .brand h1 {
-      font-size: 25px;
-      letter-spacing: .5px;
+      font-size: 26px;
+      line-height: 1.15;
     }
 
     .brand p {
-      color: #8e9aaa;
+      color: #8d99aa;
       font-size: 13px;
-      margin-top: 5px;
+      margin-top: 7px;
     }
 
     .status {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 9px 13px;
+      gap: 8px;
+      background: #121a24;
+      padding: 10px 14px;
       border-radius: 20px;
-      background: #101923;
-      color: #9eabbc;
       font-size: 12px;
+      color: #9aa6b6;
+      white-space: nowrap;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #777;
     }
 
-    /* Controls */
+    .status-dot.live {
+      background: #27c07a;
+    }
+
+    .status-dot.error {
+      background: #e54b5e;
+    }
+
     .controls {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 12px;
-      margin-bottom: 18px;
+      grid-template-columns: 1fr 1fr 140px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .control {
-      background: #0d1219;
-      border: 1px solid #1d2633;
-      border-radius: 14px;
+      background: #0d121a;
+      border: 1px solid #202a38;
+      border-radius: 15px;
       padding: 12px;
     }
 
     .control label {
       display: block;
-      font-size: 11px;
-      color: #7f8b9b;
-      margin-bottom: 7px;
+      color: #788597;
+      font-size: 10px;
       text-transform: uppercase;
+      margin-bottom: 7px;
+      letter-spacing: .5px;
     }
 
     select,
     button {
       width: 100%;
       border: 0;
-      border-radius: 9px;
-      padding: 11px;
-      background: #151d27;
-      color: #eef2f7;
+      outline: 0;
+      border-radius: 10px;
+      background: #151e29;
+      color: #edf2f8;
+      padding: 12px;
       font-size: 14px;
-      outline: none;
     }
 
     button {
       cursor: pointer;
-      background: #1b2634;
-      border: 1px solid #293748;
+      border: 1px solid #2a394b;
+      align-self: end;
     }
 
     button:active {
       transform: scale(.98);
     }
 
-    .refresh {
-      align-self: end;
-      min-width: 120px;
-    }
-
-    /* Signal */
     .signal-card {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid #202b39;
+      background: #0d121a;
+      border: 1px solid #202a38;
       border-radius: 20px;
-      background: #0d1219;
-      padding: 22px;
-      margin-bottom: 18px;
+      padding: 20px;
+      margin-bottom: 14px;
     }
 
-    .signal-top {
+    .signal-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 15px;
     }
 
-    .signal-title {
-      color: #8d99a9;
-      font-size: 12px;
+    .eyebrow {
+      color: #7f8b9d;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .signal-value {
+    .signal {
       font-size: 42px;
       font-weight: 800;
-      margin-top: 8px;
+      margin-top: 7px;
+    }
+
+    .signal.wait {
       color: #eef2f7;
     }
 
-    .signal-subtitle {
-      color: #8995a5;
-      margin-top: 6px;
-      font-size: 13px;
+    .signal.buy {
+      color: #27c07a;
     }
 
-    .signal-badge {
-      padding: 10px 15px;
+    .signal.sell {
+      color: #e54b5e;
+    }
+
+    .signal-description {
+      color: #8d99a9;
+      font-size: 13px;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    .engine-badge {
+      background: #151e29;
+      color: #a7b1bf;
+      padding: 12px;
       border-radius: 12px;
-      background: #151d27;
-      color: #9aa6b6;
+      font-size: 12px;
       font-weight: 700;
-      font-size: 13px;
     }
 
-    .signal-grid {
+    .metrics {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 22px;
+      gap: 9px;
+      margin-top: 18px;
     }
 
     .metric {
-      padding: 14px;
       background: #111821;
-      border: 1px solid #1d2734;
+      border: 1px solid #1f2a37;
       border-radius: 13px;
+      padding: 13px;
     }
 
     .metric span {
       display: block;
-      color: #7d8999;
-      font-size: 11px;
+      color: #778497;
+      font-size: 10px;
       margin-bottom: 7px;
     }
 
     .metric strong {
-      font-size: 15px;
+      font-size: 14px;
+      word-break: break-word;
     }
 
-    /* Dashboard */
     .section-title {
       font-size: 17px;
-      margin: 25px 0 12px;
+      margin: 22px 2px 10px;
     }
 
     .market-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
     }
 
     .market-card {
-      padding: 17px;
-      background: #0d1219;
-      border: 1px solid #1d2633;
+      background: #0d121a;
+      border: 1px solid #202a38;
       border-radius: 16px;
+      padding: 16px;
     }
 
-    .market-head {
+    .market-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -216,90 +228,136 @@
 
     .market-name {
       font-weight: 700;
+      font-size: 14px;
     }
 
     .market-tf {
-      color: #778496;
-      font-size: 11px;
+      color: #778497;
+      font-size: 10px;
     }
 
-    .price {
+    .market-price {
       font-size: 25px;
       font-weight: 700;
-      margin-top: 16px;
+      margin-top: 15px;
     }
 
-    .waiting {
-      color: #8995a5;
+    .market-meta {
+      color: #7f8b9d;
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .data-box {
+      margin-top: 10px;
+      background: #0d121a;
+      border: 1px solid #202a38;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 9px 0;
+      border-bottom: 1px solid #18212c;
       font-size: 12px;
-      margin-top: 7px;
     }
 
-    /* Zones */
+    .data-row:last-child {
+      border-bottom: 0;
+    }
+
+    .data-row span:first-child {
+      color: #778497;
+    }
+
+    .data-row span:last-child {
+      text-align: right;
+    }
+
     .zones {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .zone {
-      padding: 18px;
-      background: #0d1219;
-      border: 1px solid #1d2633;
+      background: #0d121a;
+      border: 1px solid #202a38;
       border-radius: 16px;
+      padding: 16px;
     }
 
-    .zone h3 {
+    .zone-title {
       font-size: 14px;
+      font-weight: 700;
       margin-bottom: 12px;
     }
 
-    .zone p {
-      color: #8793a4;
-      font-size: 12px;
-      line-height: 1.7;
+    .supply {
+      color: #e54b5e;
+    }
+
+    .demand {
+      color: #27c07a;
     }
 
     .empty {
-      padding: 25px;
+      border: 1px dashed #293544;
+      border-radius: 11px;
+      padding: 20px;
       text-align: center;
-      color: #6f7b8c;
-      border: 1px dashed #293442;
-      border-radius: 14px;
-      background: #0b1016;
+      color: #667386;
+      font-size: 12px;
     }
 
-    /* Footer */
+    .error-box {
+      display: none;
+      background: #211116;
+      border: 1px solid #59202b;
+      color: #eaa4ad;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
     footer {
       text-align: center;
-      padding: 28px 10px 12px;
       color: #5f6b7b;
-      font-size: 11px;
+      font-size: 10px;
+      padding: 25px 5px 10px;
     }
 
-    /* Mobile */
-    @media (max-width: 750px) {
+    @media (max-width: 760px) {
       .app {
-        padding: 12px;
+        padding: 10px;
       }
 
       .header {
-        align-items: flex-start;
+        padding: 17px;
       }
 
       .brand h1 {
-        font-size: 21px;
+        font-size: 22px;
+      }
+
+      .brand p {
+        max-width: 210px;
       }
 
       .controls {
         grid-template-columns: 1fr 1fr;
       }
 
-      .refresh {
+      .controls button {
         grid-column: 1 / -1;
       }
 
-      .signal-grid {
+      .metrics {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -310,238 +368,475 @@
       .zones {
         grid-template-columns: 1fr;
       }
+
+      .signal {
+        font-size: 38px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <!-- HEADER -->
-    <header class="header">
-      <div class="brand">
-        <h1>LONA Trading Assistant</h1>
-        <p>Strong SD Magnet Market Intelligence</p>
-      </div>
+  <header class="header">
+    <div class="brand">
+      <h1>LONA Trading Assistant</h1>
+      <p>Strong SD Magnet Market Intelligence</p>
+    </div>
 
-      <div class="status">
-        <span class="status-dot"></span>
-        Engine: Standby
-      </div>
-    </header>
+    <div class="status">
+      <span id="statusDot" class="status-dot"></span>
+      <span id="statusText">Connecting...</span>
+    </div>
+  </header>
 
-    <!-- CONTROLS -->
-    <section class="controls">
+  <section class="controls">
 
-      <div class="control">
-        <label>Instrument</label>
-        <select id="instrument">
-          <option value="XAUUSD">XAU/USD — Gold</option>
-          <option value="WTI">WTI — Oil</option>
-          <option value="BRENT">Brent — Oil</option>
-          <option value="GBPUSD">GBP/USD</option>
-          <option value="GBPJPY">GBP/JPY</option>
-          <option value="GBPCHF">GBP/CHF</option>
-        </select>
-      </div>
+    <div class="control">
+      <label>Instrument</label>
 
-      <div class="control">
-        <label>Timeframe</label>
-        <select id="timeframe">
-          <option value="15m">15 Minutes — Structure</option>
-          <option value="5m">5 Minutes — Entry</option>
-        </select>
-      </div>
+      <select id="instrument">
+        <option value="XAU/USD">XAU/USD — Gold</option>
+        <option value="WTI">WTI — Oil</option>
+        <option value="BRENT">Brent — Oil</option>
+        <option value="GBP/USD">GBP/USD</option>
+        <option value="GBP/JPY">GBP/JPY</option>
+        <option value="GBP/CHF">GBP/CHF</option>
+      </select>
+    </div>
 
-      <button class="refresh" id="refreshBtn">
-        Refresh Market
-      </button>
+    <div class="control">
+      <label>Timeframe</label>
 
-    </section>
+      <select id="timeframe">
+        <option value="15min">15 Minutes — Structure</option>
+        <option value="5min">5 Minutes — Entry</option>
+      </select>
+    </div>
 
-    <!-- MAIN SIGNAL -->
-    <section class="signal-card">
+    <button id="refreshBtn">
+      Refresh Market
+    </button>
 
-      <div class="signal-top">
+  </section>
 
-        <div>
-          <div class="signal-title">Current Trading Signal</div>
-          <div class="signal-value" id="signal">
-            WAIT
-          </div>
-          <div class="signal-subtitle" id="signalText">
-            Waiting for a confirmed Strong SD Magnet setup
-          </div>
+  <section class="signal-card">
+
+    <div class="signal-header">
+
+      <div>
+        <div class="eyebrow">Current Trading Signal</div>
+
+        <div id="signal" class="signal wait">
+          WAIT
         </div>
 
-        <div class="signal-badge" id="engineBadge">
-          SD MAGNET
-        </div>
-
-      </div>
-
-      <div class="signal-grid">
-
-        <div class="metric">
-          <span>Entry Zone</span>
-          <strong id="entry">—</strong>
-        </div>
-
-        <div class="metric">
-          <span>Stop Loss</span>
-          <strong id="sl">—</strong>
-        </div>
-
-        <div class="metric">
-          <span>TP1</span>
-          <strong id="tp1">—</strong>
-        </div>
-
-        <div class="metric">
-          <span>TP2 / TP3</span>
-          <strong id="tp23">—</strong>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- MARKET -->
-    <h2 class="section-title">Markets</h2>
-
-    <section class="market-grid">
-
-      <div class="market-card">
-        <div class="market-head">
-          <span class="market-name">XAU/USD</span>
-          <span class="market-tf">15M</span>
-        </div>
-        <div class="price" id="goldPrice">—</div>
-        <div class="waiting" id="goldStatus">
-          Real market data connecting...
+        <div id="signalDescription" class="signal-description">
+          Real market data is being analyzed.
         </div>
       </div>
 
-      <div class="market-card">
-        <div class="market-head">
-          <span class="market-name">WTI</span>
-          <span class="market-tf">15M</span>
-        </div>
-        <div class="price" id="wtiPrice">—</div>
-        <div class="waiting">
-          SD Magnet analysis pending
-        </div>
+      <div class="engine-badge">
+        SD MAGNET
       </div>
 
-      <div class="market-card">
-        <div class="market-head">
-          <span class="market-name">GBP/USD</span>
-          <span class="market-tf">15M</span>
-        </div>
-        <div class="price" id="gbpPrice">—</div>
-        <div class="waiting">
-          SD Magnet analysis pending
-        </div>
+    </div>
+
+    <div class="metrics">
+
+      <div class="metric">
+        <span>ENTRY ZONE</span>
+        <strong id="entry">—</strong>
       </div>
 
-    </section>
-
-    <!-- ZONES -->
-    <h2 class="section-title">Strong SD Magnet Zones</h2>
-
-    <section class="zones">
-
-      <div class="zone">
-        <h3>Supply — SELL Area</h3>
-        <div class="empty">
-          No confirmed strong Supply zone yet.
-        </div>
+      <div class="metric">
+        <span>STOP LOSS</span>
+        <strong id="sl">—</strong>
       </div>
 
-      <div class="zone">
-        <h3>Demand — BUY Area</h3>
-        <div class="empty">
-          No confirmed strong Demand zone yet.
-        </div>
+      <div class="metric">
+        <span>TP1</span>
+        <strong id="tp1">—</strong>
       </div>
 
-    </section>
+      <div class="metric">
+        <span>TP2 / TP3</span>
+        <strong id="tp23">—</strong>
+      </div>
 
-    <!-- ENGINE INFO -->
-    <h2 class="section-title">Analysis Engine</h2>
+    </div>
 
-    <section class="zone">
+    <div id="errorBox" class="error-box"></div>
 
-      <p>
-        <strong>15M Structure:</strong>
-        Used for the main Supply / Demand structure.
-      </p>
+  </section>
 
-      <p>
-        <strong>5M Confirmation:</strong>
-        Used to confirm the entry setup.
-      </p>
+  <h2 class="section-title">Selected Market</h2>
 
-      <p>
-        <strong>Strong Zone:</strong>
-        Score target ≥ 7/10.
-      </p>
+  <section class="market-grid">
 
-      <p>
-        <strong>Retest:</strong>
-        Minimum 1 confirmed retest.
-      </p>
+    <div class="market-card">
+      <div class="market-top">
+        <span id="selectedName" class="market-name">XAU/USD</span>
+        <span id="selectedTf" class="market-tf">15M</span>
+      </div>
 
-      <p>
-        <strong>Magnet:</strong>
-        Opposite strong zone must provide a valid liquidity pull.
-      </p>
+      <div id="selectedPrice" class="market-price">—</div>
 
-      <p>
-        <strong>Signal:</strong>
-        BUY or SELL will appear only after the required conditions are confirmed.
-      </p>
+      <div id="selectedMeta" class="market-meta">
+        Loading market data...
+      </div>
+    </div>
 
-    </section>
+    <div class="market-card">
+      <div class="market-top">
+        <span class="market-name">Last Candle</span>
+        <span class="market-tf">OHLC</span>
+      </div>
 
-    <footer>
-      LONA Trading Assistant · Strong SD Magnet Engine
-    </footer>
+      <div id="lastCandleClose" class="market-price">—</div>
 
-  </div>
+      <div id="lastCandleTime" class="market-meta">
+        Waiting...
+      </div>
+    </div>
 
-  <script>
-    const instrument = document.getElementById("instrument");
-    const timeframe = document.getElementById("timeframe");
-    const refreshBtn = document.getElementById("refreshBtn");
+    <div class="market-card">
+      <div class="market-top">
+        <span class="market-name">Data Status</span>
+        <span class="market-tf">API</span>
+      </div>
 
-    function setWaitingState() {
-      document.getElementById("signal").textContent = "WAIT";
-      document.getElementById("signalText").textContent =
-        "Waiting for a confirmed Strong SD Magnet setup";
+      <div id="dataStatus" class="market-price">—</div>
 
-      document.getElementById("entry").textContent = "—";
-      document.getElementById("sl").textContent = "—";
-      document.getElementById("tp1").textContent = "—";
-      document.getElementById("tp23").textContent = "—";
+      <div id="dataAge" class="market-meta">
+        Waiting...
+      </div>
+    </div>
+
+  </section>
+
+  <h2 class="section-title">Market Data</h2>
+
+  <section class="data-box">
+
+    <div class="data-row">
+      <span>Open</span>
+      <span id="ohlcOpen">—</span>
+    </div>
+
+    <div class="data-row">
+      <span>High</span>
+      <span id="ohlcHigh">—</span>
+    </div>
+
+    <div class="data-row">
+      <span>Low</span>
+      <span id="ohlcLow">—</span>
+    </div>
+
+    <div class="data-row">
+      <span>Close</span>
+      <span id="ohlcClose">—</span>
+    </div>
+
+    <div class="data-row">
+      <span>Volume</span>
+      <span id="ohlcVolume">—</span>
+    </div>
+
+    <div class="data-row">
+      <span>Candles Loaded</span>
+      <span id="candleCount">—</span>
+    </div>
+
+  </section>
+
+  <h2 class="section-title">Strong SD Magnet Zones</h2>
+
+  <section class="zones">
+
+    <div class="zone">
+      <div class="zone-title supply">
+        Supply — SELL Area
+      </div>
+
+      <div class="empty">
+        SD Magnet engine will calculate Supply zones here.
+      </div>
+    </div>
+
+    <div class="zone">
+      <div class="zone-title demand">
+        Demand — BUY Area
+      </div>
+
+      <div class="empty">
+        SD Magnet engine will calculate Demand zones here.
+      </div>
+    </div>
+
+  </section>
+
+  <h2 class="section-title">Engine</h2>
+
+  <section class="data-box">
+
+    <div class="data-row">
+      <span>15M Structure</span>
+      <span>Pending SD Magnet Engine</span>
+    </div>
+
+    <div class="data-row">
+      <span>5M Confirmation</span>
+      <span>Pending SD Magnet Engine</span>
+    </div>
+
+    <div class="data-row">
+      <span>Strong Zone Threshold</span>
+      <span>7.0 / 10</span>
+    </div>
+
+    <div class="data-row">
+      <span>Magnet Source</span>
+      <span>≥ 6.5 + Retest</span>
+    </div>
+
+    <div class="data-row">
+      <span>Magnet Target</span>
+      <span>≥ 5.0</span>
+    </div>
+
+  </section>
+
+  <footer>
+    LONA Trading Assistant · Strong SD Magnet Engine
+  </footer>
+
+</div>
+
+<script>
+
+  const instrumentEl = document.getElementById("instrument");
+  const timeframeEl = document.getElementById("timeframe");
+  const refreshBtn = document.getElementById("refreshBtn");
+
+  const statusDot = document.getElementById("statusDot");
+  const statusText = document.getElementById("statusText");
+
+  const signalEl = document.getElementById("signal");
+  const signalDescription = document.getElementById("signalDescription");
+
+  const errorBox = document.getElementById("errorBox");
+
+  function setStatus(type, text) {
+
+    statusDot.className = "status-dot";
+
+    if (type === "live") {
+      statusDot.classList.add("live");
     }
 
-    refreshBtn.addEventListener("click", function () {
-      setWaitingState();
+    if (type === "error") {
+      statusDot.classList.add("error");
+    }
 
-      refreshBtn.textContent = "Refreshing...";
+    statusText.textContent = text;
+  }
 
-      setTimeout(function () {
-        refreshBtn.textContent = "Refresh Market";
-      }, 700);
-    });
+  function showError(message) {
 
-    instrument.addEventListener("change", setWaitingState);
-    timeframe.addEventListener("change", setWaitingState);
+    errorBox.style.display = "block";
+    errorBox.textContent = message;
+  }
 
-    setWaitingState();
-  </script>
+  function hideError() {
+
+    errorBox.style.display = "none";
+    errorBox.textContent = "";
+  }
+
+  function resetSignal() {
+
+    signalEl.textContent = "WAIT";
+
+    signalEl.className = "signal wait";
+
+    signalDescription.textContent =
+      "Real market data is being analyzed.";
+
+    document.getElementById("entry").textContent = "—";
+    document.getElementById("sl").textContent = "—";
+    document.getElementById("tp1").textContent = "—";
+    document.getElementById("tp23").textContent = "—";
+  }
+
+  function formatPrice(value) {
+
+    if (value === null || value === undefined || Number.isNaN(value)) {
+      return "—";
+    }
+
+    const number = Number(value);
+
+    if (number >= 100) {
+      return number.toFixed(2);
+    }
+
+    return number.toFixed(5);
+  }
+
+  function formatTime(value) {
+
+    if (!value) {
+      return "—";
+    }
+
+    const date = new Date(value.replace(" ", "T") + "Z");
+
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return date.toLocaleString();
+  }
+
+  function updateData(candles) {
+
+    if (!candles || candles.length === 0) {
+      throw new Error("No candle data received.");
+    }
+
+    const last = candles[candles.length - 1];
+
+    document.getElementById("selectedName").textContent =
+      instrumentEl.value;
+
+    document.getElementById("selectedTf").textContent =
+      timeframeEl.value === "15min" ? "15M" : "5M";
+
+    document.getElementById("selectedPrice").textContent =
+      formatPrice(last.close);
+
+    document.getElementById("selectedMeta").textContent =
+      "Real OHLC data";
+
+    document.getElementById("lastCandleClose").textContent =
+      formatPrice(last.close);
+
+    document.getElementById("lastCandleTime").textContent =
+      formatTime(last.time);
+
+    document.getElementById("ohlcOpen").textContent =
+      formatPrice(last.open);
+
+    document.getElementById("ohlcHigh").textContent =
+      formatPrice(last.high);
+
+    document.getElementById("ohlcLow").textContent =
+      formatPrice(last.low);
+
+    document.getElementById("ohlcClose").textContent =
+      formatPrice(last.close);
+
+    document.getElementById("ohlcVolume").textContent =
+      last.volume || "0";
+
+    document.getElementById("candleCount").textContent =
+      candles.length;
+
+    document.getElementById("dataStatus").textContent =
+      "CONNECTED";
+
+    document.getElementById("dataAge").textContent =
+      "Latest candle received";
+
+    resetSignal();
+  }
+
+  async function loadMarket() {
+
+    hideError();
+
+    refreshBtn.textContent = "Loading...";
+
+    setStatus("normal", "Connecting...");
+
+    try {
+
+      const symbol = instrumentEl.value;
+      const interval = timeframeEl.value;
+
+      const url =
+        "/api/market?symbol=" +
+        encodeURIComponent(symbol) +
+        "&interval=" +
+        encodeURIComponent(interval) +
+        "&outputsize=200";
+
+      const response = await fetch(url, {
+        method: "GET",
+        cache: "no-store"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+
+        throw new Error(
+          data.error || "Market API returned an error."
+        );
+      }
+
+      updateData(data.candles);
+
+      setStatus(
+        "live",
+        "Market Data Connected"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      setStatus(
+        "error",
+        "Market Data Error"
+      );
+
+      document.getElementById("dataStatus").textContent =
+        "ERROR";
+
+      showError(
+        "Market data connection failed: " +
+        error.message
+      );
+
+    } finally {
+
+      refreshBtn.textContent = "Refresh Market";
+    }
+  }
+
+  instrumentEl.addEventListener(
+    "change",
+    loadMarket
+  );
+
+  timeframeEl.addEventListener(
+    "change",
+    loadMarket
+  );
+
+  refreshBtn.addEventListener(
+    "click",
+    loadMarket
+  );
+
+  loadMarket();
+
+</script>
 
 </body>
   </html>
