@@ -9,29 +9,75 @@ export default async function handler(req, res) {
       });
     }
 
-    const symbol =
-      req.query.symbol || "XAU/USD";
+    const action = req.query.action || "market";
+    const symbol = String(req.query.symbol || "XAU/USD").trim();
+    const interval = req.query.interval || "15min";
 
-    const interval =
-      req.query.interval || "15min";
+    /*
+     * =====================================================
+     * SYMBOL SEARCH
+     * =====================================================
+     *
+     * Example:
+     * /api/market?action=search&q=bitcoin
+     */
 
-    const requestedOutput =
-      Number(req.query.outputsize || 200);
+    if (action === "search") {
+      const query = String(req.query.q || "").trim();
+
+      if (!query) {
+        return res.status(400).json({
+          success: false,
+          error: "Search query is required"
+        });
+      }
+
+      const url = new URL(
+        "https://api.twelvedata.com/symbol_search"
+      );
+
+      url.searchParams.set("symbol", query);
+      url.searchParams.set("apikey", apiKey);
+
+      const response = await fetch(url.toString());
+      const data = await response.json();
+
+      if (!response.ok || data.status === "error") {
+        return res.status(400).json({
+          success: false,
+          error:
+            data.message ||
+            "Symbol search failed"
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        action: "search",
+        results: Array.isArray(data.data)
+          ? data.data
+          : []
+      });
+    }
+
+
+    /*
+     * =====================================================
+     * MARKET DATA
+     * =====================================================
+     */
 
     const outputsize = Math.min(
       Math.max(
-        Number.isFinite(requestedOutput)
-          ? requestedOutput
-          : 200,
+        Number(req.query.outputsize || 200),
         50
       ),
       500
     );
 
-    const url =
-      new URL(
-        "https://api.twelvedata.com/time_series"
-      );
+    const url = new URL(
+      "https://api.twelvedata.com/time_series"
+    );
 
     url.searchParams.set(
       "symbol",
@@ -58,20 +104,11 @@ export default async function handler(req, res) {
       "JSON"
     );
 
-
     const response =
-      await fetch(
-        url.toString(),
-        {
-          method: "GET",
-          cache: "no-store"
-        }
-      );
-
+      await fetch(url.toString());
 
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -85,25 +122,18 @@ export default async function handler(req, res) {
       });
     }
 
-
-    if (
-      !Array.isArray(data.values)
-    ) {
+    if (!Array.isArray(data.values)) {
       return res.status(400).json({
         success: false,
-        error:
-          "No candle data received"
+        error: "No candle data received"
       });
     }
 
 
     /*
-     * Twelve Data normally returns newest
-     * candle first.
-     *
-     * Reverse it so the engine receives:
-     *
-     * oldest -> newest
+     * =====================================================
+     * NORMALIZE CANDLES
+     * =====================================================
      */
 
     const candles =
@@ -131,21 +161,33 @@ export default async function handler(req, res) {
         .reverse();
 
 
-    if (
-      candles.length < 50
-    ) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "Not enough candle data received"
+    if (candles.length < 50) {
+      return res.status(200).json({
+        success: true,
+        symbol,
+        interval,
+        count: candles.length,
+        candles,
+        engine: {
+          status: "WAIT",
+          reason: "Not enough candles",
+          supply: [],
+          demand: [],
+          magnets: [],
+          signal: null
+        }
       });
     }
 
 
+    /*
+     * =====================================================
+     * STRONG SD MAGNET ENGINE
+     * =====================================================
+     */
+
     const engine =
-      calculateSDMagnet(
-        candles
-      );
+      calculateSDMagnet(candles);
 
 
     return res.status(200).json({
@@ -168,12 +210,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error(
-      "LONA Market API Error:",
-      error
-    );
-
-
     return res.status(500).json({
 
       success: false,
@@ -183,94 +219,38 @@ export default async function handler(req, res) {
         "Server error"
 
     });
+
   }
 }
 
 
 /* =========================================================
    STRONG SD MAGNET ENGINE
-
-   Based on supplied Strong SD Magnet Pine logic.
-
-   Main concepts:
-
-   - Confirmed swing pivots
-   - ATR based zone thickness
-   - Supply / Demand
-   - Retests
-   - Strength score
-   - Freshness
-   - Departure impulse
-   - Volume
-   - Rejection wick
-   - Idle decay
-   - Magnet source
-   - Magnet target
-   - BUY / SELL / WAIT
    ========================================================= */
-
 
 function calculateSDMagnet(candles) {
 
-  if (
-    !Array.isArray(candles) ||
-    candles.length < 50
-  ) {
+  if (candles.length < 50) {
 
     return {
 
       status: "WAIT",
 
-      direction: "WAIT",
-
-      price: null,
-
-      atr: null,
-
-      supply: null,
-
-      demand: null,
-
-      supplyZones: [],
-
-      demandZones: [],
-
-      magnet: null,
-
-      magnets: [],
-
-      signal: null,
-
-      score: 0,
-
-      probability: 0,
-
-      retests: 0,
-
       reason:
         "Not enough candles",
 
-      rules: {
+      supply: [],
 
-        strongZone: 7.0,
+      demand: [],
 
-        magnetSource: 6.5,
+      magnets: [],
 
-        magnetTarget: 5.0,
-
-        minimumRetests: 1,
-
-        maxReachATR: 25
-
-      }
+      signal: null
 
     };
+
   }
 
-
-  /*
-   * Pine defaults
-   */
 
   const swingLen = 12;
 
@@ -278,24 +258,11 @@ function calculateSDMagnet(candles) {
 
   const zoneATR = 0.5;
 
+  const magnetSourceThreshold = 6.5;
 
-  /*
-   * Magnet rules
-   */
+  const magnetTargetThreshold = 5.0;
 
-  const magnetSourceThreshold =
-    6.5;
-
-  const magnetTargetThreshold =
-    5.0;
-
-  const strongThreshold =
-    7.0;
-
-
-  /*
-   * Scoring rules
-   */
+  const strongThreshold = 7.0;
 
   const touchNorm = 3.0;
 
@@ -306,9 +273,7 @@ function calculateSDMagnet(candles) {
   const decayBars = 600;
 
 
-  /*
-   * Calculate ATR
-   */
+  const zones = [];
 
   const atr =
     calculateATR(
@@ -317,23 +282,18 @@ function calculateSDMagnet(candles) {
     );
 
 
-  const zones = [];
-
-
-  /* =====================================================
-     CONFIRMED PIVOT DETECTION
-     ===================================================== */
+  /*
+   * Confirmed pivots
+   */
 
   for (
     let i = swingLen;
-    i <
-      candles.length - swingLen;
+    i < candles.length - swingLen;
     i++
   ) {
 
     const pivot =
       candles[i];
-
 
     let isHigh = true;
 
@@ -346,36 +306,25 @@ function calculateSDMagnet(candles) {
       j++
     ) {
 
-      /*
-       * Pivot High
-       */
-
       if (
         candles[i - j].high >=
           pivot.high ||
-
         candles[i + j].high >
           pivot.high
       ) {
-
         isHigh = false;
       }
 
 
-      /*
-       * Pivot Low
-       */
-
       if (
         candles[i - j].low <=
           pivot.low ||
-
         candles[i + j].low <
           pivot.low
       ) {
-
         isLow = false;
       }
+
     }
 
 
@@ -383,19 +332,10 @@ function calculateSDMagnet(candles) {
       atr[i] || 0;
 
 
-    if (
-      !Number.isFinite(
-        pivotATR
-      ) ||
-      pivotATR <= 0
-    ) {
+    if (!pivotATR) {
       continue;
     }
 
-
-    /*
-     * Ignore extremely small swings.
-     */
 
     if (
       pivot.high -
@@ -414,7 +354,6 @@ function calculateSDMagnet(candles) {
 
       const height =
         pivotATR * zoneATR;
-
 
       zones.push({
 
@@ -441,6 +380,7 @@ function calculateSDMagnet(candles) {
         score: 0
 
       });
+
     }
 
 
@@ -452,7 +392,6 @@ function calculateSDMagnet(candles) {
 
       const height =
         pivotATR * zoneATR;
-
 
       zones.push({
 
@@ -479,45 +418,38 @@ function calculateSDMagnet(candles) {
         score: 0
 
       });
+
     }
+
   }
 
 
-  /* =====================================================
-     MERGE OVERLAPPING SAME-TYPE ZONES
-     ===================================================== */
+  /*
+   * Remove excessive overlapping zones
+   */
 
   const filteredZones = [];
 
 
-  for (
-    const zone of zones
-  ) {
+  for (const zone of zones) {
 
     let merged = false;
 
 
     for (
-      const existing of
-      filteredZones
+      const existing
+      of filteredZones
     ) {
 
       if (
         existing.kind ===
           zone.kind &&
-
         !existing.broken &&
-
         zone.top >=
           existing.bot &&
-
         zone.bot <=
           existing.top
       ) {
-
-        /*
-         * Keep the combined boundaries.
-         */
 
         existing.top =
           Math.max(
@@ -525,13 +457,11 @@ function calculateSDMagnet(candles) {
             zone.top
           );
 
-
         existing.bot =
           Math.min(
             existing.bot,
             zone.bot
           );
-
 
         existing.mid =
           (
@@ -539,22 +469,12 @@ function calculateSDMagnet(candles) {
             existing.bot
           ) / 2;
 
-
-        /*
-         * Use the oldest birth.
-         */
-
-        existing.born =
-          Math.min(
-            existing.born,
-            zone.born
-          );
-
-
         merged = true;
 
         break;
+
       }
+
     }
 
 
@@ -563,17 +483,19 @@ function calculateSDMagnet(candles) {
       filteredZones.push(
         zone
       );
+
     }
+
   }
 
 
-  /* =====================================================
-     PROCESS ZONES
-     ===================================================== */
+  /*
+   * Process zones
+   */
 
   for (
-    const zone of
-    filteredZones
+    const zone
+    of filteredZones
   ) {
 
     let previousInZone =
@@ -583,9 +505,7 @@ function calculateSDMagnet(candles) {
     for (
       let i =
         zone.born + 1;
-
       i < candles.length;
-
       i++
     ) {
 
@@ -594,14 +514,11 @@ function calculateSDMagnet(candles) {
 
 
       const inZone =
-        c.high >= zone.bot &&
-        c.low <= zone.top;
+        c.high >=
+          zone.bot &&
+        c.low <=
+          zone.top;
 
-
-      /*
-       * Count a retest only when price
-       * enters the zone after being outside.
-       */
 
       if (
         inZone &&
@@ -611,6 +528,7 @@ function calculateSDMagnet(candles) {
         zone.touches++;
 
         zone.lastTouch = i;
+
       }
 
 
@@ -618,12 +536,9 @@ function calculateSDMagnet(candles) {
         inZone;
 
 
-      /*
-       * CLOSE based invalidation
-       */
-
       if (
-        zone.kind === "Supply"
+        zone.kind ===
+        "Supply"
       ) {
 
         if (
@@ -631,9 +546,11 @@ function calculateSDMagnet(candles) {
           zone.top
         ) {
 
-          zone.broken = true;
+          zone.broken =
+            true;
 
           break;
+
         }
 
       } else {
@@ -643,24 +560,23 @@ function calculateSDMagnet(candles) {
           zone.bot
         ) {
 
-          zone.broken = true;
+          zone.broken =
+            true;
 
           break;
+
         }
+
       }
+
     }
 
 
-    /* =================================================
-       STRENGTH SCORE
-       ================================================= */
-
-
     /*
-     * Departure window.
+     * Departure impulse
      */
 
-    const departureEnd =
+    const departureIndex =
       Math.min(
         zone.born + 12,
         candles.length - 1
@@ -669,105 +585,103 @@ function calculateSDMagnet(candles) {
 
     const departure =
       candles[
-        departureEnd
+        departureIndex
       ];
 
-
-    if (!departure) {
-      continue;
-    }
-
-
-    /*
-     * -------------------------------------------------
-     * 1. DEPARTURE IMPULSE
-     * -------------------------------------------------
-     */
 
     let impulse = 0;
 
 
-    const departureSlice =
-      candles.slice(
-        zone.born,
-        Math.min(
-          zone.born + 13,
-          candles.length
-        )
-      );
-
-
     if (
-      departureSlice.length > 0
+      zone.kind ===
+      "Supply"
     ) {
 
-      if (
-        zone.kind === "Supply"
-      ) {
-
-        const lowestAfter =
+      const slice =
+        candles.slice(
+          zone.born,
           Math.min(
-            ...departureSlice.map(
-              c => c.low
-            )
-          );
+            zone.born + 12,
+            candles.length
+          )
+        );
 
 
-        impulse =
-          (
-            zone.mid -
-            lowestAfter
-          ) /
+      const lowestAfter =
+        Math.min(
+          ...slice.map(
+            c => c.low
+          )
+        );
+
+
+      impulse =
+        Math.min(
           Math.max(
             (
-              atr[zone.born] ||
-              1
-            ) *
+              zone.mid -
+              lowestAfter
+            ) /
+            Math.max(
+              (
+                atr[
+                  zone.born
+                ] || 1
+              ) *
               impulseNorm,
-            0.00001
-          );
+              0.00001
+            ),
+            0
+          ),
+          1
+        );
 
-      } else {
+    } else {
 
-        const highestAfter =
-          Math.max(
-            ...departureSlice.map(
-              c => c.high
-            )
-          );
+      const slice =
+        candles.slice(
+          zone.born,
+          Math.min(
+            zone.born + 12,
+            candles.length
+          )
+        );
 
 
-        impulse =
-          (
-            highestAfter -
-            zone.mid
-          ) /
+      const highestAfter =
+        Math.max(
+          ...slice.map(
+            c => c.high
+          )
+        );
+
+
+      impulse =
+        Math.min(
           Math.max(
             (
-              atr[zone.born] ||
-              1
-            ) *
+              highestAfter -
+              zone.mid
+            ) /
+            Math.max(
+              (
+                atr[
+                  zone.born
+                ] || 1
+              ) *
               impulseNorm,
-            0.00001
-          );
-      }
+              0.00001
+            ),
+            0
+          ),
+          1
+        );
+
     }
 
 
-    impulse =
-      Math.min(
-        Math.max(
-          impulse,
-          0
-        ),
-        1
-      );
-
-
     /*
-     * -------------------------------------------------
-     * 2. VOLUME
-     * -------------------------------------------------
+     * Volume
      */
 
     const volStart =
@@ -784,79 +698,33 @@ function calculateSDMagnet(candles) {
       );
 
 
-    const volumes =
-      volWindow
-        .map(
-          c =>
-            Number(c.volume || 0)
-        )
-        .filter(
-          Number.isFinite
-        );
-
-
     const avgVolume =
-      volumes.length > 0
-        ? volumes.reduce(
-            (
-              sum,
-              value
-            ) =>
-              sum + value,
+      volWindow.length
+        ? volWindow.reduce(
+            (sum, c) =>
+              sum + c.volume,
             0
           ) /
-          volumes.length
+          volWindow.length
         : 0;
 
 
     const pivotVolume =
-      Number(
-        departure.volume || 0
-      );
+      departure.volume || 0;
 
 
-    let volumeFactor = 0;
-
-
-    if (
-      avgVolume > 0 &&
-      pivotVolume > 0
-    ) {
-
-      volumeFactor =
-        pivotVolume /
-        avgVolume;
-
-
-      volumeFactor =
-        Math.min(
-          Math.max(
-            volumeFactor,
-            0
-          ),
-          1
-        );
-    }
+    const volumeFactor =
+      avgVolume > 0
+        ? Math.min(
+            pivotVolume /
+              avgVolume,
+            1
+          )
+        : 0;
 
 
     /*
-     * If volume is unavailable,
-     * don't let it completely destroy
-     * the other score components.
-     */
-
-    if (
-      avgVolume === 0
-    ) {
-
-      volumeFactor = 0.5;
-    }
-
-
-    /*
-     * -------------------------------------------------
-     * 3. REJECTION WICK
-     * -------------------------------------------------
+     * Rejection wick
      */
 
     const range =
@@ -871,51 +739,49 @@ function calculateSDMagnet(candles) {
 
 
     if (
-      zone.kind === "Supply"
+      zone.kind ===
+      "Supply"
     ) {
 
-      const upperWick =
-        departure.high -
-        Math.max(
-          departure.open,
-          departure.close
-        );
-
-
       wickFactor =
-        upperWick /
-        range;
+        Math.min(
+          Math.max(
+            (
+              departure.high -
+              Math.max(
+                departure.open,
+                departure.close
+              )
+            ) /
+            range,
+            0
+          ),
+          1
+        );
 
     } else {
 
-      const lowerWick =
-        Math.min(
-          departure.open,
-          departure.close
-        ) -
-        departure.low;
-
-
       wickFactor =
-        lowerWick /
-        range;
+        Math.min(
+          Math.max(
+            (
+              Math.min(
+                departure.open,
+                departure.close
+              ) -
+              departure.low
+            ) /
+            range,
+            0
+          ),
+          1
+        );
+
     }
 
 
-    wickFactor =
-      Math.min(
-        Math.max(
-          wickFactor,
-          0
-        ),
-        1
-      );
-
-
     /*
-     * -------------------------------------------------
-     * 4. FRESHNESS
-     * -------------------------------------------------
+     * Freshness
      */
 
     const freshFactor =
@@ -928,9 +794,7 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * -------------------------------------------------
-     * 5. IDLE DECAY
-     * -------------------------------------------------
+     * Idle decay
      */
 
     const idle =
@@ -945,31 +809,24 @@ function calculateSDMagnet(candles) {
     const ageFactor =
       Math.max(
         1 -
-          (
-            1 -
-            decayFloor
-          ) *
-            Math.min(
-              idle /
-                decayBars,
-              1
-            ),
+        (
+          1 -
+          decayFloor
+        ) *
+        Math.min(
+          idle /
+            decayBars,
+          1
+        ),
         decayFloor
       );
 
 
     /*
-     * -------------------------------------------------
-     * FINAL SCORE
-     *
-     * impulse  = 35%
-     * volume   = 20%
-     * wick     = 20%
-     * freshness = 25%
-     * -------------------------------------------------
+     * Final score
      */
 
-    const rawScore =
+    const raw =
       impulse * 0.35 +
       volumeFactor * 0.20 +
       wickFactor * 0.20 +
@@ -979,25 +836,24 @@ function calculateSDMagnet(candles) {
     zone.score =
       Math.min(
         Math.max(
-          rawScore *
+          raw *
             10 *
             ageFactor,
           0
         ),
         10
       );
+
   }
 
 
-  /* =====================================================
-     ACTIVE ZONES
-     ===================================================== */
+  /*
+   * Active zones
+   */
 
   const activeZones =
     filteredZones.filter(
-      z =>
-        !z.broken &&
-        Number.isFinite(z.score)
+      z => !z.broken
     );
 
 
@@ -1005,7 +861,8 @@ function calculateSDMagnet(candles) {
     activeZones
       .filter(
         z =>
-          z.kind === "Supply"
+          z.kind ===
+          "Supply"
       )
       .sort(
         (a, b) =>
@@ -1019,7 +876,8 @@ function calculateSDMagnet(candles) {
     activeZones
       .filter(
         z =>
-          z.kind === "Demand"
+          z.kind ===
+          "Demand"
       )
       .sort(
         (a, b) =>
@@ -1029,9 +887,11 @@ function calculateSDMagnet(candles) {
       .slice(0, 5);
 
 
-  /* =====================================================
-     MAGNET ENGINE
-     ===================================================== */
+  /*
+   * =====================================================
+   * MAGNET
+   * =====================================================
+   */
 
   const magnets = [];
 
@@ -1043,16 +903,9 @@ function calculateSDMagnet(candles) {
 
 
   for (
-    const source of
-    activeZones
+    const source
+    of activeZones
   ) {
-
-    /*
-     * Magnet source requirements:
-     *
-     * Score >= 6.5
-     * Retests >= 1
-     */
 
     if (
       source.score <
@@ -1070,8 +923,8 @@ function calculateSDMagnet(candles) {
 
 
     for (
-      const candidate of
-      activeZones
+      const candidate
+      of activeZones
     ) {
 
       if (
@@ -1082,10 +935,6 @@ function calculateSDMagnet(candles) {
       }
 
 
-      /*
-       * Target score >= 5.0
-       */
-
       if (
         candidate.score <
         magnetTargetThreshold
@@ -1095,18 +944,14 @@ function calculateSDMagnet(candles) {
 
 
       /*
-       * SUPPLY -> DEMAND
-       *
-       * Downward magnet
+       * Supply -> Demand
        */
 
       if (
         source.kind ===
           "Supply" &&
-
         candidate.kind ===
           "Demand" &&
-
         candidate.mid <
           source.mid
       ) {
@@ -1119,7 +964,6 @@ function calculateSDMagnet(candles) {
         if (
           distance <=
             currentATR * 25 &&
-
           distance <
             nearestDistance
         ) {
@@ -1129,23 +973,21 @@ function calculateSDMagnet(candles) {
 
           target =
             candidate;
+
         }
+
       }
 
 
       /*
-       * DEMAND -> SUPPLY
-       *
-       * Upward magnet
+       * Demand -> Supply
        */
 
       if (
         source.kind ===
           "Demand" &&
-
         candidate.kind ===
           "Supply" &&
-
         candidate.mid >
           source.mid
       ) {
@@ -1158,7 +1000,6 @@ function calculateSDMagnet(candles) {
         if (
           distance <=
             currentATR * 25 &&
-
           distance <
             nearestDistance
         ) {
@@ -1168,8 +1009,11 @@ function calculateSDMagnet(candles) {
 
           target =
             candidate;
+
         }
+
       }
+
     }
 
 
@@ -1177,10 +1021,6 @@ function calculateSDMagnet(candles) {
       continue;
     }
 
-
-    /*
-     * Pull score
-     */
 
     const pullScore =
       Math.min(
@@ -1195,21 +1035,13 @@ function calculateSDMagnet(candles) {
       );
 
 
-    /*
-     * Logistic probability
-     *
-     * midpoint = 5.5
-     * slope = 1.5
-     */
-
-    const pullProbability =
+    const probability =
       100 /
       (
         1 +
         Math.exp(
           -(
-            pullScore -
-            5.5
+            pullScore - 5.5
           ) / 1.5
         )
       );
@@ -1219,10 +1051,9 @@ function calculateSDMagnet(candles) {
 
       direction:
         source.kind ===
-          "Supply"
+        "Supply"
           ? "DOWN"
           : "UP",
-
 
       source: {
 
@@ -1230,19 +1061,13 @@ function calculateSDMagnet(candles) {
           source.kind,
 
         mid:
-          round(
-            source.mid
-          ),
+          source.mid,
 
         top:
-          round(
-            source.top
-          ),
+          source.top,
 
         bot:
-          round(
-            source.bot
-          ),
+          source.bot,
 
         score:
           round(
@@ -1254,26 +1079,19 @@ function calculateSDMagnet(candles) {
 
       },
 
-
       target: {
 
         type:
           target.kind,
 
         mid:
-          round(
-            target.mid
-          ),
+          target.mid,
 
         top:
-          round(
-            target.top
-          ),
+          target.top,
 
         bot:
-          round(
-            target.bot
-          ),
+          target.bot,
 
         score:
           round(
@@ -1285,29 +1103,20 @@ function calculateSDMagnet(candles) {
 
       },
 
-
       pullScore:
         round(
           pullScore
         ),
 
-
       probability:
         Math.round(
-          pullProbability
-        ),
+          probability
+        )
 
-
-      fired: true,
-
-      active: true
     });
+
   }
 
-
-  /*
-   * Strongest magnet first.
-   */
 
   magnets.sort(
     (a, b) =>
@@ -1316,72 +1125,44 @@ function calculateSDMagnet(candles) {
   );
 
 
-  /* =====================================================
-     CURRENT PRICE
-     ===================================================== */
-
-  const lastCandle =
-    candles[
-      candles.length - 1
-    ];
-
+  /*
+   * =====================================================
+   * CURRENT SIGNAL
+   * =====================================================
+   */
 
   const price =
-    lastCandle.close;
+    candles[
+      candles.length - 1
+    ].close;
 
-
-  /* =====================================================
-     SIGNAL ENGINE
-     ===================================================== */
 
   let signal = null;
 
-
-  /*
-   * BUY:
-   *
-   * Demand source
-   * +
-   * upward magnet
-   * +
-   * source score >= 7
-   */
 
   const validBuy =
     magnets.find(
       m =>
         m.direction ===
           "UP" &&
-
         m.source.score >=
           strongThreshold
     );
 
-
-  /*
-   * SELL:
-   *
-   * Supply source
-   * +
-   * downward magnet
-   * +
-   * source score >= 7
-   */
 
   const validSell =
     magnets.find(
       m =>
         m.direction ===
           "DOWN" &&
-
         m.source.score >=
           strongThreshold
     );
 
 
-  /* =====================================================
-     BUY
-     ===================================================== */
+  /*
+   * BUY
+   */
 
   if (
     validBuy &&
@@ -1401,35 +1182,13 @@ function calculateSDMagnet(candles) {
 
 
     const risk =
-      Math.max(
-        currentATR * 0.8,
-        0.00001
+      Math.abs(
+        entryLow -
+        (
+          entryLow -
+          currentATR * 0.8
+        )
       );
-
-
-    const stopLoss =
-      entryLow -
-      risk;
-
-
-    const tp1 =
-      price +
-      Math.max(
-        currentATR * 1.5,
-        risk * 1.5
-      );
-
-
-    const tp2 =
-      price +
-      Math.max(
-        currentATR * 2.5,
-        risk * 2.5
-      );
-
-
-    const tp3 =
-      validBuy.target.mid;
 
 
     signal = {
@@ -1437,18 +1196,11 @@ function calculateSDMagnet(candles) {
       direction:
         "BUY",
 
-
       confidence:
         validBuy.pullScore,
 
-
-      score:
-        validBuy.pullScore,
-
-
       probability:
         validBuy.probability,
-
 
       entry: {
 
@@ -1464,88 +1216,42 @@ function calculateSDMagnet(candles) {
 
       },
 
-
-      entryZone: {
-
-        low:
-          round(
-            entryLow
-          ),
-
-        high:
-          round(
-            entryHigh
-          )
-
-      },
-
-
-      entryPrice:
-        round(
-          (
-            entryLow +
-            entryHigh
-          ) / 2
-        ),
-
-
       stopLoss:
         round(
-          stopLoss
+          entryLow -
+          currentATR * 0.8
         ),
-
-
-      sl:
-        round(
-          stopLoss
-        ),
-
 
       tp1:
         round(
-          tp1
+          price +
+          Math.max(
+            currentATR * 1.5,
+            risk * 1.5
+          )
         ),
-
 
       tp2:
         round(
-          tp2
+          price +
+          Math.max(
+            currentATR * 2.5,
+            risk * 2.5
+          )
         ),
-
 
       tp3:
         round(
-          tp3
+          validBuy.target.mid
         ),
-
-
-      takeProfit1:
-        round(
-          tp1
-        ),
-
-
-      takeProfit2:
-        round(
-          tp2
-        ),
-
-
-      takeProfit3:
-        round(
-          tp3
-        ),
-
 
       sourceScore:
         round(
           validBuy.source.score
         ),
 
-
       sourceTouches:
         validBuy.source.touches,
-
 
       magnet:
         validBuy
@@ -1555,9 +1261,9 @@ function calculateSDMagnet(candles) {
   }
 
 
-  /* =====================================================
-     SELL
-     ===================================================== */
+  /*
+   * SELL
+   */
 
   else if (
     validSell &&
@@ -1577,35 +1283,13 @@ function calculateSDMagnet(candles) {
 
 
     const risk =
-      Math.max(
-        currentATR * 0.8,
-        0.00001
+      Math.abs(
+        (
+          entryHigh +
+          currentATR * 0.8
+        ) -
+        entryHigh
       );
-
-
-    const stopLoss =
-      entryHigh +
-      risk;
-
-
-    const tp1 =
-      price -
-      Math.max(
-        currentATR * 1.5,
-        risk * 1.5
-      );
-
-
-    const tp2 =
-      price -
-      Math.max(
-        currentATR * 2.5,
-        risk * 2.5
-      );
-
-
-    const tp3 =
-      validSell.target.mid;
 
 
     signal = {
@@ -1613,18 +1297,11 @@ function calculateSDMagnet(candles) {
       direction:
         "SELL",
 
-
       confidence:
         validSell.pullScore,
 
-
-      score:
-        validSell.pullScore,
-
-
       probability:
         validSell.probability,
-
 
       entry: {
 
@@ -1640,99 +1317,54 @@ function calculateSDMagnet(candles) {
 
       },
 
-
-      entryZone: {
-
-        low:
-          round(
-            entryLow
-          ),
-
-        high:
-          round(
-            entryHigh
-          )
-
-      },
-
-
-      entryPrice:
-        round(
-          (
-            entryLow +
-            entryHigh
-          ) / 2
-        ),
-
-
       stopLoss:
         round(
-          stopLoss
+          entryHigh +
+          currentATR * 0.8
         ),
-
-
-      sl:
-        round(
-          stopLoss
-        ),
-
 
       tp1:
         round(
-          tp1
+          price -
+          Math.max(
+            currentATR * 1.5,
+            risk * 1.5
+          )
         ),
-
 
       tp2:
         round(
-          tp2
+          price -
+          Math.max(
+            currentATR * 2.5,
+            risk * 2.5
+          )
         ),
-
 
       tp3:
         round(
-          tp3
+          validSell.target.mid
         ),
-
-
-      takeProfit1:
-        round(
-          tp1
-        ),
-
-
-      takeProfit2:
-        round(
-          tp2
-        ),
-
-
-      takeProfit3:
-        round(
-          tp3
-        ),
-
 
       sourceScore:
         round(
           validSell.source.score
         ),
 
-
       sourceTouches:
         validSell.source.touches,
-
 
       magnet:
         validSell
 
     };
+
   }
 
 
-  /* =====================================================
-     CONFLICT PROTECTION
-     ===================================================== */
+  /*
+   * Conflicting directions
+   */
 
   if (
     validBuy &&
@@ -1744,11 +1376,6 @@ function calculateSDMagnet(candles) {
       validSell.pullScore;
 
 
-    /*
-     * If both directions are nearly equal,
-     * don't force a trade.
-     */
-
     if (
       Math.abs(
         difference
@@ -1757,336 +1384,9 @@ function calculateSDMagnet(candles) {
 
       signal = null;
 
-    } else if (
-      difference > 0
-    ) {
-
-      /*
-       * BUY wins.
-       */
-
-      const zone =
-        validBuy.source;
-
-
-      const entryLow =
-        zone.bot;
-
-
-      const entryHigh =
-        zone.top;
-
-
-      const risk =
-        Math.max(
-          currentATR * 0.8,
-          0.00001
-        );
-
-
-      const stopLoss =
-        entryLow -
-        risk;
-
-
-      const tp1 =
-        price +
-        Math.max(
-          currentATR * 1.5,
-          risk * 1.5
-        );
-
-
-      const tp2 =
-        price +
-        Math.max(
-          currentATR * 2.5,
-          risk * 2.5
-        );
-
-
-      signal = {
-
-        direction:
-          "BUY",
-
-        confidence:
-          validBuy.pullScore,
-
-        score:
-          validBuy.pullScore,
-
-        probability:
-          validBuy.probability,
-
-        entry: {
-          low:
-            round(
-              entryLow
-            ),
-          high:
-            round(
-              entryHigh
-            )
-        },
-
-        entryZone: {
-          low:
-            round(
-              entryLow
-            ),
-          high:
-            round(
-              entryHigh
-            )
-        },
-
-        entryPrice:
-          round(
-            (
-              entryLow +
-              entryHigh
-            ) / 2
-          ),
-
-        stopLoss:
-          round(
-            stopLoss
-          ),
-
-        sl:
-          round(
-            stopLoss
-          ),
-
-        tp1:
-          round(
-            tp1
-          ),
-
-        tp2:
-          round(
-            tp2
-          ),
-
-        tp3:
-          round(
-            validBuy.target.mid
-          ),
-
-        takeProfit1:
-          round(
-            tp1
-          ),
-
-        takeProfit2:
-          round(
-            tp2
-          ),
-
-        takeProfit3:
-          round(
-            validBuy.target.mid
-          ),
-
-        sourceScore:
-          round(
-            validBuy.source.score
-          ),
-
-        sourceTouches:
-          validBuy.source.touches,
-
-        magnet:
-          validBuy
-
-      };
-
-    } else {
-
-      /*
-       * SELL wins.
-       */
-
-      const zone =
-        validSell.source;
-
-
-      const entryLow =
-        zone.bot;
-
-
-      const entryHigh =
-        zone.top;
-
-
-      const risk =
-        Math.max(
-          currentATR * 0.8,
-          0.00001
-        );
-
-
-      const stopLoss =
-        entryHigh +
-        risk;
-
-
-      const tp1 =
-        price -
-        Math.max(
-          currentATR * 1.5,
-          risk * 1.5
-        );
-
-
-      const tp2 =
-        price -
-        Math.max(
-          currentATR * 2.5,
-          risk * 2.5
-        );
-
-
-      signal = {
-
-        direction:
-          "SELL",
-
-        confidence:
-          validSell.pullScore,
-
-        score:
-          validSell.pullScore,
-
-        probability:
-          validSell.probability,
-
-        entry: {
-          low:
-            round(
-              entryLow
-            ),
-          high:
-            round(
-              entryHigh
-            )
-        },
-
-        entryZone: {
-          low:
-            round(
-              entryLow
-            ),
-          high:
-            round(
-              entryHigh
-            )
-        },
-
-        entryPrice:
-          round(
-            (
-              entryLow +
-              entryHigh
-            ) / 2
-          ),
-
-        stopLoss:
-          round(
-            stopLoss
-          ),
-
-        sl:
-          round(
-            stopLoss
-          ),
-
-        tp1:
-          round(
-            tp1
-          ),
-
-        tp2:
-          round(
-            tp2
-          ),
-
-        tp3:
-          round(
-            validSell.target.mid
-          ),
-
-        takeProfit1:
-          round(
-            tp1
-          ),
-
-        takeProfit2:
-          round(
-            tp2
-          ),
-
-        takeProfit3:
-          round(
-            validSell.target.mid
-          ),
-
-        sourceScore:
-          round(
-            validSell.source.score
-          ),
-
-        sourceTouches:
-          validSell.source.touches,
-
-        magnet:
-          validSell
-
-      };
     }
+
   }
-
-
-  /* =====================================================
-     FRONTEND COMPATIBILITY
-     ===================================================== */
-
-  /*
-   * IMPORTANT:
-   *
-   * Frontend expects:
-   *
-   * engine.supply
-   * engine.demand
-   * engine.magnet
-   * engine.signal
-   *
-   * Therefore the strongest zone/magnet is exposed
-   * directly, while complete arrays are also preserved.
-   */
-
-
-  const strongestSupply =
-    supply.length > 0
-      ? formatZone(
-          supply[0]
-        )
-      : null;
-
-
-  const strongestDemand =
-    demand.length > 0
-      ? formatZone(
-          demand[0]
-        )
-      : null;
-
-
-  const strongestMagnet =
-    magnets.length > 0
-      ? magnets[0]
-      : null;
 
 
   return {
@@ -2096,123 +1396,48 @@ function calculateSDMagnet(candles) {
         ? signal.direction
         : "WAIT",
 
-
-    direction:
-      signal
-        ? signal.direction
-        : "WAIT",
-
-
     price:
-      round(
-        price
-      ),
-
+      round(price),
 
     atr:
-      round(
-        currentATR
-      ),
-
-
-    /*
-     * Direct frontend objects
-     */
+      round(currentATR),
 
     supply:
-      strongestSupply,
-
-
-    demand:
-      strongestDemand,
-
-
-    magnet:
-      strongestMagnet,
-
-
-    /*
-     * Complete zone lists
-     */
-
-    supplyZones:
       supply.map(
         formatZone
       ),
 
-
-    demandZones:
+    demand:
       demand.map(
         formatZone
       ),
 
-
-    /*
-     * Complete magnet list
-     */
-
     magnets:
       magnets.slice(0, 5),
 
-
-    /*
-     * Main trade signal
-     */
-
     signal,
-
-
-    /*
-     * Summary fields
-     */
-
-    score:
-      signal
-        ? signal.sourceScore
-        : 0,
-
-
-    probability:
-      signal
-        ? signal.probability
-        : 0,
-
-
-    retests:
-      signal
-        ? signal.sourceTouches
-        : 0,
-
-
-    /*
-     * Engine rules
-     */
 
     rules: {
 
-      strongZone:
-        7.0,
+      strongZone: 7.0,
 
-      magnetSource:
-        6.5,
+      magnetSource: 6.5,
 
-      magnetTarget:
-        5.0,
+      magnetTarget: 5.0,
 
-      minimumRetests:
-        1,
+      minimumRetests: 1,
 
-      maxReachATR:
-        25
+      maxReachATR: 25
 
     }
 
   };
+
 }
 
 
 /* =========================================================
-   ATR CALCULATION
+   ATR
    ========================================================= */
 
 function calculateATR(
@@ -2232,47 +1457,41 @@ function calculateATR(
     if (i === 0) {
 
       tr.push(
-        Math.max(
-          candles[i].high -
-            candles[i].low,
-          0
-        )
+        candles[i].high -
+        candles[i].low
       );
 
       continue;
+
     }
 
 
-    const current =
+    const c =
       candles[i];
 
-
-    const previous =
+    const p =
       candles[i - 1];
 
 
-    const trueRange =
+    tr.push(
       Math.max(
 
-        current.high -
-          current.low,
+        c.high -
+          c.low,
 
         Math.abs(
-          current.high -
-          previous.close
+          c.high -
+          p.close
         ),
 
         Math.abs(
-          current.low -
-          previous.close
+          c.low -
+          p.close
         )
 
-      );
-
-
-    tr.push(
-      trueRange
+      )
     );
+
   }
 
 
@@ -2299,7 +1518,7 @@ function calculateATR(
       );
 
 
-    const average =
+    const avg =
       slice.reduce(
         (
           sum,
@@ -2308,132 +1527,83 @@ function calculateATR(
           sum + value,
         0
       ) /
-      Math.max(
-        slice.length,
-        1
-      );
+      slice.length;
 
 
-    atr.push(
-      average
-    );
+    atr.push(avg);
+
   }
 
 
   return atr;
+
 }
 
 
 /* =========================================================
-   ZONE FORMATTER
+   HELPERS
    ========================================================= */
 
-function formatZone(
-  zone
-) {
-
-  return {
-
-    type:
-      zone.kind,
-
-
-    top:
-      round(
-        zone.top
-      ),
-
-
-    bottom:
-      round(
-        zone.bot
-      ),
-
-
-    middle:
-      round(
-        zone.mid
-      ),
-
-
-    /*
-     * Alternative names for frontend
-     */
-
-    high:
-      round(
-        zone.top
-      ),
-
-
-    low:
-      round(
-        zone.bot
-      ),
-
-
-    pivot:
-      round(
-        zone.mid
-      ),
-
-
-    score:
-      round(
-        zone.score
-      ),
-
-
-    strength:
-      round(
-        zone.score
-      ),
-
-
-    retests:
-      zone.touches,
-
-
-    touches:
-      zone.touches,
-
-
-    fresh:
-      zone.touches === 0,
-
-
-    status:
-      zone.broken
-        ? "INVALID"
-        : zone.touches === 0
-          ? "FRESH"
-          : "TESTED"
-
-  };
-}
-
-
-/* =========================================================
-   SAFE ROUND
-   ========================================================= */
-
-function round(
-  value
-) {
+function round(value) {
 
   if (
-    value === null ||
-    value === undefined ||
     !Number.isFinite(
-      Number(value)
+      value
     )
   ) {
 
     return null;
+
   }
 
 
   return Number(
-    Number(value).toFixed(5)
+    value.toFixed(5)
   );
+
 }
+
+
+function formatZone(z) {
+
+  return {
+
+    type:
+      z.kind,
+
+    top:
+      round(
+        z.top
+      ),
+
+    bottom:
+      round(
+        z.bot
+      ),
+
+    middle:
+      round(
+        z.mid
+      ),
+
+    score:
+      round(
+        z.score
+      ),
+
+    retests:
+      z.touches,
+
+    fresh:
+      z.touches === 0,
+
+    status:
+      z.broken
+        ? "INVALID"
+        : z.touches === 0
+          ? "FRESH"
+          : "TESTED"
+
+  };
+
+          }
