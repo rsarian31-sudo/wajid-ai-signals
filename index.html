@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>LONA Trading Assistant</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,9 +32,11 @@
       border: 1px solid #202a38;
       border-radius: 20px;
       padding: 20px;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       gap: 15px;
       margin-bottom: 14px;
     }
@@ -52,11 +56,14 @@
       display: flex;
       align-items: center;
       gap: 8px;
+
       background: #121a24;
       padding: 10px 14px;
       border-radius: 20px;
+
       font-size: 12px;
       color: #9aa6b6;
+
       white-space: nowrap;
     }
 
@@ -91,21 +98,28 @@
 
     .control label {
       display: block;
+
       color: #788597;
       font-size: 10px;
+
       text-transform: uppercase;
-      margin-bottom: 7px;
       letter-spacing: .5px;
+
+      margin-bottom: 7px;
     }
 
     select,
     button {
       width: 100%;
+
       border: 0;
       outline: 0;
+
       border-radius: 10px;
+
       background: #151e29;
       color: #edf2f8;
+
       padding: 12px;
       font-size: 14px;
     }
@@ -129,6 +143,7 @@
       background: #0d121a;
       border: 1px solid #202a38;
       border-radius: 20px;
+
       padding: 20px;
       margin-bottom: 14px;
     }
@@ -137,12 +152,15 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+
       gap: 15px;
     }
 
     .eyebrow {
       color: #7f8b9d;
+
       font-size: 11px;
+
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -150,6 +168,7 @@
     .signal {
       font-size: 42px;
       font-weight: 800;
+
       margin-top: 7px;
     }
 
@@ -167,39 +186,50 @@
 
     .signal-description {
       color: #8d99a9;
+
       font-size: 13px;
       margin-top: 5px;
+
       line-height: 1.5;
     }
 
     .engine-badge {
       background: #151e29;
       color: #a7b1bf;
+
       padding: 12px;
+
       border-radius: 12px;
+
       font-size: 12px;
       font-weight: 700;
+
       white-space: nowrap;
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
+
       gap: 9px;
       margin-top: 18px;
     }
 
     .metric {
       background: #111821;
+
       border: 1px solid #1f2a37;
       border-radius: 13px;
+
       padding: 13px;
     }
 
     .metric span {
       display: block;
+
       color: #778497;
       font-size: 10px;
+
       margin-bottom: 7px;
     }
 
@@ -210,19 +240,23 @@
 
     .section-title {
       font-size: 17px;
+
       margin: 22px 2px 10px;
     }
 
     .market-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+
       gap: 10px;
     }
 
     .market-card {
       background: #0d121a;
+
       border: 1px solid #202a38;
       border-radius: 16px;
+
       padding: 16px;
     }
 
@@ -245,29 +279,39 @@
     .market-price {
       font-size: 25px;
       font-weight: 700;
+
       margin-top: 15px;
     }
 
     .market-meta {
       color: #7f8b9d;
+
       font-size: 11px;
       margin-top: 6px;
     }
 
     .data-box {
       margin-top: 10px;
+
       background: #0d121a;
+
       border: 1px solid #202a38;
       border-radius: 16px;
+
       padding: 16px;
     }
 
     .data-row {
       display: flex;
+
       justify-content: space-between;
+
       gap: 15px;
+
       padding: 9px 0;
+
       border-bottom: 1px solid #18212c;
+
       font-size: 12px;
     }
 
@@ -286,19 +330,23 @@
     .zones {
       display: grid;
       grid-template-columns: 1fr 1fr;
+
       gap: 10px;
     }
 
     .zone {
       background: #0d121a;
+
       border: 1px solid #202a38;
       border-radius: 16px;
+
       padding: 16px;
     }
 
     .zone-title {
       font-size: 14px;
       font-weight: 700;
+
       margin-bottom: 12px;
     }
 
@@ -317,11 +365,16 @@
 
     .zone-stat {
       background: #111821;
+
       border-radius: 10px;
+
       padding: 10px;
+
       display: flex;
       justify-content: space-between;
+
       gap: 10px;
+
       font-size: 12px;
     }
 
@@ -336,37 +389,52 @@
 
     .empty {
       border: 1px dashed #293544;
+
       border-radius: 11px;
+
       padding: 20px;
+
       text-align: center;
+
       color: #667386;
+
       font-size: 12px;
     }
 
     .magnet-card {
       margin-top: 10px;
+
       background: #0d121a;
+
       border: 1px solid #202a38;
       border-radius: 16px;
+
       padding: 16px;
     }
 
     .magnet-grid {
       display: grid;
+
       grid-template-columns: repeat(4, 1fr);
+
       gap: 9px;
     }
 
     .magnet-item {
       background: #111821;
+
       border-radius: 11px;
+
       padding: 11px;
     }
 
     .magnet-item small {
       display: block;
+
       color: #778497;
+
       font-size: 10px;
+
       margin-bottom: 6px;
     }
 
@@ -376,43 +444,127 @@
 
     .probability {
       margin-top: 12px;
+
       background: #111821;
+
       border-radius: 10px;
+
       padding: 12px;
     }
 
     .probability-top {
       display: flex;
+
       justify-content: space-between;
+
       font-size: 11px;
+
       color: #778497;
+
       margin-bottom: 7px;
     }
 
     .bar {
       width: 100%;
       height: 7px;
+
       background: #202a35;
+
       border-radius: 10px;
+
       overflow: hidden;
     }
 
     .bar-fill {
       width: 0%;
       height: 100%;
+
       background: #27c07a;
+
       transition: width .3s ease;
+    }
+
+    .diagnostic-grid {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 10px;
+    }
+
+    .diagnostic-card {
+      background: #0d121a;
+
+      border: 1px solid #202a38;
+
+      border-radius: 16px;
+
+      padding: 15px;
+    }
+
+    .diagnostic-title {
+      font-size: 13px;
+      font-weight: 700;
+
+      margin-bottom: 10px;
+    }
+
+    .diagnostic-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      padding: 8px 0;
+
+      border-bottom: 1px solid #18212c;
+
+      font-size: 11px;
+    }
+
+    .diagnostic-row:last-child {
+      border-bottom: 0;
+    }
+
+    .diagnostic-row span:first-child {
+      color: #778497;
+    }
+
+    .diagnostic-row span:last-child {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .buy-text {
+      color: #27c07a !important;
+    }
+
+    .sell-text {
+      color: #e54b5e !important;
+    }
+
+    .wait-text {
+      color: #d4dae2 !important;
     }
 
     .error-box {
       display: none;
+
       background: #211116;
+
       border: 1px solid #59202b;
+
       color: #eaa4ad;
+
       border-radius: 12px;
+
       padding: 12px;
+
       margin-top: 10px;
+
       font-size: 12px;
+
       line-height: 1.5;
     }
 
@@ -422,8 +574,11 @@
 
     footer {
       text-align: center;
+
       color: #5f6b7b;
+
       font-size: 10px;
+
       padding: 25px 5px 10px;
     }
 
@@ -465,6 +620,10 @@
         grid-template-columns: 1fr;
       }
 
+      .diagnostic-grid {
+        grid-template-columns: 1fr;
+      }
+
       .magnet-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -473,47 +632,86 @@
         font-size: 38px;
       }
     }
+
   </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
+
+  <!-- HEADER -->
+
   <header class="header">
 
     <div class="brand">
-      <h1>LONA Trading Assistant</h1>
-      <p>Strong SD Magnet Market Intelligence</p>
+
+      <h1>
+        LONA Trading Assistant
+      </h1>
+
+      <p>
+        Strong SD Magnet Market Intelligence
+      </p>
+
     </div>
 
+
     <div class="status">
-      <span id="statusDot" class="status-dot"></span>
-      <span id="statusText">Connecting...</span>
+
+      <span
+        id="statusDot"
+        class="status-dot">
+      </span>
+
+      <span id="statusText">
+        Connecting...
+      </span>
+
     </div>
 
   </header>
 
 
+  <!-- CONTROLS -->
+
   <section class="controls">
+
 
     <div class="control">
 
-      <label>Instrument</label>
+      <label>
+        Instrument
+      </label>
+
 
       <select id="instrument">
 
-        <option value="XAU/USD">XAU/USD — Gold</option>
+        <option value="XAU/USD">
+          XAU/USD — Gold
+        </option>
 
-        <option value="WTI">WTI — Oil</option>
+        <option value="WTI">
+          WTI — Oil
+        </option>
 
-        <option value="BRENT">Brent — Oil</option>
+        <option value="BRENT">
+          Brent — Oil
+        </option>
 
-        <option value="GBP/USD">GBP/USD</option>
+        <option value="GBP/USD">
+          GBP/USD
+        </option>
 
-        <option value="GBP/JPY">GBP/JPY</option>
+        <option value="GBP/JPY">
+          GBP/JPY
+        </option>
 
-        <option value="GBP/CHF">GBP/CHF</option>
+        <option value="GBP/CHF">
+          GBP/CHF
+        </option>
 
       </select>
 
@@ -522,13 +720,20 @@
 
     <div class="control">
 
-      <label>Display Timeframe</label>
+      <label>
+        Display Timeframe
+      </label>
+
 
       <select id="timeframe">
 
-        <option value="15min">15 Minutes — Structure</option>
+        <option value="15min">
+          15 Minutes — Structure
+        </option>
 
-        <option value="5min">5 Minutes — Entry</option>
+        <option value="5min">
+          5 Minutes — Entry
+        </option>
 
       </select>
 
@@ -546,7 +751,9 @@
 
   <section class="signal-card">
 
+
     <div class="signal-header">
+
 
       <div>
 
@@ -554,15 +761,27 @@
           Current Trading Signal
         </div>
 
-        <div id="signal" class="signal wait">
+
+        <div
+          id="signal"
+          class="signal wait">
+
           WAIT
+
         </div>
 
-        <div id="signalDescription" class="signal-description">
-          Waiting for 15M structure and 5M confirmation.
+
+        <div
+          id="signalDescription"
+          class="signal-description">
+
+          Waiting for confirmed SD Magnet
+          structure and entry confirmation.
+
         </div>
 
       </div>
+
 
       <div class="engine-badge">
         SD MAGNET
@@ -573,30 +792,65 @@
 
     <div class="metrics">
 
-      <div class="metric">
-        <span>ENTRY ZONE</span>
-        <strong id="entry">—</strong>
-      </div>
 
       <div class="metric">
-        <span>STOP LOSS</span>
-        <strong id="sl">—</strong>
+
+        <span>
+          ENTRY ZONE
+        </span>
+
+        <strong id="entry">
+          —
+        </strong>
+
       </div>
 
-      <div class="metric">
-        <span>TP1</span>
-        <strong id="tp1">—</strong>
-      </div>
 
       <div class="metric">
-        <span>TP2 / TP3</span>
-        <strong id="tp23">—</strong>
+
+        <span>
+          STOP LOSS
+        </span>
+
+        <strong id="sl">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="metric">
+
+        <span>
+          TP1
+        </span>
+
+        <strong id="tp1">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="metric">
+
+        <span>
+          TP2 / TP3
+        </span>
+
+        <strong id="tp23">
+          —
+        </strong>
+
       </div>
 
     </div>
 
 
-    <div id="errorBox" class="error-box"></div>
+    <div
+      id="errorBox"
+      class="error-box">
+    </div>
 
   </section>
 
@@ -610,26 +864,46 @@
 
   <section class="market-grid">
 
+
     <div class="market-card">
 
       <div class="market-top">
 
-        <span id="selectedName" class="market-name">
+        <span
+          id="selectedName"
+          class="market-name">
+
           XAU/USD
+
         </span>
 
-        <span id="selectedTf" class="market-tf">
+
+        <span
+          id="selectedTf"
+          class="market-tf">
+
           15M
+
         </span>
 
       </div>
 
-      <div id="selectedPrice" class="market-price">
+
+      <div
+        id="selectedPrice"
+        class="market-price">
+
         —
+
       </div>
 
-      <div id="selectedMeta" class="market-meta">
+
+      <div
+        id="selectedMeta"
+        class="market-meta">
+
         Loading market data...
+
       </div>
 
     </div>
@@ -649,12 +923,22 @@
 
       </div>
 
-      <div id="lastCandleClose" class="market-price">
+
+      <div
+        id="lastCandleClose"
+        class="market-price">
+
         —
+
       </div>
 
-      <div id="lastCandleTime" class="market-meta">
+
+      <div
+        id="lastCandleTime"
+        class="market-meta">
+
         Waiting...
+
       </div>
 
     </div>
@@ -674,12 +958,22 @@
 
       </div>
 
-      <div id="dataStatus" class="market-price">
+
+      <div
+        id="dataStatus"
+        class="market-price">
+
         —
+
       </div>
 
-      <div id="dataAge" class="market-meta">
+
+      <div
+        id="dataAge"
+        class="market-meta">
+
         Waiting...
+
       </div>
 
     </div>
@@ -696,30 +990,36 @@
 
   <section class="data-box">
 
+
     <div class="data-row">
       <span>Open</span>
       <span id="ohlcOpen">—</span>
     </div>
+
 
     <div class="data-row">
       <span>High</span>
       <span id="ohlcHigh">—</span>
     </div>
 
+
     <div class="data-row">
       <span>Low</span>
       <span id="ohlcLow">—</span>
     </div>
+
 
     <div class="data-row">
       <span>Close</span>
       <span id="ohlcClose">—</span>
     </div>
 
+
     <div class="data-row">
       <span>Volume</span>
       <span id="ohlcVolume">—</span>
     </div>
+
 
     <div class="data-row">
       <span>Candles Loaded</span>
@@ -738,14 +1038,20 @@
 
   <section class="zones">
 
+
     <div class="zone">
 
       <div class="zone-title supply">
         Supply — SELL Area
       </div>
 
-      <div id="supplyZone" class="empty">
+
+      <div
+        id="supplyZone"
+        class="empty">
+
         Waiting for SD Magnet engine...
+
       </div>
 
     </div>
@@ -757,8 +1063,13 @@
         Demand — BUY Area
       </div>
 
-      <div id="demandZone" class="empty">
+
+      <div
+        id="demandZone"
+        class="empty">
+
         Waiting for SD Magnet engine...
+
       </div>
 
     </div>
@@ -769,75 +1080,413 @@
   <!-- MAGNET -->
 
   <h2 class="section-title">
-    SD Magnet Pull
+    SD Magnet Pull — 15M
   </h2>
 
 
   <section class="magnet-card">
 
-    <div id="magnetContent" class="empty">
+    <div
+      id="magnetContent"
+      class="empty">
+
       Waiting for valid magnet setup...
+
     </div>
 
   </section>
 
 
-  <!-- ENGINE -->
+  <!-- DIAGNOSTICS -->
 
   <h2 class="section-title">
-    Engine Confirmation
+    Engine Diagnostics
+  </h2>
+
+
+  <section class="diagnostic-grid">
+
+
+    <!-- 15M -->
+
+    <div class="diagnostic-card">
+
+      <div class="diagnostic-title">
+        15M Structure
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Direction
+        </span>
+
+        <span
+          id="diag15Direction">
+          WAIT
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Score
+        </span>
+
+        <span id="diag15Score">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Retests
+        </span>
+
+        <span id="diag15Retests">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Supply
+        </span>
+
+        <span id="diag15Supply">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Demand
+        </span>
+
+        <span id="diag15Demand">
+          —
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- 5M -->
+
+    <div class="diagnostic-card">
+
+      <div class="diagnostic-title">
+        5M Confirmation
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Direction
+        </span>
+
+        <span
+          id="diag5Direction">
+          WAIT
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Score
+        </span>
+
+        <span id="diag5Score">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Retests
+        </span>
+
+        <span id="diag5Retests">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Supply
+        </span>
+
+        <span id="diag5Supply">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Demand
+        </span>
+
+        <span id="diag5Demand">
+          —
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAGNET -->
+
+    <div class="diagnostic-card">
+
+      <div class="diagnostic-title">
+        Magnet Analysis
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Direction
+        </span>
+
+        <span id="diagMagnetDirection">
+          NONE
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Source
+        </span>
+
+        <span id="diagMagnetSource">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Target
+        </span>
+
+        <span id="diagMagnetTarget">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Pull Score
+        </span>
+
+        <span id="diagMagnetScore">
+          —
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Probability
+        </span>
+
+        <span id="diagMagnetProbability">
+          —
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- FINAL -->
+
+    <div class="diagnostic-card">
+
+      <div class="diagnostic-title">
+        Final Decision
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          15M Structure
+        </span>
+
+        <span id="final15">
+          WAIT
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          5M Confirmation
+        </span>
+
+        <span id="final5">
+          WAIT
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Alignment
+        </span>
+
+        <span id="alignment">
+          NOT ALIGNED
+        </span>
+
+      </div>
+
+
+      <div class="diagnostic-row">
+
+        <span>
+          Final Signal
+        </span>
+
+        <span id="finalDecision">
+          WAIT
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- OLD ENGINE RULES -->
+
+  <h2 class="section-title">
+    Engine Rules
   </h2>
 
 
   <section class="data-box">
 
-    <div class="data-row">
-      <span>15M Structure</span>
-      <span id="structure15">
-        WAITING
-      </span>
-    </div>
 
     <div class="data-row">
-      <span>5M Confirmation</span>
-      <span id="confirmation5">
-        WAITING
+
+      <span>
+        15M Structure
       </span>
+
+      <span>
+        Main Direction
+      </span>
+
     </div>
 
-    <div class="data-row">
-      <span>15M Score</span>
-      <span id="score15">
-        —
-      </span>
-    </div>
 
     <div class="data-row">
-      <span>5M Score</span>
-      <span id="score5">
-        —
+
+      <span>
+        5M Confirmation
       </span>
+
+      <span>
+        Entry Confirmation
+      </span>
+
     </div>
 
+
     <div class="data-row">
-      <span>Strong Zone Threshold</span>
+
+      <span>
+        Strong Zone Threshold
+      </span>
+
       <span>
         7.0 / 10
       </span>
+
     </div>
 
+
     <div class="data-row">
-      <span>Magnet Source</span>
+
+      <span>
+        Magnet Source
+      </span>
+
       <span>
         ≥ 6.5 + Retest
       </span>
+
     </div>
 
+
     <div class="data-row">
-      <span>Magnet Target</span>
+
+      <span>
+        Magnet Target
+      </span>
+
       <span>
         ≥ 5.0
       </span>
+
+    </div>
+
+
+    <div class="data-row">
+
+      <span>
+        Maximum Magnet Reach
+      </span>
+
+      <span>
+        25 ATR
+      </span>
+
     </div>
 
   </section>
@@ -852,255 +1501,523 @@
 
 <script>
 
+
+  /* =====================================================
+     ELEMENTS
+     ===================================================== */
+
+
   const instrumentEl =
-    document.getElementById("instrument");
+    document.getElementById(
+      "instrument"
+    );
+
 
   const timeframeEl =
-    document.getElementById("timeframe");
+    document.getElementById(
+      "timeframe"
+    );
+
 
   const refreshBtn =
-    document.getElementById("refreshBtn");
+    document.getElementById(
+      "refreshBtn"
+    );
+
 
   const statusDot =
-    document.getElementById("statusDot");
+    document.getElementById(
+      "statusDot"
+    );
+
 
   const statusText =
-    document.getElementById("statusText");
+    document.getElementById(
+      "statusText"
+    );
+
 
   const signalEl =
-    document.getElementById("signal");
+    document.getElementById(
+      "signal"
+    );
+
 
   const signalDescription =
-    document.getElementById("signalDescription");
+    document.getElementById(
+      "signalDescription"
+    );
+
 
   const errorBox =
-    document.getElementById("errorBox");
+    document.getElementById(
+      "errorBox"
+    );
 
+
+  /*
+   * Stores complete 15M and 5M responses.
+   */
 
   let market15 = null;
+
   let market5 = null;
 
 
-  /* =========================
-     BASIC HELPERS
-  ========================= */
+  /* =====================================================
+     STATUS
+     ===================================================== */
 
-  function setStatus(type, text) {
 
-    statusDot.className = "status-dot";
+  function setStatus(
+    type,
+    text
+  ) {
 
-    if (type === "live") {
-      statusDot.classList.add("live");
+    statusDot.className =
+      "status-dot";
+
+
+    if (
+      type === "live"
+    ) {
+
+      statusDot.classList.add(
+        "live"
+      );
+
     }
 
-    if (type === "error") {
-      statusDot.classList.add("error");
+
+    if (
+      type === "error"
+    ) {
+
+      statusDot.classList.add(
+        "error"
+      );
+
     }
 
-    statusText.textContent = text;
+
+    statusText.textContent =
+      text;
   }
 
 
-  function showError(message) {
+  /* =====================================================
+     ERROR
+     ===================================================== */
 
-    errorBox.style.display = "block";
 
-    errorBox.textContent = message;
+  function showError(
+    message
+  ) {
+
+    errorBox.style.display =
+      "block";
+
+    errorBox.textContent =
+      message;
   }
 
 
   function hideError() {
 
-    errorBox.style.display = "none";
+    errorBox.style.display =
+      "none";
 
-    errorBox.textContent = "";
+    errorBox.textContent =
+      "";
   }
 
 
-  function formatPrice(value) {
+  /* =====================================================
+     FORMATTERS
+     ===================================================== */
+
+
+  function formatPrice(
+    value
+  ) {
 
     if (
       value === null ||
       value === undefined ||
-      Number.isNaN(Number(value))
+      !Number.isFinite(
+        Number(value)
+      )
     ) {
+
       return "—";
     }
 
-    const number = Number(value);
 
-    if (number >= 100) {
+    const number =
+      Number(value);
+
+
+    if (
+      Math.abs(number) >= 100
+    ) {
+
       return number.toFixed(2);
     }
+
 
     return number.toFixed(5);
   }
 
 
-  function formatScore(value) {
+  function formatScore(
+    value
+  ) {
 
     if (
       value === null ||
       value === undefined ||
-      Number.isNaN(Number(value))
+      !Number.isFinite(
+        Number(value)
+      )
     ) {
+
       return "—";
     }
 
-    return Number(value).toFixed(1) + " / 10";
+
+    return (
+      Number(value).toFixed(1) +
+      " / 10"
+    );
   }
 
 
-  function formatProbability(value) {
+  function formatProbability(
+    value
+  ) {
 
     if (
       value === null ||
       value === undefined ||
-      Number.isNaN(Number(value))
+      !Number.isFinite(
+        Number(value)
+      )
     ) {
+
       return "—";
     }
 
-    let number = Number(value);
 
-    if (number <= 1) {
+    let number =
+      Number(value);
+
+
+    if (
+      number <= 1
+    ) {
+
       number *= 100;
     }
 
-    return Math.round(number) + "%";
+
+    return (
+      Math.round(number) +
+      "%"
+    );
   }
 
 
-  function formatTime(value) {
+  function formatTime(
+    value
+  ) {
 
     if (!value) {
       return "—";
     }
 
-    const raw = String(value);
 
-    const date = new Date(
+    const raw =
+      String(value);
+
+
+    let date;
+
+
+    if (
       raw.includes("T")
-        ? raw
-        : raw.replace(" ", "T") + "Z"
-    );
+    ) {
 
-    if (Number.isNaN(date.getTime())) {
+      date =
+        new Date(raw);
+
+    } else {
+
+      date =
+        new Date(
+          raw.replace(
+            " ",
+            "T"
+          ) + "Z"
+        );
+    }
+
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
       return raw;
     }
+
 
     return date.toLocaleString();
   }
 
 
-  function safe(value, fallback = "—") {
+  function safe(
+    value,
+    fallback = "—"
+  ) {
 
-    return (
-      value === undefined ||
+    if (
       value === null ||
+      value === undefined ||
       value === ""
-    )
-      ? fallback
-      : value;
+    ) {
+
+      return fallback;
+    }
+
+
+    return value;
   }
 
 
-  function getDirection(engine) {
+  /* =====================================================
+     DIRECTION
+     ===================================================== */
+
+
+  function getDirection(
+    engine
+  ) {
 
     if (!engine) {
       return "WAIT";
     }
 
-    const signal =
-      engine.signal;
 
-    if (typeof signal === "string") {
-      return signal.toUpperCase();
-    }
+    /*
+     * Backend has direct direction.
+     */
 
-    if (signal && signal.direction) {
-      return String(
-        signal.direction
-      ).toUpperCase();
-    }
+    if (
+      engine.direction
+    ) {
 
-    if (engine.direction) {
       return String(
         engine.direction
       ).toUpperCase();
     }
 
+
+    /*
+     * Fallback to status.
+     */
+
+    if (
+      engine.status
+    ) {
+
+      return String(
+        engine.status
+      ).toUpperCase();
+    }
+
+
+    /*
+     * Fallback to signal.
+     */
+
+    if (
+      engine.signal
+    ) {
+
+      if (
+        typeof engine.signal ===
+        "string"
+      ) {
+
+        return engine.signal
+          .toUpperCase();
+      }
+
+
+      if (
+        engine.signal.direction
+      ) {
+
+        return String(
+          engine.signal.direction
+        ).toUpperCase();
+      }
+    }
+
+
     return "WAIT";
   }
 
 
-  function getSignalObject(engine) {
+  function getSignalObject(
+    engine
+  ) {
 
-    if (!engine) {
+    if (
+      !engine
+    ) {
+
       return {};
     }
 
+
     if (
       engine.signal &&
-      typeof engine.signal === "object"
+      typeof engine.signal ===
+      "object"
     ) {
+
       return engine.signal;
     }
 
-    return engine;
+
+    return {};
   }
 
 
-  /* =========================
-     SIGNAL RESET
-  ========================= */
+  /* =====================================================
+     TEXT CLASS
+     ===================================================== */
+
+
+  function applyDirectionClass(
+    element,
+    direction
+  ) {
+
+    if (!element) {
+      return;
+    }
+
+
+    element.classList.remove(
+      "buy-text",
+      "sell-text",
+      "wait-text"
+    );
+
+
+    if (
+      direction === "BUY"
+    ) {
+
+      element.classList.add(
+        "buy-text"
+      );
+
+    } else if (
+      direction === "SELL"
+    ) {
+
+      element.classList.add(
+        "sell-text"
+      );
+
+    } else {
+
+      element.classList.add(
+        "wait-text"
+      );
+    }
+  }
+
+
+  /* =====================================================
+     RESET SIGNAL
+     ===================================================== */
+
 
   function resetSignal() {
 
-    signalEl.textContent = "WAIT";
+    signalEl.textContent =
+      "WAIT";
+
 
     signalEl.className =
       "signal wait";
 
+
     signalDescription.textContent =
-      "Waiting for 15M structure and 5M confirmation.";
+      "Waiting for confirmed SD Magnet structure and entry confirmation.";
 
-    document.getElementById("entry").textContent = "—";
 
-    document.getElementById("sl").textContent = "—";
+    document.getElementById(
+      "entry"
+    ).textContent =
+      "—";
 
-    document.getElementById("tp1").textContent = "—";
 
-    document.getElementById("tp23").textContent = "—";
+    document.getElementById(
+      "sl"
+    ).textContent =
+      "—";
+
+
+    document.getElementById(
+      "tp1"
+    ).textContent =
+      "—";
+
+
+    document.getElementById(
+      "tp23"
+    ).textContent =
+      "—";
   }
 
 
-  /* =========================
-     MARKET DATA UI
-  ========================= */
+  /* =====================================================
+     MARKET UI
+     ===================================================== */
 
-  function updateSelectedMarket(data) {
+
+  function updateSelectedMarket(
+    data
+  ) {
 
     if (
       !data ||
-      !data.candles ||
-      !data.candles.length
+      !Array.isArray(
+        data.candles
+      ) ||
+      data.candles.length === 0
     ) {
+
       throw new Error(
         "No candle data received."
       );
     }
 
+
     const candles =
       data.candles;
 
-    const last =
-      candles[candles.length - 1];
 
-    const selectedTf =
-      timeframeEl.value === "15min"
-        ? "15M"
-        : "5M";
+    const last =
+      candles[
+        candles.length - 1
+      ];
 
 
     document.getElementById(
@@ -1112,13 +2029,18 @@
     document.getElementById(
       "selectedTf"
     ).textContent =
-      selectedTf;
+      timeframeEl.value ===
+      "15min"
+        ? "15M"
+        : "5M";
 
 
     document.getElementById(
       "selectedPrice"
     ).textContent =
-      formatPrice(last.close);
+      formatPrice(
+        last.close
+      );
 
 
     document.getElementById(
@@ -1130,43 +2052,58 @@
     document.getElementById(
       "lastCandleClose"
     ).textContent =
-      formatPrice(last.close);
+      formatPrice(
+        last.close
+      );
 
 
     document.getElementById(
       "lastCandleTime"
     ).textContent =
-      formatTime(last.time);
+      formatTime(
+        last.time
+      );
 
 
     document.getElementById(
       "ohlcOpen"
     ).textContent =
-      formatPrice(last.open);
+      formatPrice(
+        last.open
+      );
 
 
     document.getElementById(
       "ohlcHigh"
     ).textContent =
-      formatPrice(last.high);
+      formatPrice(
+        last.high
+      );
 
 
     document.getElementById(
       "ohlcLow"
     ).textContent =
-      formatPrice(last.low);
+      formatPrice(
+        last.low
+      );
 
 
     document.getElementById(
       "ohlcClose"
     ).textContent =
-      formatPrice(last.close);
+      formatPrice(
+        last.close
+      );
 
 
     document.getElementById(
       "ohlcVolume"
     ).textContent =
-      safe(last.volume, "0");
+      safe(
+        last.volume,
+        "0"
+      );
 
 
     document.getElementById(
@@ -1188,9 +2125,10 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      ZONE UI
-  ========================= */
+     ===================================================== */
+
 
   function renderZone(
     elementId,
@@ -1202,6 +2140,7 @@
       document.getElementById(
         elementId
       );
+
 
     if (!zone) {
 
@@ -1227,21 +2166,31 @@
       zone.lower;
 
 
+    const middle =
+      zone.middle ??
+      zone.mid ??
+      zone.pivot ??
+      zone.price;
+
+
     const score =
       zone.score ??
       zone.strength;
 
 
     const touches =
-      zone.touches ??
       zone.retests ??
+      zone.touches ??
       0;
 
 
-    const pivot =
-      zone.pivot ??
-      zone.price ??
-      zone.level;
+    const status =
+      zone.status ??
+      (
+        touches === 0
+          ? "FRESH"
+          : "TESTED"
+      );
 
 
     element.className =
@@ -1251,50 +2200,83 @@
     element.innerHTML = `
 
       <div class="zone-stat">
-        <span>Zone</span>
+
+        <span>
+          Zone
+        </span>
+
         <span>
           ${formatPrice(bottom)}
           —
           ${formatPrice(top)}
         </span>
+
       </div>
 
+
       <div class="zone-stat">
-        <span>Pivot</span>
+
         <span>
-          ${formatPrice(pivot)}
+          Pivot
         </span>
+
+        <span>
+          ${formatPrice(middle)}
+        </span>
+
       </div>
 
+
       <div class="zone-stat">
-        <span>Strength</span>
+
+        <span>
+          Strength
+        </span>
+
         <span>
           ${formatScore(score)}
         </span>
+
       </div>
 
+
       <div class="zone-stat">
-        <span>Retests</span>
+
+        <span>
+          Retests
+        </span>
+
         <span>
           ${touches}
         </span>
+
       </div>
 
+
       <div class="zone-stat">
-        <span>Type</span>
+
         <span>
-          ${type}
+          Status
         </span>
+
+        <span>
+          ${safe(status)}
+        </span>
+
       </div>
+
     `;
   }
 
 
-  /* =========================
+  /* =====================================================
      MAGNET UI
-  ========================= */
+     ===================================================== */
 
-  function renderMagnet(engine) {
+
+  function renderMagnet(
+    engine
+  ) {
 
     const element =
       document.getElementById(
@@ -1304,8 +2286,13 @@
 
     const magnet =
       engine?.magnet ||
-      engine?.magnetPull ||
-      null;
+      (
+        Array.isArray(
+          engine?.magnets
+        )
+          ? engine.magnets[0]
+          : null
+      );
 
 
     if (!magnet) {
@@ -1321,31 +2308,26 @@
 
 
     const source =
-      magnet.sourceType ??
-      magnet.source ??
-      "—";
+      magnet.source || {};
 
 
     const target =
-      magnet.targetType ??
-      magnet.target ??
-      "—";
+      magnet.target || {};
+
+
+    const direction =
+      magnet.direction ||
+      "NONE";
 
 
     const score =
-      magnet.score ??
-      magnet.pullScore;
+      magnet.pullScore ??
+      magnet.score;
 
 
     const probability =
       magnet.probability ??
       magnet.pullProbability;
-
-
-    const fired =
-      magnet.fired ??
-      magnet.active ??
-      true;
 
 
     element.className =
@@ -1356,35 +2338,60 @@
 
       <div class="magnet-grid">
 
-        <div class="magnet-item">
-          <small>STATUS</small>
-          <strong>
-            ${fired ? "ACTIVE" : "WAIT"}
-          </strong>
-        </div>
 
         <div class="magnet-item">
-          <small>SOURCE</small>
+
+          <small>
+            DIRECTION
+          </small>
+
           <strong>
-            ${safe(source)}
+            ${safe(direction)}
           </strong>
+
         </div>
 
-        <div class="magnet-item">
-          <small>TARGET</small>
-          <strong>
-            ${safe(target)}
-          </strong>
-        </div>
 
         <div class="magnet-item">
-          <small>PULL SCORE</small>
+
+          <small>
+            SOURCE
+          </small>
+
+          <strong>
+            ${safe(source.type)}
+          </strong>
+
+        </div>
+
+
+        <div class="magnet-item">
+
+          <small>
+            TARGET
+          </small>
+
+          <strong>
+            ${safe(target.type)}
+          </strong>
+
+        </div>
+
+
+        <div class="magnet-item">
+
+          <small>
+            PULL SCORE
+          </small>
+
           <strong>
             ${formatScore(score)}
           </strong>
+
         </div>
 
       </div>
+
 
       <div class="probability">
 
@@ -1395,129 +2402,642 @@
           </span>
 
           <span>
-            ${formatProbability(probability)}
+            ${formatProbability(
+              probability
+            )}
           </span>
 
         </div>
+
 
         <div class="bar">
 
           <div
             id="probabilityBar"
             class="bar-fill"
-            style="width:${getProbabilityPercent(probability)}%"
-          ></div>
+            style="
+              width:
+              ${getProbabilityPercent(
+                probability
+              )}%
+            "
+          >
+          </div>
 
         </div>
 
       </div>
+
     `;
   }
 
 
-  function getProbabilityPercent(value) {
+  function getProbabilityPercent(
+    value
+  ) {
 
     if (
       value === null ||
       value === undefined ||
-      Number.isNaN(Number(value))
+      !Number.isFinite(
+        Number(value)
+      )
     ) {
+
       return 0;
     }
+
 
     let number =
       Number(value);
 
-    if (number <= 1) {
+
+    if (
+      number <= 1
+    ) {
+
       number *= 100;
     }
 
+
     return Math.max(
       0,
-      Math.min(100, number)
+      Math.min(
+        100,
+        number
+      )
     );
   }
 
 
-  /* =========================
-     15M + 5M SIGNAL ENGINE
-  ========================= */
+  /* =====================================================
+     DIAGNOSTICS
+     ===================================================== */
+
+
+  function updateDiagnostics() {
+
+    if (
+      !market15 ||
+      !market5
+    ) {
+
+      return;
+    }
+
+
+    const engine15 =
+      market15.engine ||
+      {};
+
+
+    const engine5 =
+      market5.engine ||
+      {};
+
+
+    const direction15 =
+      getDirection(
+        engine15
+      );
+
+
+    const direction5 =
+      getDirection(
+        engine5
+      );
+
+
+    /*
+     * 15M signal object
+     */
+
+    const signal15 =
+      getSignalObject(
+        engine15
+      );
+
+
+    /*
+     * 5M signal object
+     */
+
+    const signal5 =
+      getSignalObject(
+        engine5
+      );
+
+
+    /*
+     * 15M values
+     */
+
+    const score15 =
+      engine15.score ??
+      signal15.score ??
+      signal15.sourceScore ??
+      0;
+
+
+    const retests15 =
+      engine15.retests ??
+      signal15.sourceTouches ??
+      getBestZoneRetests(
+        engine15
+      );
+
+
+    /*
+     * 5M values
+     */
+
+    const score5 =
+      engine5.score ??
+      signal5.score ??
+      signal5.sourceScore ??
+      0;
+
+
+    const retests5 =
+      engine5.retests ??
+      signal5.sourceTouches ??
+      getBestZoneRetests(
+        engine5
+      );
+
+
+    /*
+     * 15M zone summaries
+     */
+
+    const supply15 =
+      engine15.supply;
+
+
+    const demand15 =
+      engine15.demand;
+
+
+    /*
+     * 5M zone summaries
+     */
+
+    const supply5 =
+      engine5.supply;
+
+
+    const demand5 =
+      engine5.demand;
+
+
+    /*
+     * Set 15M direction
+     */
+
+    const diag15Direction =
+      document.getElementById(
+        "diag15Direction"
+      );
+
+
+    diag15Direction.textContent =
+      direction15;
+
+
+    applyDirectionClass(
+      diag15Direction,
+      direction15
+    );
+
+
+    /*
+     * Set 15M score
+     */
+
+    document.getElementById(
+      "diag15Score"
+    ).textContent =
+      formatScore(
+        score15
+      );
+
+
+    /*
+     * Set 15M retests
+     */
+
+    document.getElementById(
+      "diag15Retests"
+    ).textContent =
+      safe(
+        retests15,
+        "0"
+      );
+
+
+    /*
+     * Set 15M supply
+     */
+
+    document.getElementById(
+      "diag15Supply"
+    ).textContent =
+      supply15
+        ? formatScore(
+            supply15.score
+          )
+        : "NONE";
+
+
+    /*
+     * Set 15M demand
+     */
+
+    document.getElementById(
+      "diag15Demand"
+    ).textContent =
+      demand15
+        ? formatScore(
+            demand15.score
+          )
+        : "NONE";
+
+
+    /*
+     * 5M direction
+     */
+
+    const diag5Direction =
+      document.getElementById(
+        "diag5Direction"
+      );
+
+
+    diag5Direction.textContent =
+      direction5;
+
+
+    applyDirectionClass(
+      diag5Direction,
+      direction5
+    );
+
+
+    /*
+     * 5M score
+     */
+
+    document.getElementById(
+      "diag5Score"
+    ).textContent =
+      formatScore(
+        score5
+      );
+
+
+    /*
+     * 5M retests
+     */
+
+    document.getElementById(
+      "diag5Retests"
+    ).textContent =
+      safe(
+        retests5,
+        "0"
+      );
+
+
+    /*
+     * 5M supply
+     */
+
+    document.getElementById(
+      "diag5Supply"
+    ).textContent =
+      supply5
+        ? formatScore(
+            supply5.score
+          )
+        : "NONE";
+
+
+    /*
+     * 5M demand
+     */
+
+    document.getElementById(
+      "diag5Demand"
+    ).textContent =
+      demand5
+        ? formatScore(
+            demand5.score
+          )
+        : "NONE";
+
+
+    /*
+     * Magnet
+     */
+
+    const magnet =
+      engine15.magnet ||
+      (
+        Array.isArray(
+          engine15.magnets
+        )
+          ? engine15.magnets[0]
+          : null
+      );
+
+
+    if (magnet) {
+
+      document.getElementById(
+        "diagMagnetDirection"
+      ).textContent =
+        safe(
+          magnet.direction,
+          "NONE"
+        );
+
+
+      document.getElementById(
+        "diagMagnetSource"
+      ).textContent =
+        safe(
+          magnet.source?.type
+        );
+
+
+      document.getElementById(
+        "diagMagnetTarget"
+      ).textContent =
+        safe(
+          magnet.target?.type
+        );
+
+
+      document.getElementById(
+        "diagMagnetScore"
+      ).textContent =
+        formatScore(
+          magnet.pullScore
+        );
+
+
+      document.getElementById(
+        "diagMagnetProbability"
+      ).textContent =
+        formatProbability(
+          magnet.probability
+        );
+
+    } else {
+
+      document.getElementById(
+        "diagMagnetDirection"
+      ).textContent =
+        "NONE";
+
+
+      document.getElementById(
+        "diagMagnetSource"
+      ).textContent =
+        "—";
+
+
+      document.getElementById(
+        "diagMagnetTarget"
+      ).textContent =
+        "—";
+
+
+      document.getElementById(
+        "diagMagnetScore"
+      ).textContent =
+        "—";
+
+
+      document.getElementById(
+        "diagMagnetProbability"
+      ).textContent =
+        "—";
+    }
+
+
+    /*
+     * Final alignment
+     */
+
+    const aligned =
+      (
+        direction15 === "BUY" &&
+        direction5 === "BUY"
+      ) ||
+      (
+        direction15 === "SELL" &&
+        direction5 === "SELL"
+      );
+
+
+    document.getElementById(
+      "final15"
+    ).textContent =
+      direction15;
+
+
+    document.getElementById(
+      "final5"
+    ).textContent =
+      direction5;
+
+
+    const alignment =
+      document.getElementById(
+        "alignment"
+      );
+
+
+    alignment.textContent =
+      aligned
+        ? "ALIGNED"
+        : "NOT ALIGNED";
+
+
+    applyDirectionClass(
+      alignment,
+      aligned
+        ? direction15
+        : "WAIT"
+    );
+
+
+    /*
+     * Final decision.
+     *
+     * IMPORTANT:
+     *
+     * We require both 15M and 5M
+     * to agree.
+     */
+
+    let finalDirection =
+      "WAIT";
+
+
+    if (
+      direction15 === "BUY" &&
+      direction5 === "BUY"
+    ) {
+
+      finalDirection =
+        "BUY";
+
+    } else if (
+      direction15 === "SELL" &&
+      direction5 === "SELL"
+    ) {
+
+      finalDirection =
+        "SELL";
+    }
+
+
+    const finalDecision =
+      document.getElementById(
+        "finalDecision"
+      );
+
+
+    finalDecision.textContent =
+      finalDirection;
+
+
+    applyDirectionClass(
+      finalDecision,
+      finalDirection
+    );
+  }
+
+
+  function getBestZoneRetests(
+    engine
+  ) {
+
+    const zones = [];
+
+
+    if (
+      engine?.supply
+    ) {
+
+      zones.push(
+        engine.supply
+      );
+    }
+
+
+    if (
+      engine?.demand
+    ) {
+
+      zones.push(
+        engine.demand
+      );
+    }
+
+
+    if (
+      Array.isArray(
+        engine?.supplyZones
+      )
+    ) {
+
+      zones.push(
+        ...engine.supplyZones
+      );
+    }
+
+
+    if (
+      Array.isArray(
+        engine?.demandZones
+      )
+    ) {
+
+      zones.push(
+        ...engine.demandZones
+      );
+    }
+
+
+    if (
+      zones.length === 0
+    ) {
+
+      return 0;
+    }
+
+
+    return Math.max(
+      ...zones.map(
+        z =>
+          Number(
+            z.retests ??
+            z.touches ??
+            0
+          )
+      )
+    );
+  }
+
+
+  /* =====================================================
+     FINAL TRADE SIGNAL
+     ===================================================== */
+
 
   function calculateFinalSignal() {
 
     resetSignal();
 
 
-    if (!market15 || !market5) {
+    if (
+      !market15 ||
+      !market5
+    ) {
+
       return;
     }
 
 
     const engine15 =
-      market15.engine || {};
+      market15.engine ||
+      {};
 
 
     const engine5 =
-      market5.engine || {};
+      market5.engine ||
+      {};
 
 
     const direction15 =
-      getDirection(engine15);
-
-
-    const direction5 =
-      getDirection(engine5);
-
-
-    const signal15 =
-      getSignalObject(engine15);
-
-
-    const signal5 =
-      getSignalObject(engine5);
-
-
-    document.getElementById(
-      "structure15"
-    ).textContent =
-      direction15;
-
-
-    document.getElementById(
-      "confirmation5"
-    ).textContent =
-      direction5;
-
-
-    document.getElementById(
-      "score15"
-    ).textContent =
-      formatScore(
-        signal15.score ??
-        engine15.score
+      getDirection(
+        engine15
       );
 
 
-    document.getElementById(
-      "score5"
-    ).textContent =
-      formatScore(
-        signal5.score ??
-        engine5.score
+    const direction5 =
+      getDirection(
+        engine5
       );
 
 
     /*
-      IMPORTANT:
-
-      15M = Main Structure
-      5M  = Entry Confirmation
-
-      BUY only when BOTH say BUY.
-      SELL only when BOTH say SELL.
-      Otherwise WAIT.
-    */
-
+     * Only trade when
+     * both timeframes agree.
+     */
 
     let finalDirection =
       "WAIT";
@@ -1542,11 +3062,13 @@
 
 
     if (
-      finalDirection === "WAIT"
+      finalDirection ===
+      "WAIT"
     ) {
 
       signalEl.textContent =
         "WAIT";
+
 
       signalEl.className =
         "signal wait";
@@ -1559,7 +3081,7 @@
       ) {
 
         signalDescription.textContent =
-          "15M and 5M direction are not aligned. No trade.";
+          "15M and 5M are not aligned. No trade.";
 
       } else {
 
@@ -1567,15 +3089,25 @@
           "Waiting for confirmed SD Magnet structure and entry confirmation.";
       }
 
+
       return;
     }
 
 
-    const finalSignal =
-      finalDirection === "BUY"
-        ? signal15
-        : signal15;
+    /*
+     * Use 15M signal as the
+     * main trade plan.
+     */
 
+    const signal15 =
+      getSignalObject(
+        engine15
+      );
+
+
+    /*
+     * In case backend signal exists.
+     */
 
     signalEl.textContent =
       finalDirection;
@@ -1586,71 +3118,103 @@
       finalDirection.toLowerCase();
 
 
-    signalDescription.textContent =
+    if (
       finalDirection === "BUY"
-        ? "15M Demand + bullish SD Magnet confirmed by 5M."
-        : "15M Supply + bearish SD Magnet confirmed by 5M.";
+    ) {
 
+      signalDescription.textContent =
+        "15M bullish SD Magnet confirmed by 5M.";
+
+    } else {
+
+      signalDescription.textContent =
+        "15M bearish SD Magnet confirmed by 5M.";
+    }
+
+
+    /*
+     * Entry
+     */
 
     document.getElementById(
       "entry"
     ).textContent =
       formatTradeValue(
-        finalSignal.entry ??
-        finalSignal.entryZone ??
-        finalSignal.entryPrice
+        signal15.entry ??
+        signal15.entryZone ??
+        signal15.entryPrice
       );
 
+
+    /*
+     * SL
+     */
 
     document.getElementById(
       "sl"
     ).textContent =
       formatTradeValue(
-        finalSignal.sl ??
-        finalSignal.stopLoss
+        signal15.sl ??
+        signal15.stopLoss
       );
 
+
+    /*
+     * TP1
+     */
 
     document.getElementById(
       "tp1"
     ).textContent =
       formatTradeValue(
-        finalSignal.tp1 ??
-        finalSignal.takeProfit1
+        signal15.tp1 ??
+        signal15.takeProfit1
       );
 
 
+    /*
+     * TP2 / TP3
+     */
+
     const tp2 =
-      finalSignal.tp2 ??
-      finalSignal.takeProfit2;
+      signal15.tp2 ??
+      signal15.takeProfit2;
 
 
     const tp3 =
-      finalSignal.tp3 ??
-      finalSignal.takeProfit3;
+      signal15.tp3 ??
+      signal15.takeProfit3;
 
 
     document.getElementById(
       "tp23"
     ).textContent =
-      formatTradeValue(tp2) +
+      formatTradeValue(
+        tp2
+      ) +
       " / " +
-      formatTradeValue(tp3);
+      formatTradeValue(
+        tp3
+      );
   }
 
 
-  function formatTradeValue(value) {
+  function formatTradeValue(
+    value
+  ) {
 
     if (
       value === null ||
       value === undefined
     ) {
+
       return "—";
     }
 
 
     if (
-      typeof value === "object"
+      typeof value ===
+      "object"
     ) {
 
       if (
@@ -1659,11 +3223,16 @@
       ) {
 
         return (
-          formatPrice(value.low) +
+          formatPrice(
+            value.low
+          ) +
           " — " +
-          formatPrice(value.high)
+          formatPrice(
+            value.high
+          )
         );
       }
+
 
       if (
         value.min !== undefined &&
@@ -1671,11 +3240,16 @@
       ) {
 
         return (
-          formatPrice(value.min) +
+          formatPrice(
+            value.min
+          ) +
           " — " +
-          formatPrice(value.max)
+          formatPrice(
+            value.max
+          )
         );
       }
+
 
       if (
         value.price !== undefined
@@ -1688,13 +3262,16 @@
     }
 
 
-    return formatPrice(value);
+    return formatPrice(
+      value
+    );
   }
 
 
-  /* =========================
-     API
-  ========================= */
+  /* =====================================================
+     API FETCH
+     ===================================================== */
+
 
   async function fetchMarket(
     symbol,
@@ -1703,21 +3280,40 @@
 
     const url =
       "/api/market?symbol=" +
-      encodeURIComponent(symbol) +
+      encodeURIComponent(
+        symbol
+      ) +
       "&interval=" +
-      encodeURIComponent(interval) +
+      encodeURIComponent(
+        interval
+      ) +
       "&outputsize=200";
 
 
     const response =
-      await fetch(url, {
-        method: "GET",
-        cache: "no-store"
-      });
+      await fetch(
+        url,
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
 
 
-    const data =
-      await response.json();
+    let data;
+
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch (error) {
+
+      throw new Error(
+        "Invalid API response."
+      );
+    }
 
 
     if (
@@ -1732,20 +3328,35 @@
     }
 
 
+    if (
+      !Array.isArray(
+        data.candles
+      )
+    ) {
+
+      throw new Error(
+        "API returned no candles."
+      );
+    }
+
+
     return data;
   }
 
 
-  /* =========================
-     LOAD EVERYTHING
-  ========================= */
+  /* =====================================================
+     LOAD MARKET
+     ===================================================== */
+
 
   async function loadMarket() {
 
     hideError();
 
+
     refreshBtn.disabled =
       true;
+
 
     refreshBtn.textContent =
       "Loading...";
@@ -1769,22 +3380,25 @@
 
 
       /*
-        Fetch both timeframes.
-
-        15M = Structure
-        5M  = Confirmation
-      */
+       * ALWAYS fetch:
+       *
+       * 15M = Structure
+       * 5M  = Confirmation
+       */
 
       const results =
         await Promise.all([
+
           fetchMarket(
             symbol,
             "15min"
           ),
+
           fetchMarket(
             symbol,
             "5min"
           )
+
         ]);
 
 
@@ -1797,11 +3411,12 @@
 
 
       /*
-        Display selected timeframe.
-      */
+       * Display selected timeframe.
+       */
 
       const selectedData =
-        timeframeEl.value === "15min"
+        timeframeEl.value ===
+        "15min"
           ? market15
           : market5;
 
@@ -1812,11 +3427,12 @@
 
 
       /*
-        Render 15M SD zones.
-      */
+       * 15M zones.
+       */
 
       const engine15 =
-        market15.engine || {};
+        market15.engine ||
+        {};
 
 
       renderZone(
@@ -1834,8 +3450,8 @@
 
 
       /*
-        Render magnet.
-      */
+       * Magnet.
+       */
 
       renderMagnet(
         engine15
@@ -1843,8 +3459,15 @@
 
 
       /*
-        Calculate final signal.
-      */
+       * Diagnostics.
+       */
+
+      updateDiagnostics();
+
+
+      /*
+       * Final BUY / SELL / WAIT.
+       */
 
       calculateFinalSignal();
 
@@ -1863,8 +3486,12 @@
       );
 
 
-      market15 = null;
-      market5 = null;
+      market15 =
+        null;
+
+
+      market5 =
+        null;
 
 
       resetSignal();
@@ -1893,6 +3520,7 @@
       refreshBtn.disabled =
         false;
 
+
       refreshBtn.textContent =
         "Refresh Market";
 
@@ -1904,9 +3532,10 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      EVENTS
-  ========================= */
+     ===================================================== */
+
 
   instrumentEl.addEventListener(
     "change",
@@ -1918,14 +3547,20 @@
     "change",
     function () {
 
-      if (!market15 || !market5) {
+      if (
+        !market15 ||
+        !market5
+      ) {
+
         loadMarket();
+
         return;
       }
 
 
       const selectedData =
-        timeframeEl.value === "15min"
+        timeframeEl.value ===
+        "15min"
           ? market15
           : market5;
 
@@ -1943,10 +3578,9 @@
   );
 
 
-  /*
-    Auto refresh:
-    every 60 seconds
-  */
+  /* =====================================================
+     AUTO REFRESH
+     ===================================================== */
 
   setInterval(
     loadMarket,
@@ -1954,11 +3588,12 @@
   );
 
 
-  /*
-    Initial load
-  */
+  /* =====================================================
+     INITIAL LOAD
+     ===================================================== */
 
   loadMarket();
+
 
 </script>
 
