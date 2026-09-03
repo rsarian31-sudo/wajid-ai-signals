@@ -1,672 +1,778 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  />
 
   <title>LONA Trading Assistant</title>
 
-  <style>
+  <!-- Lightweight Charts v5 -->
+  <script
+    src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"
+  ></script>
 
+  <style>
     * {
       box-sizing: border-box;
+    }
+
+    html,
+    body {
       margin: 0;
       padding: 0;
+      min-height: 100%;
+      background: #071018;
+      color: #e8f0f7;
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #070a0f;
-      color: #eef2f7;
       min-height: 100vh;
     }
 
-    .app {
-      width: min(1200px, 100%);
-      margin: auto;
-      padding: 14px;
-    }
-
-    .header {
-      background: #0d121a;
-      border: 1px solid #202a38;
-      border-radius: 20px;
-      padding: 20px;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      gap: 15px;
-      margin-bottom: 14px;
-    }
-
-    .brand h1 {
-      font-size: 26px;
-      line-height: 1.15;
-    }
-
-    .brand p {
-      color: #8d99aa;
-      font-size: 13px;
-      margin-top: 7px;
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      background: #121a24;
-      padding: 10px 14px;
-      border-radius: 20px;
-
-      font-size: 12px;
-      color: #9aa6b6;
-
-      white-space: nowrap;
-    }
-
-    .status-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #777;
-    }
-
-    .status-dot.live {
-      background: #27c07a;
-    }
-
-    .status-dot.error {
-      background: #e54b5e;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr 140px;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .control {
-      background: #0d121a;
-      border: 1px solid #202a38;
-      border-radius: 15px;
-      padding: 12px;
-    }
-
-    .control label {
-      display: block;
-
-      color: #788597;
-      font-size: 10px;
-
-      text-transform: uppercase;
-      letter-spacing: .5px;
-
-      margin-bottom: 7px;
-    }
-
-    select,
-    button {
-      width: 100%;
-
-      border: 0;
-      outline: 0;
-
-      border-radius: 10px;
-
-      background: #151e29;
-      color: #edf2f8;
-
-      padding: 12px;
-      font-size: 14px;
+    button,
+    input,
+    select {
+      font: inherit;
     }
 
     button {
       cursor: pointer;
-      border: 1px solid #2a394b;
-      align-self: end;
     }
 
-    button:active {
-      transform: scale(.98);
+    .app {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 14px;
     }
 
-    button:disabled {
-      opacity: .6;
-      cursor: wait;
-    }
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
-    .signal-card {
-      background: #0d121a;
-      border: 1px solid #202a38;
-      border-radius: 20px;
-
-      padding: 20px;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       margin-bottom: 14px;
     }
 
-    .signal-header {
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(
+        135deg,
+        #18d6a3,
+        #1677ff
+      );
+      color: white;
+      font-weight: 900;
+      font-size: 18px;
+      box-shadow:
+        0 8px 30px rgba(22, 119, 255, 0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .brand small {
+      color: #7e94a8;
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
+    .connection {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border: 1px solid #173041;
+      border-radius: 999px;
+      background: #0b1721;
+      color: #9fb3c4;
+      font-size: 11px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7f8c96;
+    }
+
+    .dot.online {
+      background: #16d49b;
+      box-shadow: 0 0 12px rgba(22, 212, 155, 0.7);
+    }
+
+    .dot.error {
+      background: #ff5d6c;
+    }
+
+    /* =====================================================
+       SEARCH
+       ===================================================== */
+
+    .search-panel {
+      background: #0b1721;
+      border: 1px solid #173041;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      background: #071018;
+      color: #eef7ff;
+      border: 1px solid #203746;
+      border-radius: 11px;
+      padding: 12px 13px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #287cff;
+      box-shadow:
+        0 0 0 3px rgba(40, 124, 255, 0.1);
+    }
+
+    .search-btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 0 17px;
+      color: white;
+      background: #1669e8;
+      font-weight: 700;
+    }
+
+    .search-btn:active {
+      transform: scale(0.98);
+    }
+
+    .category-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-top: 10px;
+      scrollbar-width: none;
+    }
+
+    .category-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-btn {
+      flex: 0 0 auto;
+      background: #0f202c;
+      border: 1px solid #1d384a;
+      color: #91a7b9;
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .category-btn.active {
+      background: #153e62;
+      border-color: #2c7ed0;
+      color: #e8f4ff;
+    }
+
+    .search-results {
+      display: none;
+      margin-top: 10px;
+      max-height: 270px;
+      overflow-y: auto;
+      border-top: 1px solid #173041;
+      padding-top: 8px;
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .result-item {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #dce8f1;
+      text-align: left;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 4px;
+    }
+
+    .result-item:hover {
+      background: #102331;
+      border-color: #1d3b4e;
+    }
+
+    .result-main {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-
-      gap: 15px;
+      gap: 8px;
     }
 
-    .eyebrow {
-      color: #7f8b9d;
-
-      font-size: 11px;
-
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .signal {
-      font-size: 42px;
+    .result-symbol {
       font-weight: 800;
-
-      margin-top: 7px;
     }
 
-    .signal.wait {
-      color: #eef2f7;
-    }
-
-    .signal.buy {
-      color: #27c07a;
-    }
-
-    .signal.sell {
-      color: #e54b5e;
-    }
-
-    .signal-description {
-      color: #8d99a9;
-
-      font-size: 13px;
-      margin-top: 5px;
-
-      line-height: 1.5;
-    }
-
-    .engine-badge {
-      background: #151e29;
-      color: #a7b1bf;
-
-      padding: 12px;
-
-      border-radius: 12px;
-
-      font-size: 12px;
-      font-weight: 700;
-
+    .result-type {
+      font-size: 9px;
+      border: 1px solid #294354;
+      color: #8eabc0;
+      border-radius: 999px;
+      padding: 3px 6px;
       white-space: nowrap;
+    }
+
+    .result-name {
+      margin-top: 4px;
+      color: #8198aa;
+      font-size: 11px;
+    }
+
+    .result-meta {
+      margin-top: 3px;
+      color: #5f7789;
+      font-size: 9px;
+    }
+
+    /* =====================================================
+       ASSET BAR
+       ===================================================== */
+
+    .asset-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #0b1721;
+      border: 1px solid #173041;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .asset-info {
+      min-width: 0;
+    }
+
+    .asset-symbol {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    .asset-name {
+      color: #7991a4;
+      font-size: 11px;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .timeframes {
+      display: flex;
+      gap: 5px;
+      flex: 0 0 auto;
+    }
+
+    .tf-btn {
+      background: #0d202d;
+      color: #8da4b7;
+      border: 1px solid #1b3546;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .tf-btn.active {
+      color: white;
+      background: #15528d;
+      border-color: #277dc4;
+    }
+
+    /* =====================================================
+       MAIN GRID
+       ===================================================== */
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 12px;
+    }
+
+    .card {
+      background: #0b1721;
+      border: 1px solid #173041;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 11px 13px;
+      border-bottom: 1px solid #173041;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+    }
+
+    .card-subtitle {
+      color: #6f8799;
+      font-size: 9px;
+    }
+
+    /* =====================================================
+       CHART
+       ===================================================== */
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background: #071018;
+    }
+
+    #chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(7, 16, 24, 0.65);
+      color: #8da4b7;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .chart-loading.hidden {
+      display: none;
+    }
+
+    .chart-error {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 12px;
+      z-index: 6;
+      padding: 10px;
+      border-radius: 9px;
+      background: rgba(117, 25, 35, 0.92);
+      border: 1px solid #9e3b47;
+      color: #ffdce0;
+      font-size: 11px;
+      display: none;
+    }
+
+    .chart-error.show {
+      display: block;
+    }
+
+    /* =====================================================
+       SIGNAL CARD
+       ===================================================== */
+
+    .signal-card {
+      padding: 13px;
+    }
+
+    .signal-status {
+      border-radius: 13px;
+      padding: 15px;
+      text-align: center;
+      border: 1px solid #213746;
+      background: #09151e;
+      margin-bottom: 10px;
+    }
+
+    .signal-label {
+      color: #70889a;
+      font-size: 9px;
+      letter-spacing: 1px;
+      font-weight: 900;
+    }
+
+    .signal-value {
+      margin-top: 5px;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 1000;
+    }
+
+    .signal-value.buy {
+      color: #15d89d;
+    }
+
+    .signal-value.sell {
+      color: #ff6472;
+    }
+
+    .signal-value.wait {
+      color: #e4a94b;
+    }
+
+    .signal-prob {
+      margin-top: 8px;
+      color: #8ca4b6;
+      font-size: 10px;
     }
 
     .metrics {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-
-      gap: 9px;
-      margin-top: 18px;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
     }
 
     .metric {
-      background: #111821;
-
-      border: 1px solid #1f2a37;
-      border-radius: 13px;
-
-      padding: 13px;
+      background: #09151e;
+      border: 1px solid #173041;
+      border-radius: 10px;
+      padding: 9px;
     }
 
-    .metric span {
-      display: block;
-
-      color: #778497;
-      font-size: 10px;
-
-      margin-bottom: 7px;
+    .metric-label {
+      color: #667f91;
+      font-size: 9px;
     }
 
-    .metric strong {
-      font-size: 14px;
+    .metric-value {
+      margin-top: 4px;
+      color: #e8f1f7;
+      font-size: 12px;
+      font-weight: 800;
       word-break: break-word;
     }
 
-    .section-title {
-      font-size: 17px;
+    /* =====================================================
+       TRADE PLAN
+       ===================================================== */
 
-      margin: 22px 2px 10px;
+    .trade-plan {
+      padding: 12px;
+      border-top: 1px solid #173041;
     }
 
-    .market-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-
-      gap: 10px;
+    .trade-plan-title {
+      color: #7d95a7;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
     }
 
-    .market-card {
-      background: #0d121a;
-
-      border: 1px solid #202a38;
-      border-radius: 16px;
-
-      padding: 16px;
-    }
-
-    .market-top {
+    .price-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .market-name {
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .market-tf {
-      color: #778497;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #112532;
       font-size: 10px;
     }
 
-    .market-price {
-      font-size: 25px;
-      font-weight: 700;
-
-      margin-top: 15px;
-    }
-
-    .market-meta {
-      color: #7f8b9d;
-
-      font-size: 11px;
-      margin-top: 6px;
-    }
-
-    .data-box {
-      margin-top: 10px;
-
-      background: #0d121a;
-
-      border: 1px solid #202a38;
-      border-radius: 16px;
-
-      padding: 16px;
-    }
-
-    .data-row {
-      display: flex;
-
-      justify-content: space-between;
-
-      gap: 15px;
-
-      padding: 9px 0;
-
-      border-bottom: 1px solid #18212c;
-
-      font-size: 12px;
-    }
-
-    .data-row:last-child {
+    .price-row:last-child {
       border-bottom: 0;
     }
 
-    .data-row span:first-child {
-      color: #778497;
+    .price-name {
+      color: #718a9d;
     }
 
-    .data-row span:last-child {
-      text-align: right;
+    .price-value {
+      font-weight: 900;
     }
 
-    .zones {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-
-      gap: 10px;
+    .entry {
+      color: #65b6ff;
     }
 
-    .zone {
-      background: #0d121a;
+    .sl {
+      color: #ff6d79;
+    }
 
-      border: 1px solid #202a38;
-      border-radius: 16px;
+    .tp {
+      color: #1edaa1;
+    }
 
-      padding: 16px;
+    /* =====================================================
+       ZONES / MAGNET
+       ===================================================== */
+
+    .zone-section {
+      padding: 12px;
+      border-top: 1px solid #173041;
     }
 
     .zone-title {
-      font-size: 14px;
-      font-weight: 700;
-
-      margin-bottom: 12px;
-    }
-
-    .supply {
-      color: #e54b5e;
-    }
-
-    .demand {
-      color: #27c07a;
-    }
-
-    .zone-content {
-      display: grid;
-      gap: 8px;
-    }
-
-    .zone-stat {
-      background: #111821;
-
-      border-radius: 10px;
-
-      padding: 10px;
-
-      display: flex;
-      justify-content: space-between;
-
-      gap: 10px;
-
-      font-size: 12px;
-    }
-
-    .zone-stat span:first-child {
-      color: #778497;
-    }
-
-    .zone-stat span:last-child {
-      font-weight: 700;
-      text-align: right;
-    }
-
-    .empty {
-      border: 1px dashed #293544;
-
-      border-radius: 11px;
-
-      padding: 20px;
-
-      text-align: center;
-
-      color: #667386;
-
-      font-size: 12px;
-    }
-
-    .magnet-card {
-      margin-top: 10px;
-
-      background: #0d121a;
-
-      border: 1px solid #202a38;
-      border-radius: 16px;
-
-      padding: 16px;
-    }
-
-    .magnet-grid {
-      display: grid;
-
-      grid-template-columns: repeat(4, 1fr);
-
-      gap: 9px;
-    }
-
-    .magnet-item {
-      background: #111821;
-
-      border-radius: 11px;
-
-      padding: 11px;
-    }
-
-    .magnet-item small {
-      display: block;
-
-      color: #778497;
-
       font-size: 10px;
-
-      margin-bottom: 6px;
+      font-weight: 900;
+      color: #8198aa;
+      margin-bottom: 8px;
+      letter-spacing: 0.7px;
     }
 
-    .magnet-item strong {
-      font-size: 13px;
-    }
-
-    .probability {
-      margin-top: 12px;
-
-      background: #111821;
-
+    .zone-box {
+      border: 1px solid #1c3646;
+      background: #09151e;
       border-radius: 10px;
-
-      padding: 12px;
-    }
-
-    .probability-top {
-      display: flex;
-
-      justify-content: space-between;
-
-      font-size: 11px;
-
-      color: #778497;
-
+      padding: 9px;
       margin-bottom: 7px;
     }
 
-    .bar {
-      width: 100%;
-      height: 7px;
-
-      background: #202a35;
-
-      border-radius: 10px;
-
-      overflow: hidden;
+    .zone-box.supply {
+      border-left: 3px solid #ef5360;
     }
 
-    .bar-fill {
-      width: 0%;
-      height: 100%;
-
-      background: #27c07a;
-
-      transition: width .3s ease;
+    .zone-box.demand {
+      border-left: 3px solid #19d19a;
     }
 
-    .diagnostic-grid {
-      display: grid;
-
-      grid-template-columns: 1fr 1fr;
-
-      gap: 10px;
-    }
-
-    .diagnostic-card {
-      background: #0d121a;
-
-      border: 1px solid #202a38;
-
-      border-radius: 16px;
-
-      padding: 15px;
-    }
-
-    .diagnostic-title {
-      font-size: 13px;
-      font-weight: 700;
-
-      margin-bottom: 10px;
-    }
-
-    .diagnostic-row {
+    .zone-top {
       display: flex;
-
       justify-content: space-between;
-
-      gap: 10px;
-
-      padding: 8px 0;
-
-      border-bottom: 1px solid #18212c;
-
-      font-size: 11px;
-    }
-
-    .diagnostic-row:last-child {
-      border-bottom: 0;
-    }
-
-    .diagnostic-row span:first-child {
-      color: #778497;
-    }
-
-    .diagnostic-row span:last-child {
-      font-weight: 700;
-      text-align: right;
-    }
-
-    .buy-text {
-      color: #27c07a !important;
-    }
-
-    .sell-text {
-      color: #e54b5e !important;
-    }
-
-    .wait-text {
-      color: #d4dae2 !important;
-    }
-
-    .error-box {
-      display: none;
-
-      background: #211116;
-
-      border: 1px solid #59202b;
-
-      color: #eaa4ad;
-
-      border-radius: 12px;
-
-      padding: 12px;
-
-      margin-top: 10px;
-
-      font-size: 12px;
-
-      line-height: 1.5;
-    }
-
-    .loading {
-      opacity: .65;
-    }
-
-    footer {
-      text-align: center;
-
-      color: #5f6b7b;
-
+      gap: 8px;
       font-size: 10px;
-
-      padding: 25px 5px 10px;
     }
 
-    @media (max-width: 760px) {
+    .zone-name {
+      font-weight: 900;
+    }
 
+    .zone-score {
+      color: #a8bdd0;
+    }
+
+    .zone-data {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+      color: #6e8799;
+      font-size: 9px;
+    }
+
+    .magnet {
+      padding: 11px;
+      background: #09151e;
+      border: 1px solid #263b4a;
+      border-radius: 11px;
+    }
+
+    .magnet-direction {
+      font-size: 14px;
+      font-weight: 1000;
+    }
+
+    .magnet-up {
+      color: #19d19a;
+    }
+
+    .magnet-down {
+      color: #ff6571;
+    }
+
+    .magnet-details {
+      margin-top: 7px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      color: #718a9c;
+      font-size: 9px;
+    }
+
+    /* =====================================================
+       DIAGNOSTICS
+       ===================================================== */
+
+    .diagnostics {
+      margin-top: 12px;
+      padding: 12px;
+    }
+
+    .diag-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .diag {
+      background: #09151e;
+      border: 1px solid #173041;
+      border-radius: 9px;
+      padding: 8px;
+      min-width: 0;
+    }
+
+    .diag-title {
+      color: #5f7789;
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .diag-value {
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+
+    .footer {
+      padding: 15px 3px 5px;
+      color: #506879;
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .footer a {
+      color: #6f9fc4;
+      text-decoration: none;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 1050px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .diag-grid {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
       .app {
-        padding: 10px;
+        padding: 8px;
       }
 
       .header {
-        padding: 17px;
+        align-items: flex-start;
+      }
+
+      .connection {
+        font-size: 9px;
+        padding: 6px 8px;
+      }
+
+      .asset-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .timeframes {
+        width: 100%;
+      }
+
+      .tf-btn {
+        flex: 1;
+      }
+
+      .chart-wrap {
+        height: 430px;
+      }
+
+      .diag-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
       }
 
       .brand h1 {
-        font-size: 22px;
-      }
-
-      .brand p {
-        max-width: 210px;
-      }
-
-      .controls {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .controls button {
-        grid-column: 1 / -1;
-      }
-
-      .metrics {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .market-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .zones {
-        grid-template-columns: 1fr;
-      }
-
-      .diagnostic-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .magnet-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .signal {
-        font-size: 38px;
+        font-size: 17px;
       }
     }
-
   </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
 
   <header class="header">
 
     <div class="brand">
 
-      <h1>
-        LONA Trading Assistant
-      </h1>
+      <div class="logo">
+        L
+      </div>
 
-      <p>
-        Strong SD Magnet Market Intelligence
-      </p>
+      <div>
+        <h1>LONA Trading Assistant</h1>
+        <small>
+          Strong SD Magnet • Personal Market Workstation
+        </small>
+      </div>
 
     </div>
 
-
-    <div class="status">
+    <div class="connection">
 
       <span
-        id="statusDot"
-        class="status-dot">
-      </span>
+        id="connectionDot"
+        class="dot"
+      ></span>
 
-      <span id="statusText">
+      <span id="connectionText">
         Connecting...
       </span>
 
@@ -675,2645 +781,2323 @@
   </header>
 
 
-  <!-- CONTROLS -->
-
-  <section class="controls">
-
-
-    <div class="control">
-
-      <label>
-        Instrument
-      </label>
-
-
-      <select id="instrument">
-
-        <option value="XAU/USD">
-          XAU/USD — Gold
-        </option>
-
-        <option value="WTI">
-          WTI — Oil
-        </option>
-
-        <option value="BRENT">
-          Brent — Oil
-        </option>
-
-        <option value="GBP/USD">
-          GBP/USD
-        </option>
-
-        <option value="GBP/JPY">
-          GBP/JPY
-        </option>
-
-        <option value="GBP/CHF">
-          GBP/CHF
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="control">
-
-      <label>
-        Display Timeframe
-      </label>
-
-
-      <select id="timeframe">
-
-        <option value="15min">
-          15 Minutes — Structure
-        </option>
-
-        <option value="5min">
-          5 Minutes — Entry
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <button id="refreshBtn">
-      Refresh Market
-    </button>
-
-  </section>
-
-
-  <!-- SIGNAL -->
-
-  <section class="signal-card">
-
-
-    <div class="signal-header">
-
-
-      <div>
-
-        <div class="eyebrow">
-          Current Trading Signal
-        </div>
-
-
-        <div
-          id="signal"
-          class="signal wait">
-
-          WAIT
-
-        </div>
-
-
-        <div
-          id="signalDescription"
-          class="signal-description">
-
-          Waiting for confirmed SD Magnet
-          structure and entry confirmation.
-
-        </div>
-
-      </div>
-
-
-      <div class="engine-badge">
-        SD MAGNET
-      </div>
-
-    </div>
-
-
-    <div class="metrics">
-
-
-      <div class="metric">
-
-        <span>
-          ENTRY ZONE
-        </span>
-
-        <strong id="entry">
-          —
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <span>
-          STOP LOSS
-        </span>
-
-        <strong id="sl">
-          —
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <span>
-          TP1
-        </span>
-
-        <strong id="tp1">
-          —
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <span>
-          TP2 / TP3
-        </span>
-
-        <strong id="tp23">
-          —
-        </strong>
-
-      </div>
+  <!-- =====================================================
+       SEARCH
+       ===================================================== -->
+
+  <section class="search-panel">
+
+    <div class="search-row">
+
+      <input
+        id="searchInput"
+        class="search-input"
+        type="search"
+        placeholder="Search BTC, ETH, Gold, Oil, EUR/USD, AAPL..."
+        autocomplete="off"
+      />
+
+      <button
+        id="searchBtn"
+        class="search-btn"
+      >
+        Search
+      </button>
 
     </div>
 
 
     <div
-      id="errorBox"
-      class="error-box">
-    </div>
+      id="categoryRow"
+      class="category-row"
+    >
 
-  </section>
+      <button
+        class="category-btn active"
+        data-category="all"
+      >
+        All
+      </button>
 
+      <button
+        class="category-btn"
+        data-category="crypto"
+      >
+        🪙 Crypto
+      </button>
 
-  <!-- SELECTED MARKET -->
+      <button
+        class="category-btn"
+        data-category="forex"
+      >
+        💱 Forex
+      </button>
 
-  <h2 class="section-title">
-    Selected Market
-  </h2>
+      <button
+        class="category-btn"
+        data-category="metals"
+      >
+        🥇 Metals
+      </button>
 
+      <button
+        class="category-btn"
+        data-category="energy"
+      >
+        🛢️ Energy
+      </button>
 
-  <section class="market-grid">
+      <button
+        class="category-btn"
+        data-category="stocks"
+      >
+        📈 Stocks
+      </button>
 
-
-    <div class="market-card">
-
-      <div class="market-top">
-
-        <span
-          id="selectedName"
-          class="market-name">
-
-          XAU/USD
-
-        </span>
-
-
-        <span
-          id="selectedTf"
-          class="market-tf">
-
-          15M
-
-        </span>
-
-      </div>
-
-
-      <div
-        id="selectedPrice"
-        class="market-price">
-
-        —
-
-      </div>
-
-
-      <div
-        id="selectedMeta"
-        class="market-meta">
-
-        Loading market data...
-
-      </div>
+      <button
+        class="category-btn"
+        data-category="etf"
+      >
+        📊 ETF
+      </button>
 
     </div>
 
-
-    <div class="market-card">
-
-      <div class="market-top">
-
-        <span class="market-name">
-          Last Candle
-        </span>
-
-        <span class="market-tf">
-          OHLC
-        </span>
-
-      </div>
-
-
-      <div
-        id="lastCandleClose"
-        class="market-price">
-
-        —
-
-      </div>
-
-
-      <div
-        id="lastCandleTime"
-        class="market-meta">
-
-        Waiting...
-
-      </div>
-
-    </div>
-
-
-    <div class="market-card">
-
-      <div class="market-top">
-
-        <span class="market-name">
-          Data Status
-        </span>
-
-        <span class="market-tf">
-          API
-        </span>
-
-      </div>
-
-
-      <div
-        id="dataStatus"
-        class="market-price">
-
-        —
-
-      </div>
-
-
-      <div
-        id="dataAge"
-        class="market-meta">
-
-        Waiting...
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MARKET DATA -->
-
-  <h2 class="section-title">
-    Market Data
-  </h2>
-
-
-  <section class="data-box">
-
-
-    <div class="data-row">
-      <span>Open</span>
-      <span id="ohlcOpen">—</span>
-    </div>
-
-
-    <div class="data-row">
-      <span>High</span>
-      <span id="ohlcHigh">—</span>
-    </div>
-
-
-    <div class="data-row">
-      <span>Low</span>
-      <span id="ohlcLow">—</span>
-    </div>
-
-
-    <div class="data-row">
-      <span>Close</span>
-      <span id="ohlcClose">—</span>
-    </div>
-
-
-    <div class="data-row">
-      <span>Volume</span>
-      <span id="ohlcVolume">—</span>
-    </div>
-
-
-    <div class="data-row">
-      <span>Candles Loaded</span>
-      <span id="candleCount">—</span>
-    </div>
-
-  </section>
-
-
-  <!-- SD ZONES -->
-
-  <h2 class="section-title">
-    Strong SD Magnet Zones — 15M
-  </h2>
-
-
-  <section class="zones">
-
-
-    <div class="zone">
-
-      <div class="zone-title supply">
-        Supply — SELL Area
-      </div>
-
-
-      <div
-        id="supplyZone"
-        class="empty">
-
-        Waiting for SD Magnet engine...
-
-      </div>
-
-    </div>
-
-
-    <div class="zone">
-
-      <div class="zone-title demand">
-        Demand — BUY Area
-      </div>
-
-
-      <div
-        id="demandZone"
-        class="empty">
-
-        Waiting for SD Magnet engine...
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MAGNET -->
-
-  <h2 class="section-title">
-    SD Magnet Pull — 15M
-  </h2>
-
-
-  <section class="magnet-card">
 
     <div
-      id="magnetContent"
-      class="empty">
+      id="searchResults"
+      class="search-results"
+    ></div>
 
-      Waiting for valid magnet setup...
+  </section>
+
+
+  <!-- =====================================================
+       CURRENT ASSET
+       ===================================================== -->
+
+  <section class="asset-bar">
+
+    <div class="asset-info">
+
+      <div
+        id="assetSymbol"
+        class="asset-symbol"
+      >
+        XAU/USD
+      </div>
+
+      <div
+        id="assetName"
+        class="asset-name"
+      >
+        Gold / US Dollar
+      </div>
+
+    </div>
+
+
+    <div class="timeframes">
+
+      <button
+        class="tf-btn active"
+        data-timeframe="15min"
+      >
+        15M STRUCTURE
+      </button>
+
+      <button
+        class="tf-btn"
+        data-timeframe="5min"
+      >
+        5M ENTRY
+      </button>
 
     </div>
 
   </section>
 
 
-  <!-- DIAGNOSTICS -->
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
 
-  <h2 class="section-title">
-    Engine Diagnostics
-  </h2>
+  <main class="main-grid">
 
 
-  <section class="diagnostic-grid">
+    <!-- CHART -->
 
+    <section class="card">
 
-    <!-- 15M -->
+      <div class="card-header">
 
-    <div class="diagnostic-card">
+        <div>
 
-      <div class="diagnostic-title">
-        15M Structure
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Direction
-        </span>
-
-        <span
-          id="diag15Direction">
-          WAIT
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Score
-        </span>
-
-        <span id="diag15Score">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Retests
-        </span>
-
-        <span id="diag15Retests">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Supply
-        </span>
-
-        <span id="diag15Supply">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Demand
-        </span>
-
-        <span id="diag15Demand">
-          —
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <!-- 5M -->
-
-    <div class="diagnostic-card">
-
-      <div class="diagnostic-title">
-        5M Confirmation
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Direction
-        </span>
-
-        <span
-          id="diag5Direction">
-          WAIT
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Score
-        </span>
-
-        <span id="diag5Score">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Retests
-        </span>
-
-        <span id="diag5Retests">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Supply
-        </span>
-
-        <span id="diag5Supply">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Demand
-        </span>
-
-        <span id="diag5Demand">
-          —
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <!-- MAGNET -->
-
-    <div class="diagnostic-card">
-
-      <div class="diagnostic-title">
-        Magnet Analysis
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Direction
-        </span>
-
-        <span id="diagMagnetDirection">
-          NONE
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Source
-        </span>
-
-        <span id="diagMagnetSource">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Target
-        </span>
-
-        <span id="diagMagnetTarget">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Pull Score
-        </span>
-
-        <span id="diagMagnetScore">
-          —
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Probability
-        </span>
-
-        <span id="diagMagnetProbability">
-          —
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <!-- FINAL -->
-
-    <div class="diagnostic-card">
-
-      <div class="diagnostic-title">
-        Final Decision
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          15M Structure
-        </span>
-
-        <span id="final15">
-          WAIT
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          5M Confirmation
-        </span>
-
-        <span id="final5">
-          WAIT
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Alignment
-        </span>
-
-        <span id="alignment">
-          NOT ALIGNED
-        </span>
-
-      </div>
-
-
-      <div class="diagnostic-row">
-
-        <span>
-          Final Signal
-        </span>
-
-        <span id="finalDecision">
-          WAIT
-        </span>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- OLD ENGINE RULES -->
-
-  <h2 class="section-title">
-    Engine Rules
-  </h2>
-
-
-  <section class="data-box">
-
-
-    <div class="data-row">
-
-      <span>
-        15M Structure
-      </span>
-
-      <span>
-        Main Direction
-      </span>
-
-    </div>
-
-
-    <div class="data-row">
-
-      <span>
-        5M Confirmation
-      </span>
-
-      <span>
-        Entry Confirmation
-      </span>
-
-    </div>
-
-
-    <div class="data-row">
-
-      <span>
-        Strong Zone Threshold
-      </span>
-
-      <span>
-        7.0 / 10
-      </span>
-
-    </div>
-
-
-    <div class="data-row">
-
-      <span>
-        Magnet Source
-      </span>
-
-      <span>
-        ≥ 6.5 + Retest
-      </span>
-
-    </div>
-
-
-    <div class="data-row">
-
-      <span>
-        Magnet Target
-      </span>
-
-      <span>
-        ≥ 5.0
-      </span>
-
-    </div>
-
-
-    <div class="data-row">
-
-      <span>
-        Maximum Magnet Reach
-      </span>
-
-      <span>
-        25 ATR
-      </span>
-
-    </div>
-
-  </section>
-
-
-  <footer>
-    LONA Trading Assistant · Strong SD Magnet Engine
-  </footer>
-
-</div>
-
-
-<script>
-
-
-  /* =====================================================
-     ELEMENTS
-     ===================================================== */
-
-
-  const instrumentEl =
-    document.getElementById(
-      "instrument"
-    );
-
-
-  const timeframeEl =
-    document.getElementById(
-      "timeframe"
-    );
-
-
-  const refreshBtn =
-    document.getElementById(
-      "refreshBtn"
-    );
-
-
-  const statusDot =
-    document.getElementById(
-      "statusDot"
-    );
-
-
-  const statusText =
-    document.getElementById(
-      "statusText"
-    );
-
-
-  const signalEl =
-    document.getElementById(
-      "signal"
-    );
-
-
-  const signalDescription =
-    document.getElementById(
-      "signalDescription"
-    );
-
-
-  const errorBox =
-    document.getElementById(
-      "errorBox"
-    );
-
-
-  /*
-   * Stores complete 15M and 5M responses.
-   */
-
-  let market15 = null;
-
-  let market5 = null;
-
-
-  /* =====================================================
-     STATUS
-     ===================================================== */
-
-
-  function setStatus(
-    type,
-    text
-  ) {
-
-    statusDot.className =
-      "status-dot";
-
-
-    if (
-      type === "live"
-    ) {
-
-      statusDot.classList.add(
-        "live"
-      );
-
-    }
-
-
-    if (
-      type === "error"
-    ) {
-
-      statusDot.classList.add(
-        "error"
-      );
-
-    }
-
-
-    statusText.textContent =
-      text;
-  }
-
-
-  /* =====================================================
-     ERROR
-     ===================================================== */
-
-
-  function showError(
-    message
-  ) {
-
-    errorBox.style.display =
-      "block";
-
-    errorBox.textContent =
-      message;
-  }
-
-
-  function hideError() {
-
-    errorBox.style.display =
-      "none";
-
-    errorBox.textContent =
-      "";
-  }
-
-
-  /* =====================================================
-     FORMATTERS
-     ===================================================== */
-
-
-  function formatPrice(
-    value
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      !Number.isFinite(
-        Number(value)
-      )
-    ) {
-
-      return "—";
-    }
-
-
-    const number =
-      Number(value);
-
-
-    if (
-      Math.abs(number) >= 100
-    ) {
-
-      return number.toFixed(2);
-    }
-
-
-    return number.toFixed(5);
-  }
-
-
-  function formatScore(
-    value
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      !Number.isFinite(
-        Number(value)
-      )
-    ) {
-
-      return "—";
-    }
-
-
-    return (
-      Number(value).toFixed(1) +
-      " / 10"
-    );
-  }
-
-
-  function formatProbability(
-    value
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      !Number.isFinite(
-        Number(value)
-      )
-    ) {
-
-      return "—";
-    }
-
-
-    let number =
-      Number(value);
-
-
-    if (
-      number <= 1
-    ) {
-
-      number *= 100;
-    }
-
-
-    return (
-      Math.round(number) +
-      "%"
-    );
-  }
-
-
-  function formatTime(
-    value
-  ) {
-
-    if (!value) {
-      return "—";
-    }
-
-
-    const raw =
-      String(value);
-
-
-    let date;
-
-
-    if (
-      raw.includes("T")
-    ) {
-
-      date =
-        new Date(raw);
-
-    } else {
-
-      date =
-        new Date(
-          raw.replace(
-            " ",
-            "T"
-          ) + "Z"
-        );
-    }
-
-
-    if (
-      Number.isNaN(
-        date.getTime()
-      )
-    ) {
-
-      return raw;
-    }
-
-
-    return date.toLocaleString();
-  }
-
-
-  function safe(
-    value,
-    fallback = "—"
-  ) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-
-      return fallback;
-    }
-
-
-    return value;
-  }
-
-
-  /* =====================================================
-     DIRECTION
-     ===================================================== */
-
-
-  function getDirection(
-    engine
-  ) {
-
-    if (!engine) {
-      return "WAIT";
-    }
-
-
-    /*
-     * Backend has direct direction.
-     */
-
-    if (
-      engine.direction
-    ) {
-
-      return String(
-        engine.direction
-      ).toUpperCase();
-    }
-
-
-    /*
-     * Fallback to status.
-     */
-
-    if (
-      engine.status
-    ) {
-
-      return String(
-        engine.status
-      ).toUpperCase();
-    }
-
-
-    /*
-     * Fallback to signal.
-     */
-
-    if (
-      engine.signal
-    ) {
-
-      if (
-        typeof engine.signal ===
-        "string"
-      ) {
-
-        return engine.signal
-          .toUpperCase();
-      }
-
-
-      if (
-        engine.signal.direction
-      ) {
-
-        return String(
-          engine.signal.direction
-        ).toUpperCase();
-      }
-    }
-
-
-    return "WAIT";
-  }
-
-
-  function getSignalObject(
-    engine
-  ) {
-
-    if (
-      !engine
-    ) {
-
-      return {};
-    }
-
-
-    if (
-      engine.signal &&
-      typeof engine.signal ===
-      "object"
-    ) {
-
-      return engine.signal;
-    }
-
-
-    return {};
-  }
-
-
-  /* =====================================================
-     TEXT CLASS
-     ===================================================== */
-
-
-  function applyDirectionClass(
-    element,
-    direction
-  ) {
-
-    if (!element) {
-      return;
-    }
-
-
-    element.classList.remove(
-      "buy-text",
-      "sell-text",
-      "wait-text"
-    );
-
-
-    if (
-      direction === "BUY"
-    ) {
-
-      element.classList.add(
-        "buy-text"
-      );
-
-    } else if (
-      direction === "SELL"
-    ) {
-
-      element.classList.add(
-        "sell-text"
-      );
-
-    } else {
-
-      element.classList.add(
-        "wait-text"
-      );
-    }
-  }
-
-
-  /* =====================================================
-     RESET SIGNAL
-     ===================================================== */
-
-
-  function resetSignal() {
-
-    signalEl.textContent =
-      "WAIT";
-
-
-    signalEl.className =
-      "signal wait";
-
-
-    signalDescription.textContent =
-      "Waiting for confirmed SD Magnet structure and entry confirmation.";
-
-
-    document.getElementById(
-      "entry"
-    ).textContent =
-      "—";
-
-
-    document.getElementById(
-      "sl"
-    ).textContent =
-      "—";
-
-
-    document.getElementById(
-      "tp1"
-    ).textContent =
-      "—";
-
-
-    document.getElementById(
-      "tp23"
-    ).textContent =
-      "—";
-  }
-
-
-  /* =====================================================
-     MARKET UI
-     ===================================================== */
-
-
-  function updateSelectedMarket(
-    data
-  ) {
-
-    if (
-      !data ||
-      !Array.isArray(
-        data.candles
-      ) ||
-      data.candles.length === 0
-    ) {
-
-      throw new Error(
-        "No candle data received."
-      );
-    }
-
-
-    const candles =
-      data.candles;
-
-
-    const last =
-      candles[
-        candles.length - 1
-      ];
-
-
-    document.getElementById(
-      "selectedName"
-    ).textContent =
-      instrumentEl.value;
-
-
-    document.getElementById(
-      "selectedTf"
-    ).textContent =
-      timeframeEl.value ===
-      "15min"
-        ? "15M"
-        : "5M";
-
-
-    document.getElementById(
-      "selectedPrice"
-    ).textContent =
-      formatPrice(
-        last.close
-      );
-
-
-    document.getElementById(
-      "selectedMeta"
-    ).textContent =
-      "Market OHLC data";
-
-
-    document.getElementById(
-      "lastCandleClose"
-    ).textContent =
-      formatPrice(
-        last.close
-      );
-
-
-    document.getElementById(
-      "lastCandleTime"
-    ).textContent =
-      formatTime(
-        last.time
-      );
-
-
-    document.getElementById(
-      "ohlcOpen"
-    ).textContent =
-      formatPrice(
-        last.open
-      );
-
-
-    document.getElementById(
-      "ohlcHigh"
-    ).textContent =
-      formatPrice(
-        last.high
-      );
-
-
-    document.getElementById(
-      "ohlcLow"
-    ).textContent =
-      formatPrice(
-        last.low
-      );
-
-
-    document.getElementById(
-      "ohlcClose"
-    ).textContent =
-      formatPrice(
-        last.close
-      );
-
-
-    document.getElementById(
-      "ohlcVolume"
-    ).textContent =
-      safe(
-        last.volume,
-        "0"
-      );
-
-
-    document.getElementById(
-      "candleCount"
-    ).textContent =
-      candles.length;
-
-
-    document.getElementById(
-      "dataStatus"
-    ).textContent =
-      "CONNECTED";
-
-
-    document.getElementById(
-      "dataAge"
-    ).textContent =
-      "Latest candle received";
-  }
-
-
-  /* =====================================================
-     ZONE UI
-     ===================================================== */
-
-
-  function renderZone(
-    elementId,
-    zone,
-    type
-  ) {
-
-    const element =
-      document.getElementById(
-        elementId
-      );
-
-
-    if (!zone) {
-
-      element.className =
-        "empty";
-
-      element.innerHTML =
-        "No valid active zone found.";
-
-      return;
-    }
-
-
-    const top =
-      zone.top ??
-      zone.high ??
-      zone.upper;
-
-
-    const bottom =
-      zone.bottom ??
-      zone.low ??
-      zone.lower;
-
-
-    const middle =
-      zone.middle ??
-      zone.mid ??
-      zone.pivot ??
-      zone.price;
-
-
-    const score =
-      zone.score ??
-      zone.strength;
-
-
-    const touches =
-      zone.retests ??
-      zone.touches ??
-      0;
-
-
-    const status =
-      zone.status ??
-      (
-        touches === 0
-          ? "FRESH"
-          : "TESTED"
-      );
-
-
-    element.className =
-      "zone-content";
-
-
-    element.innerHTML = `
-
-      <div class="zone-stat">
-
-        <span>
-          Zone
-        </span>
-
-        <span>
-          ${formatPrice(bottom)}
-          —
-          ${formatPrice(top)}
-        </span>
-
-      </div>
-
-
-      <div class="zone-stat">
-
-        <span>
-          Pivot
-        </span>
-
-        <span>
-          ${formatPrice(middle)}
-        </span>
-
-      </div>
-
-
-      <div class="zone-stat">
-
-        <span>
-          Strength
-        </span>
-
-        <span>
-          ${formatScore(score)}
-        </span>
-
-      </div>
-
-
-      <div class="zone-stat">
-
-        <span>
-          Retests
-        </span>
-
-        <span>
-          ${touches}
-        </span>
-
-      </div>
-
-
-      <div class="zone-stat">
-
-        <span>
-          Status
-        </span>
-
-        <span>
-          ${safe(status)}
-        </span>
-
-      </div>
-
-    `;
-  }
-
-
-  /* =====================================================
-     MAGNET UI
-     ===================================================== */
-
-
-  function renderMagnet(
-    engine
-  ) {
-
-    const element =
-      document.getElementById(
-        "magnetContent"
-      );
-
-
-    const magnet =
-      engine?.magnet ||
-      (
-        Array.isArray(
-          engine?.magnets
-        )
-          ? engine.magnets[0]
-          : null
-      );
-
-
-    if (!magnet) {
-
-      element.className =
-        "empty";
-
-      element.innerHTML =
-        "No valid SD Magnet Pull detected.";
-
-      return;
-    }
-
-
-    const source =
-      magnet.source || {};
-
-
-    const target =
-      magnet.target || {};
-
-
-    const direction =
-      magnet.direction ||
-      "NONE";
-
-
-    const score =
-      magnet.pullScore ??
-      magnet.score;
-
-
-    const probability =
-      magnet.probability ??
-      magnet.pullProbability;
-
-
-    element.className =
-      "";
-
-
-    element.innerHTML = `
-
-      <div class="magnet-grid">
-
-
-        <div class="magnet-item">
-
-          <small>
-            DIRECTION
-          </small>
-
-          <strong>
-            ${safe(direction)}
-          </strong>
-
-        </div>
-
-
-        <div class="magnet-item">
-
-          <small>
-            SOURCE
-          </small>
-
-          <strong>
-            ${safe(source.type)}
-          </strong>
-
-        </div>
-
-
-        <div class="magnet-item">
-
-          <small>
-            TARGET
-          </small>
-
-          <strong>
-            ${safe(target.type)}
-          </strong>
-
-        </div>
-
-
-        <div class="magnet-item">
-
-          <small>
-            PULL SCORE
-          </small>
-
-          <strong>
-            ${formatScore(score)}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="probability">
-
-        <div class="probability-top">
-
-          <span>
-            Magnet Probability
-          </span>
-
-          <span>
-            ${formatProbability(
-              probability
-            )}
-          </span>
-
-        </div>
-
-
-        <div class="bar">
+          <div class="card-title">
+            Market Chart
+          </div>
 
           <div
-            id="probabilityBar"
-            class="bar-fill"
-            style="
-              width:
-              ${getProbabilityPercent(
-                probability
-              )}%
-            "
+            id="chartSubtitle"
+            class="card-subtitle"
           >
+            15M • Strong SD Magnet
+          </div>
+
+        </div>
+
+        <div
+          id="lastPrice"
+          class="card-title"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="chart-wrap">
+
+        <div
+          id="chart"
+        ></div>
+
+        <div
+          id="chartLoading"
+          class="chart-loading"
+        >
+          Loading market data...
+        </div>
+
+        <div
+          id="chartError"
+          class="chart-error"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SIDE PANEL -->
+
+    <aside class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+          Signal Engine
+        </div>
+
+        <div
+          id="engineTime"
+          class="card-subtitle"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="signal-card">
+
+        <div
+          id="signalStatus"
+          class="signal-status"
+        >
+
+          <div class="signal-label">
+            CURRENT SIGNAL
+          </div>
+
+          <div
+            id="signalValue"
+            class="signal-value wait"
+          >
+            WAIT
+          </div>
+
+          <div
+            id="signalProbability"
+            class="signal-prob"
+          >
+            No confirmed setup
+          </div>
+
+        </div>
+
+
+        <div class="metrics">
+
+          <div class="metric">
+            <div class="metric-label">
+              Price
+            </div>
+            <div
+              id="metricPrice"
+              class="metric-value"
+            >
+              —
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              ATR
+            </div>
+            <div
+              id="metricAtr"
+              class="metric-value"
+            >
+              —
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              15M
+            </div>
+            <div
+              id="metric15"
+              class="metric-value"
+            >
+              WAIT
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              5M
+            </div>
+            <div
+              id="metric5"
+              class="metric-value"
+            >
+              WAIT
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              SD Score
+            </div>
+            <div
+              id="metricScore"
+              class="metric-value"
+            >
+              —
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              Retests
+            </div>
+            <div
+              id="metricRetests"
+              class="metric-value"
+            >
+              —
+            </div>
           </div>
 
         </div>
 
       </div>
 
-    `;
-  }
+
+      <!-- TRADE PLAN -->
+
+      <div class="trade-plan">
+
+        <div class="trade-plan-title">
+          TRADE PLAN
+        </div>
+
+        <div class="price-row">
+          <span class="price-name">
+            Entry
+          </span>
+          <span
+            id="tradeEntry"
+            class="price-value entry"
+          >
+            —
+          </span>
+        </div>
+
+        <div class="price-row">
+          <span class="price-name">
+            Stop Loss
+          </span>
+          <span
+            id="tradeSL"
+            class="price-value sl"
+          >
+            —
+          </span>
+        </div>
+
+        <div class="price-row">
+          <span class="price-name">
+            TP1
+          </span>
+          <span
+            id="tradeTP1"
+            class="price-value tp"
+          >
+            —
+          </span>
+        </div>
+
+        <div class="price-row">
+          <span class="price-name">
+            TP2
+          </span>
+          <span
+            id="tradeTP2"
+            class="price-value tp"
+          >
+            —
+          </span>
+        </div>
+
+        <div class="price-row">
+          <span class="price-name">
+            TP3
+          </span>
+          <span
+            id="tradeTP3"
+            class="price-value tp"
+          >
+            —
+          </span>
+        </div>
+
+      </div>
 
 
-  function getProbabilityPercent(
-    value
+      <!-- ZONES -->
+
+      <div class="zone-section">
+
+        <div class="zone-title">
+          15M SUPPLY
+        </div>
+
+        <div
+          id="supplyZone"
+        >
+          <div class="zone-box supply">
+            No active Supply zone
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="zone-section">
+
+        <div class="zone-title">
+          15M DEMAND
+        </div>
+
+        <div
+          id="demandZone"
+        >
+          <div class="zone-box demand">
+            No active Demand zone
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- MAGNET -->
+
+      <div class="zone-section">
+
+        <div class="zone-title">
+          SD MAGNET
+        </div>
+
+        <div
+          id="magnetBox"
+          class="magnet"
+        >
+          <div class="magnet-direction">
+            NONE
+          </div>
+
+          <div class="magnet-details">
+            <div>
+              Source: —
+            </div>
+
+            <div>
+              Target: —
+            </div>
+
+            <div>
+              Pull Score: —
+            </div>
+
+            <div>
+              Probability: —
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <!-- =====================================================
+       DIAGNOSTICS
+       ===================================================== -->
+
+  <section class="card diagnostics">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        Engine Diagnostics
+      </div>
+
+      <div class="card-subtitle">
+        Strong SD Magnet
+      </div>
+
+    </div>
+
+
+    <div class="diag-grid">
+
+      <div class="diag">
+
+        <div class="diag-title">
+          15M Direction
+        </div>
+
+        <div
+          id="diag15Direction"
+          class="diag-value"
+        >
+          WAIT
+        </div>
+
+      </div>
+
+
+      <div class="diag">
+
+        <div class="diag-title">
+          15M Score
+        </div>
+
+        <div
+          id="diag15Score"
+          class="diag-value"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="diag">
+
+        <div class="diag-title">
+          15M Retests
+        </div>
+
+        <div
+          id="diag15Retests"
+          class="diag-value"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="diag">
+
+        <div class="diag-title">
+          5M Direction
+        </div>
+
+        <div
+          id="diag5Direction"
+          class="diag-value"
+        >
+          WAIT
+        </div>
+
+      </div>
+
+
+      <div class="diag">
+
+        <div class="diag-title">
+          Magnet
+        </div>
+
+        <div
+          id="diagMagnet"
+          class="diag-value"
+        >
+          NONE
+        </div>
+
+      </div>
+
+
+      <div class="diag">
+
+        <div class="diag-title">
+          Alignment
+        </div>
+
+        <div
+          id="diagAlignment"
+          class="diag-value"
+        >
+          WAIT
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <footer class="footer">
+
+    LONA Trading Assistant • Personal use •
+    Market data provided by Twelve Data •
+    Charting by
+    <a
+      href="https://www.tradingview.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      TradingView Lightweight Charts
+    </a>
+
+  </footer>
+
+</div>
+
+
+<script>
+/* =========================================================
+   LONA FRONTEND
+   ========================================================= */
+
+const API = "/api/market";
+
+let currentSymbol = "XAU/USD";
+let currentName = "Gold / US Dollar";
+let currentTimeframe = "15min";
+
+let market15 = null;
+let market5 = null;
+
+let selectedCategory = "all";
+
+let chart = null;
+let candleSeries = null;
+let markerPlugin = null;
+
+let priceLines = [];
+
+let refreshTimer = null;
+
+let searchTimer = null;
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* =========================================================
+   INITIALIZE CHART
+   ========================================================= */
+
+function createLonaChart() {
+
+  const container =
+    $("chart");
+
+  chart =
+    LightweightCharts.createChart(
+      container,
+      {
+        layout: {
+          background: {
+            type: "solid",
+            color: "#071018"
+          },
+          textColor: "#8ea5b7"
+        },
+
+        grid: {
+          vertLines: {
+            color: "#0d1d27"
+          },
+          horzLines: {
+            color: "#0d1d27"
+          }
+        },
+
+        crosshair: {
+          vertLine: {
+            color: "#31566d",
+            width: 1,
+            style: 2,
+            labelBackgroundColor: "#16354a"
+          },
+
+          horzLine: {
+            color: "#31566d",
+            width: 1,
+            style: 2,
+            labelBackgroundColor: "#16354a"
+          }
+        },
+
+        rightPriceScale: {
+          borderColor: "#173041",
+          scaleMargins: {
+            top: 0.08,
+            bottom: 0.08
+          }
+        },
+
+        timeScale: {
+          borderColor: "#173041",
+          timeVisible: true,
+          secondsVisible: false,
+          rightOffset: 5,
+          barSpacing: 7
+        },
+
+        handleScroll: {
+          mouseWheel: true,
+          pressedMouseMove: true,
+          horzTouchDrag: true,
+          vertTouchDrag: true
+        },
+
+        handleScale: {
+          mouseWheel: true,
+          pinch: true,
+          axisPressedMouseMove: true
+        }
+      }
+    );
+
+
+  candleSeries =
+    chart.addSeries(
+      LightweightCharts.CandlestickSeries,
+      {
+        upColor: "#16c995",
+        downColor: "#f15b68",
+
+        borderVisible: false,
+
+        wickUpColor: "#16c995",
+        wickDownColor: "#f15b68",
+
+        priceLineVisible: true,
+
+        lastValueVisible: true
+      }
+    );
+
+
+  markerPlugin =
+    LightweightCharts.createSeriesMarkers(
+      candleSeries,
+      []
+    );
+
+
+  const resize =
+    () => {
+
+      if (!chart) {
+        return;
+      }
+
+      chart.resize(
+        container.clientWidth,
+        container.clientHeight
+      );
+
+    };
+
+
+  window.addEventListener(
+    "resize",
+    resize
+  );
+
+}
+
+
+/* =========================================================
+   TIME CONVERSION
+   ========================================================= */
+
+function toChartTime(value) {
+
+  if (
+    typeof value ===
+    "number"
   ) {
 
-    if (
-      value === null ||
-      value === undefined ||
-      !Number.isFinite(
-        Number(value)
-      )
-    ) {
+    return value;
 
-      return 0;
-    }
-
-
-    let number =
-      Number(value);
-
-
-    if (
-      number <= 1
-    ) {
-
-      number *= 100;
-    }
-
-
-    return Math.max(
-      0,
-      Math.min(
-        100,
-        number
-      )
-    );
   }
 
 
-  /* =====================================================
-     DIAGNOSTICS
-     ===================================================== */
+  if (!value) {
+    return null;
+  }
 
 
-  function updateDiagnostics() {
+  /*
+   * Twelve Data normally returns:
+   * YYYY-MM-DD HH:mm:ss
+   *
+   * We convert it to a UTC timestamp.
+   * This preserves candle ordering and gives
+   * Lightweight Charts a numeric time value.
+   */
 
-    if (
-      !market15 ||
-      !market5
-    ) {
+  const normalized =
+    String(value)
+      .trim()
+      .replace(" ", "T");
 
-      return;
+
+  const parsed =
+    Date.parse(
+      normalized + "Z"
+    );
+
+
+  if (
+    !Number.isFinite(
+      parsed
+    )
+  ) {
+
+    return null;
+
+  }
+
+
+  return Math.floor(
+    parsed / 1000
+  );
+
+}
+
+
+/* =========================================================
+   CLEAN CANDLES
+   ========================================================= */
+
+function normalizeCandles(
+  candles
+) {
+
+  if (
+    !Array.isArray(
+      candles
+    )
+  ) {
+
+    return [];
+
+  }
+
+
+  return candles
+    .map(c => {
+
+      const time =
+        toChartTime(
+          c.time
+        );
+
+
+      return {
+
+        time,
+
+        open:
+          Number(c.open),
+
+        high:
+          Number(c.high),
+
+        low:
+          Number(c.low),
+
+        close:
+          Number(c.close)
+
+      };
+
+    })
+    .filter(c =>
+      c.time &&
+      Number.isFinite(c.open) &&
+      Number.isFinite(c.high) &&
+      Number.isFinite(c.low) &&
+      Number.isFinite(c.close)
+    )
+    .sort(
+      (a, b) =>
+        a.time - b.time
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR PRICE LINES
+   ========================================================= */
+
+function clearPriceLines() {
+
+  if (
+    !candleSeries
+  ) {
+    return;
+  }
+
+
+  for (
+    const line
+    of priceLines
+  ) {
+
+    try {
+
+      candleSeries.removePriceLine(
+        line
+      );
+
+    } catch (_) {}
+
+  }
+
+
+  priceLines = [];
+
+}
+
+
+/* =========================================================
+   ADD PRICE LINE
+   ========================================================= */
+
+function addPriceLine(
+  price,
+  title,
+  color,
+  lineStyle = 2,
+  lineWidth = 1
+) {
+
+  if (
+    !Number.isFinite(
+      Number(price)
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  const line =
+    candleSeries.createPriceLine({
+
+      price:
+        Number(price),
+
+      color,
+
+      lineWidth,
+
+      lineStyle,
+
+      axisLabelVisible:
+        true,
+
+      title
+
+    });
+
+
+  priceLines.push(
+    line
+  );
+
+}
+
+
+/* =========================================================
+   DRAW ZONES
+   ========================================================= */
+
+function drawZoneLines(
+  zones,
+  type
+) {
+
+  if (
+    !Array.isArray(
+      zones
+    )
+  ) {
+    return;
+  }
+
+
+  const maxZones =
+    Math.min(
+      zones.length,
+      3
+    );
+
+
+  for (
+    let i = 0;
+    i < maxZones;
+    i++
+  ) {
+
+    const zone =
+      zones[i];
+
+
+    const isSupply =
+      type === "Supply";
+
+
+    const color =
+      isSupply
+        ? "#e84f5e"
+        : "#16c995";
+
+
+    const prefix =
+      isSupply
+        ? "S"
+        : "D";
+
+
+    addPriceLine(
+      zone.top,
+      `${prefix}${i + 1} TOP`,
+      color,
+      2,
+      1
+    );
+
+
+    addPriceLine(
+      zone.bottom,
+      `${prefix}${i + 1} BOT`,
+      color,
+      2,
+      1
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DRAW TRADE PLAN
+   ========================================================= */
+
+function drawTradePlan(
+  signal
+) {
+
+  if (!signal) {
+    return;
+  }
+
+
+  if (
+    signal.entry
+  ) {
+
+    addPriceLine(
+      signal.entry.low,
+      "ENTRY LOW",
+      "#4aa8ff",
+      2,
+      1
+    );
+
+    addPriceLine(
+      signal.entry.high,
+      "ENTRY HIGH",
+      "#4aa8ff",
+      2,
+      1
+    );
+
+  }
+
+
+  if (
+    Number.isFinite(
+      Number(
+        signal.stopLoss
+      )
+    )
+  ) {
+
+    addPriceLine(
+      signal.stopLoss,
+      "SL",
+      "#ff5968",
+      2,
+      1
+    );
+
+  }
+
+
+  if (
+    Number.isFinite(
+      Number(signal.tp1)
+    )
+  ) {
+
+    addPriceLine(
+      signal.tp1,
+      "TP1",
+      "#1edaa1",
+      2,
+      1
+    );
+
+  }
+
+
+  if (
+    Number.isFinite(
+      Number(signal.tp2)
+    )
+  ) {
+
+    addPriceLine(
+      signal.tp2,
+      "TP2",
+      "#1edaa1",
+      2,
+      1
+    );
+
+  }
+
+
+  if (
+    Number.isFinite(
+      Number(signal.tp3)
+    )
+  ) {
+
+    addPriceLine(
+      signal.tp3,
+      "TP3",
+      "#1edaa1",
+      2,
+      1
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DRAW MAGNET
+   ========================================================= */
+
+function drawMagnet(
+  magnet
+) {
+
+  if (!magnet) {
+    return;
+  }
+
+
+  const source =
+    magnet.source;
+
+
+  const target =
+    magnet.target;
+
+
+  if (source) {
+
+    addPriceLine(
+      source.mid,
+      magnet.direction === "UP"
+        ? "MAGNET BUY"
+        : "MAGNET SELL",
+      magnet.direction === "UP"
+        ? "#18d69e"
+        : "#ff6370",
+      1,
+      2
+    );
+
+  }
+
+
+  if (target) {
+
+    addPriceLine(
+      target.mid,
+      "MAGNET TARGET",
+      "#d0a85b",
+      1,
+      1
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DRAW SIGNAL MARKER
+   ========================================================= */
+
+function drawSignalMarker(
+  candles,
+  signal
+) {
+
+  if (
+    !markerPlugin
+  ) {
+    return;
+  }
+
+
+  if (
+    !signal
+  ) {
+
+    markerPlugin.setMarkers(
+      []
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !candles.length
+  ) {
+    return;
+  }
+
+
+  const last =
+    candles[
+      candles.length - 1
+    ];
+
+
+  const isBuy =
+    signal.direction ===
+    "BUY";
+
+
+  markerPlugin.setMarkers([
+
+    {
+
+      time:
+        last.time,
+
+      position:
+        isBuy
+          ? "belowBar"
+          : "aboveBar",
+
+      shape:
+        isBuy
+          ? "arrowUp"
+          : "arrowDown",
+
+      color:
+        isBuy
+          ? "#16d995"
+          : "#ff5968",
+
+      text:
+        isBuy
+          ? "BUY"
+          : "SELL",
+
+      size: 2
+
     }
 
+  ]);
 
-    const engine15 =
-      market15.engine ||
-      {};
-
-
-    const engine5 =
-      market5.engine ||
-      {};
+}
 
 
-    const direction15 =
-      getDirection(
-        engine15
-      );
+/* =========================================================
+   RENDER CHART
+   ========================================================= */
+
+function renderChart(
+  data,
+  timeframe
+) {
+
+  if (
+    !chart ||
+    !candleSeries
+  ) {
+    return;
+  }
 
 
-    const direction5 =
-      getDirection(
-        engine5
-      );
-
-
-    /*
-     * 15M signal object
-     */
-
-    const signal15 =
-      getSignalObject(
-        engine15
-      );
-
-
-    /*
-     * 5M signal object
-     */
-
-    const signal5 =
-      getSignalObject(
-        engine5
-      );
-
-
-    /*
-     * 15M values
-     */
-
-    const score15 =
-      engine15.score ??
-      signal15.score ??
-      signal15.sourceScore ??
-      0;
-
-
-    const retests15 =
-      engine15.retests ??
-      signal15.sourceTouches ??
-      getBestZoneRetests(
-        engine15
-      );
-
-
-    /*
-     * 5M values
-     */
-
-    const score5 =
-      engine5.score ??
-      signal5.score ??
-      signal5.sourceScore ??
-      0;
-
-
-    const retests5 =
-      engine5.retests ??
-      signal5.sourceTouches ??
-      getBestZoneRetests(
-        engine5
-      );
-
-
-    /*
-     * 15M zone summaries
-     */
-
-    const supply15 =
-      engine15.supply;
-
-
-    const demand15 =
-      engine15.demand;
-
-
-    /*
-     * 5M zone summaries
-     */
-
-    const supply5 =
-      engine5.supply;
-
-
-    const demand5 =
-      engine5.demand;
-
-
-    /*
-     * Set 15M direction
-     */
-
-    const diag15Direction =
-      document.getElementById(
-        "diag15Direction"
-      );
-
-
-    diag15Direction.textContent =
-      direction15;
-
-
-    applyDirectionClass(
-      diag15Direction,
-      direction15
+  const candles =
+    normalizeCandles(
+      data?.candles
     );
 
 
-    /*
-     * Set 15M score
-     */
+  if (
+    !candles.length
+  ) {
 
-    document.getElementById(
-      "diag15Score"
-    ).textContent =
-      formatScore(
-        score15
-      );
+    showChartError(
+      "No valid candle data received."
+    );
 
+    return;
 
-    /*
-     * Set 15M retests
-     */
-
-    document.getElementById(
-      "diag15Retests"
-    ).textContent =
-      safe(
-        retests15,
-        "0"
-      );
+  }
 
 
-    /*
-     * Set 15M supply
-     */
-
-    document.getElementById(
-      "diag15Supply"
-    ).textContent =
-      supply15
-        ? formatScore(
-            supply15.score
-          )
-        : "NONE";
+  hideChartError();
 
 
-    /*
-     * Set 15M demand
-     */
-
-    document.getElementById(
-      "diag15Demand"
-    ).textContent =
-      demand15
-        ? formatScore(
-            demand15.score
-          )
-        : "NONE";
+  candleSeries.setData(
+    candles
+  );
 
 
-    /*
-     * 5M direction
-     */
-
-    const diag5Direction =
-      document.getElementById(
-        "diag5Direction"
-      );
+  clearPriceLines();
 
 
-    diag5Direction.textContent =
-      direction5;
+  const engine =
+    data.engine ||
+    {};
 
 
-    applyDirectionClass(
-      diag5Direction,
-      direction5
+  drawZoneLines(
+    engine.supply,
+    "Supply"
+  );
+
+
+  drawZoneLines(
+    engine.demand,
+    "Demand"
+  );
+
+
+  const magnet =
+    Array.isArray(
+      engine.magnets
+    )
+      ? engine.magnets[0]
+      : null;
+
+
+  drawMagnet(
+    magnet
+  );
+
+
+  drawTradePlan(
+    engine.signal
+  );
+
+
+  drawSignalMarker(
+    candles,
+    engine.signal
+  );
+
+
+  chart.timeScale()
+    .fitContent();
+
+
+  const latest =
+    candles[
+      candles.length - 1
+    ];
+
+
+  $("lastPrice").textContent =
+    formatPrice(
+      latest.close
     );
 
 
+  $("chartSubtitle").textContent =
+    `${timeframe === "15min" ? "15M STRUCTURE" : "5M ENTRY"} • Strong SD Magnet`;
+
+}
+
+
+/* =========================================================
+   PRICE FORMAT
+   ========================================================= */
+
+function formatPrice(
+  value
+) {
+
+  if (
+    !Number.isFinite(
+      Number(value)
+    )
+  ) {
+
+    return "—";
+
+  }
+
+
+  const n =
+    Number(value);
+
+
+  if (
+    Math.abs(n) >=
+    1000
+  ) {
+
+    return n.toFixed(2);
+
+  }
+
+
+  if (
+    Math.abs(n) >=
+    100
+  ) {
+
+    return n.toFixed(2);
+
+  }
+
+
+  if (
+    Math.abs(n) >=
+    1
+  ) {
+
+    return n.toFixed(4);
+
+  }
+
+
+  return n.toFixed(6);
+
+}
+
+
+/* =========================================================
+   API FETCH
+   ========================================================= */
+
+async function fetchMarket(
+  symbol,
+  interval
+) {
+
+  const url =
+    `${API}?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}&outputsize=200`;
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        cache: "no-store"
+      }
+    );
+
+
+  const data =
+    await response.json();
+
+
+  if (
+    !response.ok ||
+    !data.success
+  ) {
+
+    throw new Error(
+      data.error ||
+      "Market API error"
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================================================
+   LOAD CURRENT MARKET
+   ========================================================= */
+
+async function loadMarket(
+  options = {}
+) {
+
+  const {
+    silent = false
+  } = options;
+
+
+  if (!silent) {
+
+    showChartLoading();
+
+  }
+
+
+  hideChartError();
+
+
+  try {
+
     /*
-     * 5M score
+     * We fetch 15M and 5M.
+     *
+     * 15M = structure
+     * 5M  = entry confirmation
      */
 
-    document.getElementById(
-      "diag5Score"
-    ).textContent =
-      formatScore(
-        score5
-      );
+    const [
+      data15,
+      data5
+    ] =
+      await Promise.all([
 
+        fetchMarket(
+          currentSymbol,
+          "15min"
+        ),
 
-    /*
-     * 5M retests
-     */
-
-    document.getElementById(
-      "diag5Retests"
-    ).textContent =
-      safe(
-        retests5,
-        "0"
-      );
-
-
-    /*
-     * 5M supply
-     */
-
-    document.getElementById(
-      "diag5Supply"
-    ).textContent =
-      supply5
-        ? formatScore(
-            supply5.score
-          )
-        : "NONE";
-
-
-    /*
-     * 5M demand
-     */
-
-    document.getElementById(
-      "diag5Demand"
-    ).textContent =
-      demand5
-        ? formatScore(
-            demand5.score
-          )
-        : "NONE";
-
-
-    /*
-     * Magnet
-     */
-
-    const magnet =
-      engine15.magnet ||
-      (
-        Array.isArray(
-          engine15.magnets
+        fetchMarket(
+          currentSymbol,
+          "5min"
         )
-          ? engine15.magnets[0]
-          : null
-      );
+
+      ]);
 
 
-    if (magnet) {
-
-      document.getElementById(
-        "diagMagnetDirection"
-      ).textContent =
-        safe(
-          magnet.direction,
-          "NONE"
-        );
+    market15 =
+      data15;
 
 
-      document.getElementById(
-        "diagMagnetSource"
-      ).textContent =
-        safe(
-          magnet.source?.type
-        );
-
-
-      document.getElementById(
-        "diagMagnetTarget"
-      ).textContent =
-        safe(
-          magnet.target?.type
-        );
-
-
-      document.getElementById(
-        "diagMagnetScore"
-      ).textContent =
-        formatScore(
-          magnet.pullScore
-        );
-
-
-      document.getElementById(
-        "diagMagnetProbability"
-      ).textContent =
-        formatProbability(
-          magnet.probability
-        );
-
-    } else {
-
-      document.getElementById(
-        "diagMagnetDirection"
-      ).textContent =
-        "NONE";
-
-
-      document.getElementById(
-        "diagMagnetSource"
-      ).textContent =
-        "—";
-
-
-      document.getElementById(
-        "diagMagnetTarget"
-      ).textContent =
-        "—";
-
-
-      document.getElementById(
-        "diagMagnetScore"
-      ).textContent =
-        "—";
-
-
-      document.getElementById(
-        "diagMagnetProbability"
-      ).textContent =
-        "—";
-    }
+    market5 =
+      data5;
 
 
     /*
-     * Final alignment
+     * Connection
      */
 
-    const aligned =
-      (
-        direction15 === "BUY" &&
-        direction5 === "BUY"
-      ) ||
-      (
-        direction15 === "SELL" &&
-        direction5 === "SELL"
-      );
-
-
-    document.getElementById(
-      "final15"
-    ).textContent =
-      direction15;
-
-
-    document.getElementById(
-      "final5"
-    ).textContent =
-      direction5;
-
-
-    const alignment =
-      document.getElementById(
-        "alignment"
-      );
-
-
-    alignment.textContent =
-      aligned
-        ? "ALIGNED"
-        : "NOT ALIGNED";
-
-
-    applyDirectionClass(
-      alignment,
-      aligned
-        ? direction15
-        : "WAIT"
+    setConnection(
+      true
     );
 
 
     /*
-     * Final decision.
-     *
-     * IMPORTANT:
-     *
-     * We require both 15M and 5M
-     * to agree.
+     * Current timeframe
      */
 
-    let finalDirection =
-      "WAIT";
+    const current =
+      currentTimeframe ===
+      "15min"
+        ? market15
+        : market5;
 
 
-    if (
-      direction15 === "BUY" &&
-      direction5 === "BUY"
-    ) {
-
-      finalDirection =
-        "BUY";
-
-    } else if (
-      direction15 === "SELL" &&
-      direction5 === "SELL"
-    ) {
-
-      finalDirection =
-        "SELL";
-    }
-
-
-    const finalDecision =
-      document.getElementById(
-        "finalDecision"
-      );
-
-
-    finalDecision.textContent =
-      finalDirection;
-
-
-    applyDirectionClass(
-      finalDecision,
-      finalDirection
+    renderChart(
+      current,
+      currentTimeframe
     );
+
+
+    updateAssetHeader(
+      current
+    );
+
+
+    updateSignalPanel();
+
+
+    updateDiagnostics();
+
+
+    updateEngineTime();
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    setConnection(
+      false
+    );
+
+
+    showChartError(
+      error.message ||
+      "Unable to load market data."
+    );
+
+  } finally {
+
+    hideChartLoading();
+
   }
 
+}
 
-  function getBestZoneRetests(
-    engine
+
+/* =========================================================
+   UPDATE ASSET HEADER
+   ========================================================= */
+
+function updateAssetHeader(
+  data
+) {
+
+  $("assetSymbol").textContent =
+    currentSymbol;
+
+
+  $("assetName").textContent =
+    currentName ||
+    currentSymbol;
+
+
+  if (
+    data &&
+    data.engine &&
+    Number.isFinite(
+      Number(
+        data.engine.price
+      )
+    )
   ) {
 
-    const zones = [];
-
-
-    if (
-      engine?.supply
-    ) {
-
-      zones.push(
-        engine.supply
+    $("lastPrice").textContent =
+      formatPrice(
+        data.engine.price
       );
-    }
 
-
-    if (
-      engine?.demand
-    ) {
-
-      zones.push(
-        engine.demand
-      );
-    }
-
-
-    if (
-      Array.isArray(
-        engine?.supplyZones
-      )
-    ) {
-
-      zones.push(
-        ...engine.supplyZones
-      );
-    }
-
-
-    if (
-      Array.isArray(
-        engine?.demandZones
-      )
-    ) {
-
-      zones.push(
-        ...engine.demandZones
-      );
-    }
-
-
-    if (
-      zones.length === 0
-    ) {
-
-      return 0;
-    }
-
-
-    return Math.max(
-      ...zones.map(
-        z =>
-          Number(
-            z.retests ??
-            z.touches ??
-            0
-          )
-      )
-    );
   }
 
+}
 
-  /* =====================================================
-     FINAL TRADE SIGNAL
-     ===================================================== */
 
+/* =========================================================
+   UPDATE SIGNAL PANEL
+   ========================================================= */
 
-  function calculateFinalSignal() {
+function updateSignalPanel() {
 
-    resetSignal();
+  const engine15 =
+    market15?.engine || {};
 
 
-    if (
-      !market15 ||
-      !market5
-    ) {
+  const engine5 =
+    market5?.engine || {};
 
-      return;
-    }
 
+  const signal15 =
+    engine15.signal;
 
-    const engine15 =
-      market15.engine ||
-      {};
 
+  const signal5 =
+    engine5.signal;
 
-    const engine5 =
-      market5.engine ||
-      {};
 
+  /*
+   * IMPORTANT:
+   *
+   * We do NOT invent a 5M signal.
+   *
+   * Current backend exposes full SD Magnet
+   * signals for both timeframes.
+   *
+   * Final signal requires agreement.
+   */
 
-    const direction15 =
-      getDirection(
-        engine15
-      );
+  let finalSignal =
+    null;
 
 
-    const direction5 =
-      getDirection(
-        engine5
-      );
-
-
-    /*
-     * Only trade when
-     * both timeframes agree.
-     */
-
-    let finalDirection =
-      "WAIT";
-
-
-    if (
-      direction15 === "BUY" &&
-      direction5 === "BUY"
-    ) {
-
-      finalDirection =
-        "BUY";
-
-    } else if (
-      direction15 === "SELL" &&
-      direction5 === "SELL"
-    ) {
-
-      finalDirection =
-        "SELL";
-    }
-
-
-    if (
-      finalDirection ===
-      "WAIT"
-    ) {
-
-      signalEl.textContent =
-        "WAIT";
-
-
-      signalEl.className =
-        "signal wait";
-
-
-      if (
-        direction15 !== "WAIT" &&
-        direction5 !== "WAIT" &&
-        direction15 !== direction5
-      ) {
-
-        signalDescription.textContent =
-          "15M and 5M are not aligned. No trade.";
-
-      } else {
-
-        signalDescription.textContent =
-          "Waiting for confirmed SD Magnet structure and entry confirmation.";
-      }
-
-
-      return;
-    }
-
-
-    /*
-     * Use 15M signal as the
-     * main trade plan.
-     */
-
-    const signal15 =
-      getSignalObject(
-        engine15
-      );
-
-
-    /*
-     * In case backend signal exists.
-     */
-
-    signalEl.textContent =
-      finalDirection;
-
-
-    signalEl.className =
-      "signal " +
-      finalDirection.toLowerCase();
-
-
-    if (
-      finalDirection === "BUY"
-    ) {
-
-      signalDescription.textContent =
-        "15M bullish SD Magnet confirmed by 5M.";
-
-    } else {
-
-      signalDescription.textContent =
-        "15M bearish SD Magnet confirmed by 5M.";
-    }
-
-
-    /*
-     * Entry
-     */
-
-    document.getElementById(
-      "entry"
-    ).textContent =
-      formatTradeValue(
-        signal15.entry ??
-        signal15.entryZone ??
-        signal15.entryPrice
-      );
-
-
-    /*
-     * SL
-     */
-
-    document.getElementById(
-      "sl"
-    ).textContent =
-      formatTradeValue(
-        signal15.sl ??
-        signal15.stopLoss
-      );
-
-
-    /*
-     * TP1
-     */
-
-    document.getElementById(
-      "tp1"
-    ).textContent =
-      formatTradeValue(
-        signal15.tp1 ??
-        signal15.takeProfit1
-      );
-
-
-    /*
-     * TP2 / TP3
-     */
-
-    const tp2 =
-      signal15.tp2 ??
-      signal15.takeProfit2;
-
-
-    const tp3 =
-      signal15.tp3 ??
-      signal15.takeProfit3;
-
-
-    document.getElementById(
-      "tp23"
-    ).textContent =
-      formatTradeValue(
-        tp2
-      ) +
-      " / " +
-      formatTradeValue(
-        tp3
-      );
-  }
-
-
-  function formatTradeValue(
-    value
+  if (
+    signal15 &&
+    signal5 &&
+    signal15.direction ===
+    signal5.direction
   ) {
 
-    if (
-      value === null ||
-      value === undefined
-    ) {
+    finalSignal =
+      signal15;
 
-      return "—";
-    }
-
-
-    if (
-      typeof value ===
-      "object"
-    ) {
-
-      if (
-        value.low !== undefined &&
-        value.high !== undefined
-      ) {
-
-        return (
-          formatPrice(
-            value.low
-          ) +
-          " — " +
-          formatPrice(
-            value.high
-          )
-        );
-      }
-
-
-      if (
-        value.min !== undefined &&
-        value.max !== undefined
-      ) {
-
-        return (
-          formatPrice(
-            value.min
-          ) +
-          " — " +
-          formatPrice(
-            value.max
-          )
-        );
-      }
-
-
-      if (
-        value.price !== undefined
-      ) {
-
-        return formatPrice(
-          value.price
-        );
-      }
-    }
-
-
-    return formatPrice(
-      value
-    );
   }
 
 
-  /* =====================================================
-     API FETCH
-     ===================================================== */
+  const status =
+    finalSignal
+      ? finalSignal.direction
+      : "WAIT";
 
 
-  async function fetchMarket(
-    symbol,
-    interval
+  const signalValue =
+    $("signalValue");
+
+
+  signalValue.textContent =
+    status;
+
+
+  signalValue.className =
+    "signal-value " +
+    (
+      status === "BUY"
+        ? "buy"
+        : status === "SELL"
+          ? "sell"
+          : "wait"
+    );
+
+
+  if (
+    finalSignal
   ) {
+
+    $("signalProbability").textContent =
+      `Confirmed on 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
+
+  } else {
+
+    $("signalProbability").textContent =
+      "No confirmed 15M + 5M alignment";
+
+  }
+
+
+  const primary =
+    currentTimeframe ===
+    "15min"
+      ? engine15
+      : engine5;
+
+
+  $("metricPrice").textContent =
+    formatPrice(
+      primary.price
+    );
+
+
+  $("metricAtr").textContent =
+    formatPrice(
+      primary.atr
+    );
+
+
+  $("metric15").textContent =
+    engine15.status ||
+    "WAIT";
+
+
+  $("metric5").textContent =
+    engine5.status ||
+    "WAIT";
+
+
+  const primarySignal =
+    primary.signal;
+
+
+  $("metricScore").textContent =
+    primarySignal
+      ? (
+          primarySignal.sourceScore ??
+          primarySignal.confidence ??
+          "—"
+        )
+      : "—";
+
+
+  $("metricRetests").textContent =
+    primarySignal
+      ? (
+          primarySignal.sourceTouches ??
+          "—"
+        )
+      : "—";
+
+
+  /*
+   * Trade plan
+   */
+
+  if (
+    finalSignal
+  ) {
+
+    $("tradeEntry").textContent =
+      finalSignal.entry
+        ? `${formatPrice(finalSignal.entry.low)} – ${formatPrice(finalSignal.entry.high)}`
+        : "—";
+
+
+    $("tradeSL").textContent =
+      formatPrice(
+        finalSignal.stopLoss
+      );
+
+
+    $("tradeTP1").textContent =
+      formatPrice(
+        finalSignal.tp1
+      );
+
+
+    $("tradeTP2").textContent =
+      formatPrice(
+        finalSignal.tp2
+      );
+
+
+    $("tradeTP3").textContent =
+      formatPrice(
+        finalSignal.tp3
+      );
+
+  } else {
+
+    $("tradeEntry").textContent =
+      "—";
+
+    $("tradeSL").textContent =
+      "—";
+
+    $("tradeTP1").textContent =
+      "—";
+
+    $("tradeTP2").textContent =
+      "—";
+
+    $("tradeTP3").textContent =
+      "—";
+
+  }
+
+
+  /*
+   * 15M zones
+   */
+
+  renderZone(
+    $("supplyZone"),
+    engine15.supply?.[0],
+    "Supply"
+  );
+
+
+  renderZone(
+    $("demandZone"),
+    engine15.demand?.[0],
+    "Demand"
+  );
+
+
+  /*
+   * Magnet
+   */
+
+  renderMagnet(
+    engine15.magnets?.[0]
+  );
+
+}
+
+
+/* =========================================================
+   RENDER ZONE
+   ========================================================= */
+
+function renderZone(
+  container,
+  zone,
+  type
+) {
+
+  if (!zone) {
+
+    container.innerHTML =
+      `<div class="zone-box ${type === "Supply" ? "supply" : "demand"}">
+        No active ${type} zone
+      </div>`;
+
+    return;
+
+  }
+
+
+  const status =
+    zone.status ||
+    "ACTIVE";
+
+
+  container.innerHTML = `
+
+    <div
+      class="zone-box ${
+        type === "Supply"
+          ? "supply"
+          : "demand"
+      }"
+    >
+
+      <div class="zone-top">
+
+        <span class="zone-name">
+          ${type}
+        </span>
+
+        <span class="zone-score">
+          Score ${zone.score ?? "—"}/10
+        </span>
+
+      </div>
+
+      <div class="zone-data">
+
+        <span>
+          Top: ${formatPrice(zone.top)}
+        </span>
+
+        <span>
+          Bottom: ${formatPrice(zone.bottom)}
+        </span>
+
+        <span>
+          Retests: ${zone.retests ?? 0}
+        </span>
+
+        <span>
+          ${status}
+        </span>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER MAGNET
+   ========================================================= */
+
+function renderMagnet(
+  magnet
+) {
+
+  const box =
+    $("magnetBox");
+
+
+  if (!magnet) {
+
+    box.innerHTML = `
+
+      <div class="magnet-direction">
+        NONE
+      </div>
+
+      <div class="magnet-details">
+
+        <div>
+          Source: —
+        </div>
+
+        <div>
+          Target: —
+        </div>
+
+        <div>
+          Pull Score: —
+        </div>
+
+        <div>
+          Probability: —
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const up =
+    magnet.direction ===
+    "UP";
+
+
+  box.innerHTML = `
+
+    <div
+      class="magnet-direction ${
+        up
+          ? "magnet-up"
+          : "magnet-down"
+      }"
+    >
+      ${up ? "↑ UP MAGNET" : "↓ DOWN MAGNET"}
+    </div>
+
+    <div class="magnet-details">
+
+      <div>
+        Source:
+        ${magnet.source?.type || "—"}
+      </div>
+
+      <div>
+        Target:
+        ${magnet.target?.type || "—"}
+      </div>
+
+      <div>
+        Pull Score:
+        ${magnet.pullScore ?? "—"}
+      </div>
+
+      <div>
+        Probability:
+        ${magnet.probability ?? "—"}%
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   DIAGNOSTICS
+   ========================================================= */
+
+function updateDiagnostics() {
+
+  const e15 =
+    market15?.engine || {};
+
+
+  const e5 =
+    market5?.engine || {};
+
+
+  const s15 =
+    e15.signal;
+
+
+  const s5 =
+    e5.signal;
+
+
+  $("diag15Direction").textContent =
+    e15.status ||
+    "WAIT";
+
+
+  $("diag15Score").textContent =
+    s15
+      ? (
+          s15.sourceScore ??
+          s15.confidence ??
+          "—"
+        )
+      : "—";
+
+
+  $("diag15Retests").textContent =
+    s15
+      ? (
+          s15.sourceTouches ??
+          "—"
+        )
+      : "—";
+
+
+  $("diag5Direction").textContent =
+    e5.status ||
+    "WAIT";
+
+
+  const magnet =
+    e15.magnets?.[0];
+
+
+  $("diagMagnet").textContent =
+    magnet
+      ? magnet.direction
+      : "NONE";
+
+
+  const aligned =
+    s15 &&
+    s5 &&
+    s15.direction ===
+    s5.direction;
+
+
+  $("diagAlignment").textContent =
+    aligned
+      ? s15.direction
+      : "WAIT";
+
+}
+
+
+/* =========================================================
+   ENGINE TIME
+   ========================================================= */
+
+function updateEngineTime() {
+
+  const now =
+    new Date();
+
+
+  $("engineTime").textContent =
+    now.toLocaleTimeString(
+      [],
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CONNECTION
+   ========================================================= */
+
+function setConnection(
+  online
+) {
+
+  const dot =
+    $("connectionDot");
+
+
+  const text =
+    $("connectionText");
+
+
+  if (online) {
+
+    dot.className =
+      "dot online";
+
+
+    text.textContent =
+      "Market data connected";
+
+  } else {
+
+    dot.className =
+      "dot error";
+
+
+    text.textContent =
+      "Market data error";
+
+  }
+
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+function showChartLoading() {
+
+  $("chartLoading")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function hideChartLoading() {
+
+  $("chartLoading")
+    .classList
+    .add("hidden");
+
+}
+
+
+/* =========================================================
+   CHART ERROR
+   ========================================================= */
+
+function showChartError(
+  message
+) {
+
+  const box =
+    $("chartError");
+
+
+  box.textContent =
+    message;
+
+
+  box.classList.add(
+    "show"
+  );
+
+}
+
+
+function hideChartError() {
+
+  $("chartError")
+    .classList
+    .remove("show");
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+async function searchSymbols(
+  query
+) {
+
+  const q =
+    String(query || "")
+      .trim();
+
+
+  if (
+    q.length < 1
+  ) {
+
+    hideSearchResults();
+
+    return;
+
+  }
+
+
+  const resultsBox =
+    $("searchResults");
+
+
+  resultsBox.innerHTML =
+    `<div style="padding:10px;color:#71899b;font-size:10px;">
+      Searching...
+    </div>`;
+
+
+  resultsBox.classList.add(
+    "show"
+  );
+
+
+  try {
 
     const url =
-      "/api/market?symbol=" +
-      encodeURIComponent(
-        symbol
-      ) +
-      "&interval=" +
-      encodeURIComponent(
-        interval
-      ) +
-      "&outputsize=200";
+      `${API}?action=search&q=${encodeURIComponent(q)}`;
 
 
     const response =
       await fetch(
         url,
         {
-          method: "GET",
           cache: "no-store"
         }
       );
 
 
-    let data;
-
-
-    try {
-
-      data =
-        await response.json();
-
-    } catch (error) {
-
-      throw new Error(
-        "Invalid API response."
-      );
-    }
+    const data =
+      await response.json();
 
 
     if (
@@ -3323,277 +3107,902 @@
 
       throw new Error(
         data.error ||
-        "Market API returned an error."
+        "Search failed"
       );
+
     }
 
 
-    if (
-      !Array.isArray(
-        data.candles
+    let results =
+      Array.isArray(
+        data.results
       )
-    ) {
+        ? data.results
+        : [];
 
-      throw new Error(
-        "API returned no candles."
+
+    /*
+     * Apply selected category.
+     */
+
+    results =
+      filterResultsByCategory(
+        results
       );
-    }
 
 
-    return data;
-  }
+    /*
+     * Sort crypto / forex / commodity
+     * results ahead of generic stock matches
+     * when searching.
+     */
 
-
-  /* =====================================================
-     LOAD MARKET
-     ===================================================== */
-
-
-  async function loadMarket() {
-
-    hideError();
-
-
-    refreshBtn.disabled =
-      true;
-
-
-    refreshBtn.textContent =
-      "Loading...";
-
-
-    setStatus(
-      "normal",
-      "Analyzing Market..."
+    results.sort(
+      (
+        a,
+        b
+      ) =>
+        resultPriority(b) -
+        resultPriority(a)
     );
 
 
-    document.body.classList.add(
-      "loading"
+    renderSearchResults(
+      results.slice(0, 20)
     );
 
 
-    try {
+  } catch (error) {
 
-      const symbol =
-        instrumentEl.value;
+    resultsBox.innerHTML =
+      `<div style="padding:10px;color:#ff7b86;font-size:10px;">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>`;
 
+  }
 
-      /*
-       * ALWAYS fetch:
-       *
-       * 15M = Structure
-       * 5M  = Confirmation
-       */
-
-      const results =
-        await Promise.all([
-
-          fetchMarket(
-            symbol,
-            "15min"
-          ),
-
-          fetchMarket(
-            symbol,
-            "5min"
-          )
-
-        ]);
+}
 
 
-      market15 =
-        results[0];
+/* =========================================================
+   CATEGORY FILTER
+   ========================================================= */
 
+function filterResultsByCategory(
+  results
+) {
 
-      market5 =
-        results[1];
+  if (
+    selectedCategory ===
+    "all"
+  ) {
 
+    return results;
 
-      /*
-       * Display selected timeframe.
-       */
-
-      const selectedData =
-        timeframeEl.value ===
-        "15min"
-          ? market15
-          : market5;
-
-
-      updateSelectedMarket(
-        selectedData
-      );
-
-
-      /*
-       * 15M zones.
-       */
-
-      const engine15 =
-        market15.engine ||
-        {};
-
-
-      renderZone(
-        "supplyZone",
-        engine15.supply,
-        "SUPPLY / SELL"
-      );
-
-
-      renderZone(
-        "demandZone",
-        engine15.demand,
-        "DEMAND / BUY"
-      );
-
-
-      /*
-       * Magnet.
-       */
-
-      renderMagnet(
-        engine15
-      );
-
-
-      /*
-       * Diagnostics.
-       */
-
-      updateDiagnostics();
-
-
-      /*
-       * Final BUY / SELL / WAIT.
-       */
-
-      calculateFinalSignal();
-
-
-      setStatus(
-        "live",
-        "Market Data Connected"
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "LONA Market Error:",
-        error
-      );
-
-
-      market15 =
-        null;
-
-
-      market5 =
-        null;
-
-
-      resetSignal();
-
-
-      setStatus(
-        "error",
-        "Market Data Error"
-      );
-
-
-      document.getElementById(
-        "dataStatus"
-      ).textContent =
-        "ERROR";
-
-
-      showError(
-        "Market data connection failed: " +
-        error.message
-      );
-
-
-    } finally {
-
-      refreshBtn.disabled =
-        false;
-
-
-      refreshBtn.textContent =
-        "Refresh Market";
-
-
-      document.body.classList.remove(
-        "loading"
-      );
-    }
   }
 
 
-  /* =====================================================
-     EVENTS
-     ===================================================== */
-
-
-  instrumentEl.addEventListener(
-    "change",
-    loadMarket
+  return results.filter(
+    item =>
+      classifyInstrument(
+        item
+      ) ===
+      selectedCategory
   );
 
+}
 
-  timeframeEl.addEventListener(
-    "change",
-    function () {
 
-      if (
-        !market15 ||
-        !market5
-      ) {
+/* =========================================================
+   RESULT PRIORITY
+   ========================================================= */
 
-        loadMarket();
+function resultPriority(
+  item
+) {
 
-        return;
+  const category =
+    classifyInstrument(
+      item
+    );
+
+
+  if (
+    category ===
+    selectedCategory
+  ) {
+
+    return 100;
+
+  }
+
+
+  if (
+    category ===
+    "crypto"
+  ) {
+
+    return 80;
+
+  }
+
+
+  if (
+    category ===
+    "forex"
+  ) {
+
+    return 70;
+
+  }
+
+
+  if (
+    category ===
+    "metals"
+  ) {
+
+    return 65;
+
+  }
+
+
+  if (
+    category ===
+    "energy"
+  ) {
+
+    return 60;
+
+  }
+
+
+  if (
+    category ===
+    "stocks"
+  ) {
+
+    return 50;
+
+  }
+
+
+  if (
+    category ===
+    "etf"
+  ) {
+
+    return 40;
+
+  }
+
+
+  return 10;
+
+}
+
+
+/* =========================================================
+   CLASSIFY INSTRUMENT
+   ========================================================= */
+
+function classifyInstrument(
+  item
+) {
+
+  const type =
+    String(
+      item?.instrument_type ||
+      item?.type ||
+      ""
+    )
+      .toLowerCase();
+
+
+  const symbol =
+    String(
+      item?.symbol ||
+      ""
+    )
+      .toUpperCase();
+
+
+  const name =
+    String(
+      item?.instrument_name ||
+      item?.name ||
+      ""
+    )
+      .toLowerCase();
+
+
+  /*
+   * Crypto
+   */
+
+  if (
+    type.includes(
+      "digital"
+    ) ||
+    type.includes(
+      "crypto"
+    ) ||
+    type.includes(
+      "cryptocurrency"
+    ) ||
+    symbol.includes(
+      "/USD"
+    ) &&
+    (
+      name.includes("bitcoin") ||
+      name.includes("ethereum") ||
+      name.includes("solana") ||
+      name.includes("xrp") ||
+      name.includes("dogecoin") ||
+      name.includes("crypto")
+    )
+  ) {
+
+    return "crypto";
+
+  }
+
+
+  /*
+   * ETF
+   */
+
+  if (
+    type.includes(
+      "etf"
+    )
+  ) {
+
+    return "etf";
+
+  }
+
+
+  /*
+   * Forex
+   */
+
+  if (
+    type.includes(
+      "forex"
+    ) ||
+    (
+      symbol.includes("/") &&
+      symbol.length === 7 &&
+      /^[A-Z]{3}\/[A-Z]{3}$/.test(
+        symbol
+      )
+    )
+  ) {
+
+    return "forex";
+
+  }
+
+
+  /*
+   * Metals
+   */
+
+  if (
+    symbol.startsWith(
+      "XAU/"
+    ) ||
+    symbol.startsWith(
+      "XAG/"
+    ) ||
+    symbol.startsWith(
+      "XPT/"
+    ) ||
+    symbol.startsWith(
+      "XPD/"
+    ) ||
+    name.includes(
+      "gold"
+    ) ||
+    name.includes(
+      "silver"
+    ) ||
+    name.includes(
+      "platinum"
+    ) ||
+    name.includes(
+      "palladium"
+    )
+  ) {
+
+    return "metals";
+
+  }
+
+
+  /*
+   * Energy
+   */
+
+  if (
+    name.includes(
+      "crude"
+    ) ||
+    name.includes(
+      "oil"
+    ) ||
+    name.includes(
+      "brent"
+    ) ||
+    name.includes(
+      "wti"
+    ) ||
+    symbol.includes(
+      "WTI"
+    ) ||
+    symbol.includes(
+      "BRENT"
+    )
+  ) {
+
+    return "energy";
+
+  }
+
+
+  /*
+   * Stocks
+   */
+
+  if (
+    type.includes(
+      "stock"
+    ) ||
+    type.includes(
+      "common"
+    )
+  ) {
+
+    return "stocks";
+
+  }
+
+
+  return "stocks";
+
+}
+
+
+/* =========================================================
+   RENDER SEARCH RESULTS
+   ========================================================= */
+
+function renderSearchResults(
+  results
+) {
+
+  const box =
+    $("searchResults");
+
+
+  if (
+    !results.length
+  ) {
+
+    box.innerHTML =
+      `<div style="padding:10px;color:#71899b;font-size:10px;">
+        No matching instruments found for this category.
+      </div>`;
+
+    box.classList.add(
+      "show"
+    );
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    results
+      .map(
+        (
+          item,
+          index
+        ) => {
+
+          const category =
+            classifyInstrument(
+              item
+            );
+
+
+          const symbol =
+            item.symbol ||
+            "";
+
+
+          const name =
+            item.instrument_name ||
+            item.name ||
+            "";
+
+
+          const exchange =
+            item.exchange ||
+            "";
+
+
+          const currency =
+            item.currency ||
+            "";
+
+
+          return `
+
+            <button
+              class="result-item"
+              data-index="${index}"
+            >
+
+              <div class="result-main">
+
+                <span
+                  class="result-symbol"
+                >
+                  ${escapeHtml(
+                    symbol
+                  )}
+                </span>
+
+                <span
+                  class="result-type"
+                >
+                  ${escapeHtml(
+                    category.toUpperCase()
+                  )}
+                </span>
+
+              </div>
+
+              <div
+                class="result-name"
+              >
+                ${escapeHtml(
+                  name
+                )}
+              </div>
+
+              <div
+                class="result-meta"
+              >
+                ${escapeHtml(
+                  exchange
+                )}
+                ${
+                  currency
+                    ? " • " +
+                      escapeHtml(
+                        currency
+                      )
+                    : ""
+                }
+
+              </div>
+
+            </button>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  box
+    .querySelectorAll(
+      ".result-item"
+    )
+    .forEach(
+      (
+        button,
+        index
+      ) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const item =
+              results[
+                index
+              ];
+
+
+            selectAsset(
+              item
+            );
+
+          }
+        );
+
       }
+    );
 
 
-      const selectedData =
-        timeframeEl.value ===
-        "15min"
-          ? market15
-          : market5;
-
-
-      updateSelectedMarket(
-        selectedData
-      );
-    }
+  box.classList.add(
+    "show"
   );
 
-
-  refreshBtn.addEventListener(
-    "click",
-    loadMarket
-  );
+}
 
 
-  /* =====================================================
-     AUTO REFRESH
-     ===================================================== */
+/* =========================================================
+   SELECT ASSET
+   ========================================================= */
 
-  setInterval(
-    loadMarket,
-    60000
-  );
+function selectAsset(
+  item
+) {
+
+  if (!item) {
+    return;
+  }
 
 
-  /* =====================================================
-     INITIAL LOAD
-     ===================================================== */
+  currentSymbol =
+    String(
+      item.symbol ||
+      currentSymbol
+    );
+
+
+  currentName =
+    String(
+      item.instrument_name ||
+      item.name ||
+      currentSymbol
+    );
+
+
+  $("searchInput").value =
+    currentSymbol;
+
+
+  hideSearchResults();
+
 
   loadMarket();
 
+}
+
+
+/* =========================================================
+   HIDE SEARCH
+   ========================================================= */
+
+function hideSearchResults() {
+
+  $("searchResults")
+    .classList
+    .remove("show");
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY BUTTONS
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".category-btn"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelectorAll(
+              ".category-btn"
+            )
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "active"
+                )
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          selectedCategory =
+            button.dataset.category;
+
+
+          const q =
+            $("searchInput")
+              .value
+              .trim();
+
+
+          if (q) {
+
+            searchSymbols(
+              q
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   TIMEFRAME BUTTONS
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".tf-btn"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelectorAll(
+              ".tf-btn"
+            )
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "active"
+                )
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          currentTimeframe =
+            button.dataset.timeframe;
+
+
+          const data =
+            currentTimeframe ===
+            "15min"
+              ? market15
+              : market5;
+
+
+          if (data) {
+
+            renderChart(
+              data,
+              currentTimeframe
+            );
+
+          }
+
+
+          updateSignalPanel();
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   SEARCH EVENTS
+   ========================================================= */
+
+$("searchBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      searchSymbols(
+        $("searchInput").value
+      );
+
+    }
+  );
+
+
+$("searchInput")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key ===
+        "Enter"
+      ) {
+
+        searchSymbols(
+          event.target.value
+        );
+
+      }
+
+    }
+  );
+
+
+$("searchInput")
+  .addEventListener(
+    "input",
+    event => {
+
+      clearTimeout(
+        searchTimer
+      );
+
+
+      const value =
+        event.target.value
+          .trim();
+
+
+      if (
+        value.length < 1
+      ) {
+
+        hideSearchResults();
+
+        return;
+
+      }
+
+
+      searchTimer =
+        setTimeout(
+          () =>
+            searchSymbols(
+              value
+            ),
+          450
+        );
+
+    }
+  );
+
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const panel =
+      document.querySelector(
+        ".search-panel"
+      );
+
+
+    if (
+      panel &&
+      !panel.contains(
+        event.target
+      )
+    ) {
+
+      hideSearchResults();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   AUTO REFRESH
+   ========================================================= */
+
+function startAutoRefresh() {
+
+  if (
+    refreshTimer
+  ) {
+
+    clearInterval(
+      refreshTimer
+    );
+
+  }
+
+
+  /*
+   * 60 seconds.
+   *
+   * This is intentionally conservative
+   * to avoid wasting API credits.
+   */
+
+  refreshTimer =
+    setInterval(
+      () => {
+
+        loadMarket({
+          silent: true
+        });
+
+      },
+      60000
+    );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    createLonaChart();
+
+    loadMarket();
+
+    startAutoRefresh();
+
+  }
+);
 
 </script>
 
