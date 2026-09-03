@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LONA Trading Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #080b10;
+      color: #eef2f7;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 18px;
+      border: 1px solid #1d2633;
+      border-radius: 18px;
+      background: #0d1219;
+    }
+
+    .brand h1 {
+      font-size: 25px;
+      letter-spacing: .5px;
+    }
+
+    .brand p {
+      color: #8e9aaa;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      border-radius: 20px;
+      background: #101923;
+      color: #9eabbc;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #777;
+    }
+
+    /* Controls */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .control {
+      background: #0d1219;
+      border: 1px solid #1d2633;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .control label {
+      display: block;
+      font-size: 11px;
+      color: #7f8b9b;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+
+    select,
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 11px;
+      background: #151d27;
+      color: #eef2f7;
+      font-size: 14px;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      background: #1b2634;
+      border: 1px solid #293748;
+    }
+
+    button:active {
+      transform: scale(.98);
+    }
+
+    .refresh {
+      align-self: end;
+      min-width: 120px;
+    }
+
+    /* Signal */
+    .signal-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #202b39;
+      border-radius: 20px;
+      background: #0d1219;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .signal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .signal-title {
+      color: #8d99a9;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .signal-value {
+      font-size: 42px;
+      font-weight: 800;
+      margin-top: 8px;
+      color: #eef2f7;
+    }
+
+    .signal-subtitle {
+      color: #8995a5;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    .signal-badge {
+      padding: 10px 15px;
+      border-radius: 12px;
+      background: #151d27;
+      color: #9aa6b6;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .metric {
+      padding: 14px;
+      background: #111821;
+      border: 1px solid #1d2734;
+      border-radius: 13px;
+    }
+
+    .metric span {
+      display: block;
+      color: #7d8999;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .metric strong {
+      font-size: 15px;
+    }
+
+    /* Dashboard */
+    .section-title {
+      font-size: 17px;
+      margin: 25px 0 12px;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .market-card {
+      padding: 17px;
+      background: #0d1219;
+      border: 1px solid #1d2633;
+      border-radius: 16px;
+    }
+
+    .market-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .market-name {
+      font-weight: 700;
+    }
+
+    .market-tf {
+      color: #778496;
+      font-size: 11px;
+    }
+
+    .price {
+      font-size: 25px;
+      font-weight: 700;
+      margin-top: 16px;
+    }
+
+    .waiting {
+      color: #8995a5;
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    /* Zones */
+    .zones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .zone {
+      padding: 18px;
+      background: #0d1219;
+      border: 1px solid #1d2633;
+      border-radius: 16px;
+    }
+
+    .zone h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .zone p {
+      color: #8793a4;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: #6f7b8c;
+      border: 1px dashed #293442;
+      border-radius: 14px;
+      background: #0b1016;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 28px 10px 12px;
+      color: #5f6b7b;
+      font-size: 11px;
+    }
+
+    /* Mobile */
+    @media (max-width: 750px) {
+      .app {
+        padding: 12px;
+      }
+
+      .header {
+        align-items: flex-start;
+      }
+
+      .brand h1 {
+        font-size: 21px;
+      }
+
+      .controls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .refresh {
+        grid-column: 1 / -1;
+      }
+
+      .signal-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .market-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .zones {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <h1>LONA Trading Assistant</h1>
+        <p>Strong SD Magnet Market Intelligence</p>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        Engine: Standby
+      </div>
+    </header>
+
+    <!-- CONTROLS -->
+    <section class="controls">
+
+      <div class="control">
+        <label>Instrument</label>
+        <select id="instrument">
+          <option value="XAUUSD">XAU/USD — Gold</option>
+          <option value="WTI">WTI — Oil</option>
+          <option value="BRENT">Brent — Oil</option>
+          <option value="GBPUSD">GBP/USD</option>
+          <option value="GBPJPY">GBP/JPY</option>
+          <option value="GBPCHF">GBP/CHF</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label>Timeframe</label>
+        <select id="timeframe">
+          <option value="15m">15 Minutes — Structure</option>
+          <option value="5m">5 Minutes — Entry</option>
+        </select>
+      </div>
+
+      <button class="refresh" id="refreshBtn">
+        Refresh Market
+      </button>
+
+    </section>
+
+    <!-- MAIN SIGNAL -->
+    <section class="signal-card">
+
+      <div class="signal-top">
+
+        <div>
+          <div class="signal-title">Current Trading Signal</div>
+          <div class="signal-value" id="signal">
+            WAIT
+          </div>
+          <div class="signal-subtitle" id="signalText">
+            Waiting for a confirmed Strong SD Magnet setup
+          </div>
+        </div>
+
+        <div class="signal-badge" id="engineBadge">
+          SD MAGNET
+        </div>
+
+      </div>
+
+      <div class="signal-grid">
+
+        <div class="metric">
+          <span>Entry Zone</span>
+          <strong id="entry">—</strong>
+        </div>
+
+        <div class="metric">
+          <span>Stop Loss</span>
+          <strong id="sl">—</strong>
+        </div>
+
+        <div class="metric">
+          <span>TP1</span>
+          <strong id="tp1">—</strong>
+        </div>
+
+        <div class="metric">
+          <span>TP2 / TP3</span>
+          <strong id="tp23">—</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- MARKET -->
+    <h2 class="section-title">Markets</h2>
+
+    <section class="market-grid">
+
+      <div class="market-card">
+        <div class="market-head">
+          <span class="market-name">XAU/USD</span>
+          <span class="market-tf">15M</span>
+        </div>
+        <div class="price" id="goldPrice">—</div>
+        <div class="waiting" id="goldStatus">
+          Real market data connecting...
+        </div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-head">
+          <span class="market-name">WTI</span>
+          <span class="market-tf">15M</span>
+        </div>
+        <div class="price" id="wtiPrice">—</div>
+        <div class="waiting">
+          SD Magnet analysis pending
+        </div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-head">
+          <span class="market-name">GBP/USD</span>
+          <span class="market-tf">15M</span>
+        </div>
+        <div class="price" id="gbpPrice">—</div>
+        <div class="waiting">
+          SD Magnet analysis pending
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ZONES -->
+    <h2 class="section-title">Strong SD Magnet Zones</h2>
+
+    <section class="zones">
+
+      <div class="zone">
+        <h3>Supply — SELL Area</h3>
+        <div class="empty">
+          No confirmed strong Supply zone yet.
+        </div>
+      </div>
+
+      <div class="zone">
+        <h3>Demand — BUY Area</h3>
+        <div class="empty">
+          No confirmed strong Demand zone yet.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ENGINE INFO -->
+    <h2 class="section-title">Analysis Engine</h2>
+
+    <section class="zone">
+
+      <p>
+        <strong>15M Structure:</strong>
+        Used for the main Supply / Demand structure.
+      </p>
+
+      <p>
+        <strong>5M Confirmation:</strong>
+        Used to confirm the entry setup.
+      </p>
+
+      <p>
+        <strong>Strong Zone:</strong>
+        Score target ≥ 7/10.
+      </p>
+
+      <p>
+        <strong>Retest:</strong>
+        Minimum 1 confirmed retest.
+      </p>
+
+      <p>
+        <strong>Magnet:</strong>
+        Opposite strong zone must provide a valid liquidity pull.
+      </p>
+
+      <p>
+        <strong>Signal:</strong>
+        BUY or SELL will appear only after the required conditions are confirmed.
+      </p>
+
+    </section>
+
+    <footer>
+      LONA Trading Assistant · Strong SD Magnet Engine
+    </footer>
+
+  </div>
+
+  <script>
+    const instrument = document.getElementById("instrument");
+    const timeframe = document.getElementById("timeframe");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    function setWaitingState() {
+      document.getElementById("signal").textContent = "WAIT";
+      document.getElementById("signalText").textContent =
+        "Waiting for a confirmed Strong SD Magnet setup";
+
+      document.getElementById("entry").textContent = "—";
+      document.getElementById("sl").textContent = "—";
+      document.getElementById("tp1").textContent = "—";
+      document.getElementById("tp23").textContent = "—";
+    }
+
+    refreshBtn.addEventListener("click", function () {
+      setWaitingState();
+
+      refreshBtn.textContent = "Refreshing...";
+
+      setTimeout(function () {
+        refreshBtn.textContent = "Refresh Market";
+      }, 700);
+    });
+
+    instrument.addEventListener("change", setWaitingState);
+    timeframe.addEventListener("change", setWaitingState);
+
+    setWaitingState();
+  </script>
+
+</body>
+  </html>
