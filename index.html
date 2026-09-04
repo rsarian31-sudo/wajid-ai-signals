@@ -101,6 +101,71 @@ box-shadow:0 0 12px rgba(22,212,155,.7)
 
 .dot.error{background:#ff5d6c}
 
+/* =====================================================
+   STRATEGY NAVIGATION
+   ===================================================== */
+
+.strategy-nav{
+background:#0b1721;
+border:1px solid #173041;
+border-radius:16px;
+padding:10px;
+margin-bottom:12px;
+overflow:hidden
+}
+
+.strategy-nav-title{
+color:#647d90;
+font-size:9px;
+font-weight:1000;
+letter-spacing:1px;
+margin:0 0 8px 3px
+}
+
+.strategy-nav-list{
+display:flex;
+gap:7px;
+overflow-x:auto;
+scrollbar-width:none
+}
+
+.strategy-nav-list::-webkit-scrollbar{
+display:none
+}
+
+.strategy-link{
+flex:0 0 auto;
+display:flex;
+align-items:center;
+gap:7px;
+text-decoration:none;
+background:#0e202c;
+border:1px solid #1d384a;
+color:#91a7b9;
+border-radius:10px;
+padding:9px 13px;
+font-size:10px;
+font-weight:900;
+transition:.2s ease
+}
+
+.strategy-link:hover{
+background:#122b3c;
+border-color:#287dcc;
+color:#fff
+}
+
+.strategy-link.active{
+background:#15528d;
+border-color:#2c88d5;
+color:#fff;
+box-shadow:0 0 0 1px rgba(44,136,213,.12)
+}
+
+.strategy-link .strategy-icon{
+font-size:14px
+}
+
 /* SEARCH */
 
 .search-panel{
@@ -902,6 +967,15 @@ grid-template-columns:repeat(2,1fr)
 grid-template-columns:repeat(2,1fr)
 }
 
+.strategy-nav{
+padding:9px
+}
+
+.strategy-link{
+padding:8px 11px;
+font-size:9px
+}
+
 }
 </style>
 </head>
@@ -934,6 +1008,41 @@ Connecting...
 </div>
 
 </header>
+
+
+<!-- =====================================================
+     STRATEGY NAVIGATION
+     ===================================================== -->
+
+<nav class="strategy-nav">
+
+<div class="strategy-nav-title">
+STRATEGIES
+</div>
+
+<div class="strategy-nav-list">
+
+<a
+href="/"
+class="strategy-link active"
+>
+<span class="strategy-icon">🧲</span>
+Strong SD Magnet
+</a>
+
+<a
+href="/liquidity.html"
+class="strategy-link"
+>
+<span class="strategy-icon">💧</span>
+Swing Points & Liquidity
+</a>
+
+<!-- Future strategy pages will be added here -->
+
+</div>
+
+</nav>
 
 
 <!-- SEARCH -->
@@ -1884,11 +1993,6 @@ for(
 const candle
 of futureCandles
 ){
-
-/*
- * SL first if same candle touches
- * both levels. Conservative handling.
- */
 
 if(
 priceTouched(
@@ -3914,17 +4018,7 @@ updateDiagnostics();
 
 updateEngineTime();
 
-
-/*
- * First save newly confirmed signal.
- */
-
 recordConfirmedSignal();
-
-
-/*
- * Then evaluate older signals.
- */
 
 evaluateHistory();
 
@@ -5263,4 +5357,4 @@ startOverlayRefresh();
 </script>
 
 </body>
-  </html>
+</html>
