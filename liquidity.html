@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Owajid & Bokul — Swing Liquidity</title>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+  Owajid & Bokul — Swing Liquidity
+</title>
 
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
+
 <style>
+
+/* =========================================================
+   RESET
+========================================================= */
 
 *{
   box-sizing:border-box;
@@ -36,6 +48,7 @@ button{
   cursor:pointer;
 }
 
+
 /* =========================================================
    TOP BAR
 ========================================================= */
@@ -59,10 +72,13 @@ button{
   width:42px;
   height:42px;
   border-radius:12px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   font-weight:900;
+
   color:#071018;
   background:#8be28b;
 }
@@ -87,12 +103,18 @@ button{
 
 .strategybar a{
   text-decoration:none;
+
   color:#9db0c0;
   background:#0e1c27;
+
   border:1px solid #213443;
+
   padding:9px 13px;
+
   border-radius:9px;
+
   white-space:nowrap;
+
   font-size:12px;
 }
 
@@ -103,8 +125,9 @@ button{
   font-weight:800;
 }
 
+
 /* =========================================================
-   WRAPPER
+   MAIN
 ========================================================= */
 
 .wrap{
@@ -113,8 +136,9 @@ button{
   padding:16px;
 }
 
+
 /* =========================================================
-   CONTROLS
+   SEARCH / CONTROLS
 ========================================================= */
 
 .controls{
@@ -132,11 +156,16 @@ button{
 
 .search input{
   width:100%;
+
   padding:12px 14px;
+
   background:#0c1822;
   color:#fff;
+
   border:1px solid #203341;
+
   border-radius:10px;
+
   outline:none;
 }
 
@@ -146,25 +175,30 @@ button{
 
 .searchResults{
   position:absolute;
+
   left:0;
   right:0;
   top:48px;
+
   background:#0b1721;
+
   border:1px solid #263b49;
+
   border-radius:10px;
+
   overflow:hidden;
+
   z-index:100;
+
   display:none;
 }
 
 .searchItem{
   padding:11px 13px;
-  border-bottom:1px solid #172834;
-  cursor:pointer;
-}
 
-.searchItem:last-child{
-  border-bottom:none;
+  border-bottom:1px solid #172834;
+
+  cursor:pointer;
 }
 
 .searchItem:hover{
@@ -189,21 +223,29 @@ button{
 
 .cat{
   border:1px solid #203341;
+
   background:#0c1822;
+
   color:#9db0c0;
+
   border-radius:9px;
+
   padding:10px 12px;
+
   white-space:nowrap;
 }
 
 .cat.active{
   background:#173022;
+
   border-color:#4d8b5c;
+
   color:#9ee5a0;
 }
 
+
 /* =========================================================
-   TIMEFRAME
+   TIMEFRAMES
 ========================================================= */
 
 .timeframes{
@@ -214,45 +256,88 @@ button{
 
 .tf{
   border:1px solid #203341;
+
   background:#0c1822;
+
   color:#a8bac8;
+
   border-radius:8px;
+
   padding:8px 12px;
 }
 
 .tf.active{
   background:#173022;
+
   color:#9ee5a0;
+
   border-color:#4d8b5c;
 }
 
+
 /* =========================================================
-   MAIN GRID
+   ERROR
+========================================================= */
+
+.errorBox{
+  display:none;
+
+  margin-bottom:12px;
+
+  padding:12px;
+
+  border:1px solid #6c3038;
+
+  background:#261116;
+
+  color:#ff8992;
+
+  border-radius:10px;
+
+  font-size:12px;
+}
+
+
+/* =========================================================
+   GRID
 ========================================================= */
 
 .grid{
   display:grid;
-  grid-template-columns:minmax(0,1fr) 360px;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    380px;
+
   gap:14px;
 }
 
 .card{
   background:#0b1721;
+
   border:1px solid #1b2d3a;
+
   border-radius:14px;
+
   overflow:hidden;
 }
 
+
 /* =========================================================
-   HEADER
+   CARD HEADER
 ========================================================= */
 
 .cardHeader{
   padding:13px 15px;
+
   border-bottom:1px solid #1b2d3a;
+
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
   gap:10px;
 }
 
@@ -265,13 +350,16 @@ button{
   color:#738898;
 }
 
+
 /* =========================================================
    CHART
 ========================================================= */
 
 .chartWrap{
   position:relative;
+
   height:590px;
+
   background:#071018;
 }
 
@@ -282,12 +370,19 @@ button{
 
 .loading{
   position:absolute;
+
   inset:0;
+
   display:flex;
+
   align-items:center;
+
   justify-content:center;
+
   background:rgba(7,16,24,.72);
+
   z-index:5;
+
   color:#9db0c0;
 }
 
@@ -295,38 +390,69 @@ button{
   display:none!important;
 }
 
+
 /* =========================================================
    SIGNAL CARD
 ========================================================= */
 
 .signalCard{
-  padding:15px;
+  padding:14px;
 }
+
+
+/* =========================================================
+   CURRENT SIGNAL BOX
+========================================================= */
 
 .signalStatus{
+
   border:1px solid #263846;
+
   background:#09141d;
-  border-radius:12px;
+
+  border-radius:13px;
+
   padding:15px;
+
 }
 
-.statusTop{
+
+/* signal heading */
+
+.signalHeader{
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
+  gap:10px;
 }
+
+
+/* small title */
 
 .statusLabel{
   color:#738898;
-  font-size:11px;
+
+  font-size:10px;
+
   text-transform:uppercase;
-  letter-spacing:.8px;
+
+  letter-spacing:1px;
 }
 
+
+/* big direction */
+
 .direction{
-  font-size:30px;
+  font-size:34px;
+
   font-weight:900;
-  margin-top:5px;
+
+  line-height:1;
+
+  margin-top:7px;
 }
 
 .wait{
@@ -341,72 +467,153 @@ button{
   color:#ff7884;
 }
 
-.prob{
-  margin-top:4px;
-  color:#9eb0bd;
-  font-size:12px;
+
+/* confidence */
+
+.confidenceBox{
+  text-align:right;
 }
 
-.price{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:700;
+.confidenceLabel{
+  color:#718594;
+
+  font-size:9px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.7px;
 }
+
+.confidenceValue{
+  margin-top:4px;
+
+  font-size:22px;
+
+  font-weight:900;
+}
+
+
+/* current price */
+
+.price{
+  margin-top:14px;
+
+  font-size:20px;
+
+  font-weight:800;
+}
+
+
+/* status message */
+
+.signalReason{
+
+  margin-top:9px;
+
+  padding:8px 10px;
+
+  background:#0e1c27;
+
+  border:1px solid #1e303d;
+
+  border-radius:8px;
+
+  color:#8da0ae;
+
+  font-size:10px;
+
+  line-height:1.4;
+}
+
 
 /* =========================================================
    METRICS
 ========================================================= */
 
 .metrics{
+
   display:grid;
-  grid-template-columns:1fr 1fr;
+
+  grid-template-columns:
+    1fr 1fr;
+
   gap:8px;
+
   margin-top:12px;
 }
 
 .metric{
+
   background:#0e1c27;
+
   border:1px solid #1e303d;
+
   border-radius:9px;
+
   padding:10px;
 }
 
 .metric span{
+
   display:block;
+
   color:#718594;
-  font-size:10px;
+
+  font-size:9px;
+
   text-transform:uppercase;
+
+  letter-spacing:.4px;
 }
 
 .metric strong{
+
   display:block;
-  margin-top:4px;
+
+  margin-top:5px;
+
   font-size:13px;
 }
+
 
 /* =========================================================
    TRADE PLAN
 ========================================================= */
 
 .plan{
+
   margin-top:12px;
+
   border:1px solid #1e303d;
+
   border-radius:10px;
+
   overflow:hidden;
 }
 
 .planTitle{
+
   padding:10px;
+
   background:#0e1c27;
-  font-size:12px;
+
+  font-size:11px;
+
   font-weight:800;
+
+  letter-spacing:.5px;
 }
 
 .planRow{
+
   display:flex;
+
   justify-content:space-between;
+
   padding:9px 10px;
+
   border-top:1px solid #1b2b37;
+
   font-size:12px;
 }
 
@@ -418,8 +625,9 @@ button{
   font-family:monospace;
 }
 
+
 /* =========================================================
-   ENGINE
+   ENGINE DETAILS
 ========================================================= */
 
 .section{
@@ -427,24 +635,39 @@ button{
 }
 
 .sectionTitle{
+
   color:#718594;
+
   font-size:10px;
+
   text-transform:uppercase;
+
   letter-spacing:.8px;
+
   margin-bottom:7px;
 }
 
 .infoRow{
+
   display:flex;
+
   justify-content:space-between;
+
   padding:8px 0;
+
   border-bottom:1px solid #172833;
+
   font-size:12px;
 }
 
 .infoRow span{
   color:#738898;
 }
+
+.infoRow strong{
+  text-align:right;
+}
+
 
 /* =========================================================
    HISTORY
@@ -455,70 +678,83 @@ button{
 }
 
 .historyBody{
+
   padding:10px;
+
   max-height:430px;
+
   overflow:auto;
 }
 
 .historyItem{
+
   border:1px solid #1d303c;
+
   background:#0d1b25;
+
   border-radius:10px;
+
   padding:11px;
+
   margin-bottom:8px;
 }
 
 .historyHead{
+
   display:flex;
+
   justify-content:space-between;
+
   gap:10px;
+
   font-weight:800;
+
   font-size:12px;
 }
 
 .historyMeta{
+
   color:#748897;
+
   font-size:10px;
+
   margin-top:5px;
 }
 
 .historyResult{
+
   margin-top:8px;
+
   font-size:11px;
 }
 
 .empty{
+
   color:#718594;
+
   padding:16px 5px;
+
   text-align:center;
+
   font-size:12px;
 }
 
-/* =========================================================
-   ERROR
-========================================================= */
-
-.errorBox{
-  margin:12px 0;
-  padding:12px;
-  border:1px solid #6c3038;
-  background:#261116;
-  color:#ff8992;
-  border-radius:10px;
-  font-size:12px;
-  display:none;
-}
 
 /* =========================================================
    FOOTER
 ========================================================= */
 
 .footer{
+
   padding:18px 5px 30px;
+
   color:#536875;
+
   text-align:center;
+
   font-size:10px;
 }
+
 
 /* =========================================================
    MOBILE
@@ -550,12 +786,23 @@ button{
     font-size:11px;
   }
 
+  .direction{
+    font-size:30px;
+  }
+
 }
 
 </style>
+
 </head>
 
+
 <body>
+
+
+<!-- =======================================================
+     TOP BAR
+======================================================= -->
 
 <header class="topbar">
 
@@ -598,14 +845,17 @@ button{
 </header>
 
 
+<!-- =======================================================
+     MAIN
+======================================================= -->
+
 <main class="wrap">
 
 
-  <!-- =====================================================
-       CONTROLS
-  ====================================================== -->
+  <!-- CONTROLS -->
 
   <div class="controls">
+
 
     <div class="search">
 
@@ -679,9 +929,7 @@ button{
   </div>
 
 
-  <!-- =====================================================
-       TIMEFRAME
-  ====================================================== -->
+  <!-- TIMEFRAME -->
 
   <div class="timeframes">
 
@@ -702,6 +950,8 @@ button{
   </div>
 
 
+  <!-- ERROR -->
+
   <div
     id="errorBox"
     class="errorBox"
@@ -721,6 +971,7 @@ button{
 
     <section class="card">
 
+
       <div class="cardHeader">
 
         <div>
@@ -735,6 +986,7 @@ button{
 
         </div>
 
+
         <small id="refreshText">
           Updating...
         </small>
@@ -745,6 +997,7 @@ button{
       <div class="chartWrap">
 
         <div id="chart"></div>
+
 
         <div
           class="loading"
@@ -759,7 +1012,7 @@ button{
 
 
     <!-- ===================================================
-         RIGHT PANEL
+         SIGNAL PANEL
     ==================================================== -->
 
     <aside>
@@ -768,17 +1021,20 @@ button{
       <section class="card signalCard">
 
 
-        <!-- SIGNAL -->
+        <!-- CURRENT SIGNAL -->
 
         <div class="signalStatus">
 
-          <div class="statusTop">
+
+          <div class="signalHeader">
+
 
             <div>
 
               <div class="statusLabel">
                 Current Signal
               </div>
+
 
               <div
                 id="direction"
@@ -790,12 +1046,21 @@ button{
             </div>
 
 
-            <div
-              id="signalProbability"
-              class="prob"
-            >
-              0%
+            <div class="confidenceBox">
+
+              <div class="confidenceLabel">
+                Confidence
+              </div>
+
+              <div
+                id="signalProbability"
+                class="confidenceValue"
+              >
+                0%
+              </div>
+
             </div>
+
 
           </div>
 
@@ -808,6 +1073,16 @@ button{
           </div>
 
 
+          <div
+            id="signalReason"
+            class="signalReason"
+          >
+            Waiting for liquidity sweep + confirmation.
+          </div>
+
+
+          <!-- METRICS -->
+
           <div class="metrics">
 
 
@@ -817,7 +1092,9 @@ button{
                 15M Structure
               </span>
 
-              <strong id="m15Direction">
+              <strong
+                id="m15Direction"
+              >
                 WAIT
               </strong>
 
@@ -830,34 +1107,10 @@ button{
                 5M Entry
               </span>
 
-              <strong id="m5Direction">
+              <strong
+                id="m5Direction"
+              >
                 WAIT
-              </strong>
-
-            </div>
-
-
-            <div class="metric">
-
-              <span>
-                Swing High
-              </span>
-
-              <strong id="swingHigh">
-                —
-              </strong>
-
-            </div>
-
-
-            <div class="metric">
-
-              <span>
-                Swing Low
-              </span>
-
-              <strong id="swingLow">
-                —
               </strong>
 
             </div>
@@ -869,7 +1122,9 @@ button{
                 Liquidity
               </span>
 
-              <strong id="liquidityState">
+              <strong
+                id="liquidityState"
+              >
                 NONE
               </strong>
 
@@ -882,23 +1137,59 @@ button{
                 Volume
               </span>
 
-              <strong id="volumeState">
+              <strong
+                id="volumeState"
+              >
                 N/A
               </strong>
 
             </div>
+
+
+            <div class="metric">
+
+              <span>
+                Swing High
+              </span>
+
+              <strong
+                id="swingHigh"
+              >
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="metric">
+
+              <span>
+                Swing Low
+              </span>
+
+              <strong
+                id="swingLow"
+              >
+                —
+              </strong>
+
+            </div>
+
 
           </div>
 
         </div>
 
 
-        <!-- TRADE PLAN -->
+        <!-- =================================================
+             TRADE PLAN
+        ================================================== -->
 
         <div class="plan">
 
+
           <div class="planTitle">
-            TRADE PLAN
+            CONFIRMED TRADE PLAN
           </div>
 
 
@@ -969,9 +1260,12 @@ button{
         </div>
 
 
-        <!-- ENGINE -->
+        <!-- =================================================
+             ENGINE DETAILS
+        ================================================== -->
 
         <div class="section">
+
 
           <div class="sectionTitle">
             Swing Liquidity Engine
@@ -1042,14 +1336,19 @@ button{
 
           </div>
 
+
         </div>
+
 
       </section>
 
 
-      <!-- HISTORY -->
+      <!-- =================================================
+           HISTORY
+      ================================================== -->
 
       <section class="card history">
+
 
         <div class="cardHeader">
 
@@ -1075,10 +1374,12 @@ button{
 
         </div>
 
+
       </section>
 
 
     </aside>
+
 
   </div>
 
@@ -1090,27 +1391,22 @@ button{
 
   </div>
 
+
 </main>
 
 
 <script>
 
 /* =========================================================
-   OWajid & Bokul
    STRATEGY 02 — SWING LIQUIDITY
 
-   DATA FLOW:
+   Backend:
+       /api/liquidity
 
-   Twelve Data
-       ↓
-   /api/liquidity
-       ↓
-   Swing Liquidity Engine
-       ↓
-   This page
+   Page 1:
+       /api/market
 
-   IMPORTANT:
-   No Strong SD Magnet logic is used here.
+   This page does NOT use Strong SD Magnet logic.
 ========================================================= */
 
 
@@ -1178,18 +1474,14 @@ const errorBox =
 let chart =
   null;
 
-
 let candleSeries =
   null;
-
 
 let volumeSeries =
   null;
 
-
 let priceLines =
   [];
-
 
 let markersSeries =
   null;
@@ -1237,8 +1529,13 @@ function createChart(){
             "#203441",
 
           scaleMargins:{
-            top:0.08,
-            bottom:0.20
+
+            top:
+              0.08,
+
+            bottom:
+              0.20
+
           }
 
         },
@@ -1440,7 +1737,7 @@ async function fetchLiquidity(
 
 
 /* =========================================================
-   PRICE FORMAT
+   FORMAT PRICE
 ========================================================= */
 
 function formatPrice(
@@ -1485,7 +1782,7 @@ function formatPrice(
 
 
 /* =========================================================
-   TIME FORMAT
+   FORMAT TIME
 ========================================================= */
 
 function formatTime(
@@ -1602,7 +1899,7 @@ function getSignal(
 
 
 /* =========================================================
-   FINAL MULTI-TIMEFRAME SIGNAL
+   FINAL SIGNAL
 ========================================================= */
 
 function buildFinalSignal(){
@@ -1643,13 +1940,16 @@ function buildFinalSignal(){
     );
 
 
-  /* -------------------------------------------------------
-     Either timeframe has no confirmed setup
-  ------------------------------------------------------- */
+  /* =======================================================
+     WAIT IF EITHER TIMEFRAME HAS NO CONFIRMATION
+  ======================================================= */
 
   if(
-    s15.direction === "WAIT" ||
-    s5.direction === "WAIT"
+    s15.direction ===
+    "WAIT" ||
+
+    s5.direction ===
+    "WAIT"
   ){
 
     return {
@@ -1676,16 +1976,16 @@ function buildFinalSignal(){
         s5,
 
       reason:
-        "WAITING FOR CONFIRMATION"
+        "Waiting for 15M + 5M confirmation"
 
     };
 
   }
 
 
-  /* -------------------------------------------------------
-     Direction mismatch
-  ------------------------------------------------------- */
+  /* =======================================================
+     MISMATCH
+  ======================================================= */
 
   if(
     s15.direction !==
@@ -1710,12 +2010,16 @@ function buildFinalSignal(){
         s5,
 
       reason:
-        "15M / 5M MISALIGNMENT"
+        "15M / 5M direction mismatch"
 
     };
 
   }
 
+
+  /* =======================================================
+     CONFIRMED
+  ======================================================= */
 
   const direction =
     s15.direction;
@@ -1730,7 +2034,10 @@ function buildFinalSignal(){
   const price =
     state.data5?.market?.price ||
     s5.price ||
-    state.data5?.candles?.at(-1)?.close ||
+    state.data5
+      ?.candles
+      ?.at(-1)
+      ?.close ||
     null;
 
 
@@ -1788,11 +2095,13 @@ function buildFinalSignal(){
 
     signalTime:
       s5.time ||
-      state.data5?.market?.lastCandleTime ||
+      state.data5
+        ?.market
+        ?.lastCandleTime ||
       null,
 
     reason:
-      "15M + 5M ALIGNED"
+      "15M + 5M liquidity confirmation aligned"
 
   };
 
@@ -1810,7 +2119,9 @@ function latestSwing(
 
   const list =
     type === "HIGH"
+
       ? data?.swings?.highs
+
       : data?.swings?.lows;
 
 
@@ -1824,7 +2135,9 @@ function latestSwing(
   }
 
 
-  return list[list.length - 1];
+  return list[
+    list.length - 1
+  ];
 
 }
 
@@ -1851,7 +2164,9 @@ function latestSweep(
   }
 
 
-  return list[list.length - 1];
+  return list[
+    list.length - 1
+  ];
 
 }
 
@@ -1910,35 +2225,47 @@ function updateUI(
   }
 
 
-  $("signalProbability").textContent =
-    `${Math.round(
-      signal?.probability || 0
-    )}%`;
+  $("signalProbability")
+    .textContent =
+      `${Math.round(
+        signal?.probability || 0
+      )}%`;
 
 
-  $("currentPrice").textContent =
-    formatPrice(
+  $("currentPrice")
+    .textContent =
+      formatPrice(
 
-      signal?.price ||
+        signal?.price ||
 
-      state.data5?.market?.price ||
+        state.data5
+          ?.market
+          ?.price ||
 
-      state.data5
-        ?.candles
-        ?.at(-1)
-        ?.close
+        state.data5
+          ?.candles
+          ?.at(-1)
+          ?.close
 
-    );
-
-
-  $("m15Direction").textContent =
-    signal?.a15?.direction ||
-    "WAIT";
+      );
 
 
-  $("m5Direction").textContent =
-    signal?.a5?.direction ||
-    "WAIT";
+  $("signalReason")
+    .textContent =
+      signal?.reason ||
+      "Waiting for liquidity sweep + confirmation.";
+
+
+  $("m15Direction")
+    .textContent =
+      signal?.a15?.direction ||
+      "WAIT";
+
+
+  $("m5Direction")
+    .textContent =
+      signal?.a5?.direction ||
+      "WAIT";
 
 
   const high5 =
@@ -1969,18 +2296,20 @@ function updateUI(
     );
 
 
-  $("swingHigh").textContent =
-    formatPrice(
-      high5?.price ??
-      high15?.price
-    );
+  $("swingHigh")
+    .textContent =
+      formatPrice(
+        high5?.price ??
+        high15?.price
+      );
 
 
-  $("swingLow").textContent =
-    formatPrice(
-      low5?.price ??
-      low15?.price
-    );
+  $("swingLow")
+    .textContent =
+      formatPrice(
+        low5?.price ??
+        low15?.price
+      );
 
 
   const sweep5 =
@@ -1995,10 +2324,11 @@ function updateUI(
     );
 
 
-  $("liquidityState").textContent =
-    sweep5?.type ||
-    sweep15?.type ||
-    "NONE";
+  $("liquidityState")
+    .textContent =
+      sweep5?.type ||
+      sweep15?.type ||
+      "NONE";
 
 
   const volumeAvailable =
@@ -2013,34 +2343,41 @@ function updateUI(
       ?.volumeConfirmed;
 
 
-  $("volumeState").textContent =
-    volumeAvailable
-      ? (
-          volumeConfirmed
-            ? "CONFIRMED"
-            : "NORMAL"
-        )
-      : "N/A";
+  $("volumeState")
+    .textContent =
+      volumeAvailable
+
+        ? (
+            volumeConfirmed
+              ? "CONFIRMED"
+              : "NORMAL"
+          )
+
+        : "N/A";
 
 
-  $("sweep15").textContent =
-    sweep15?.type ||
-    "NONE";
+  $("sweep15")
+    .textContent =
+      sweep15?.type ||
+      "NONE";
 
 
-  $("confirm5").textContent =
-    signal?.a5?.confirmation
-      ? (
-          signal.a5.confirmation
-            .confirmed
-            ? signal.a5.confirmation.direction
-            : "NONE"
-        )
-      : (
-          signal?.a5?.direction !== "WAIT"
-            ? signal.a5.direction
-            : "NONE"
-        );
+  const confirmation5 =
+    state.data5
+      ?.signal
+      ?.confirmation;
+
+
+  $("confirm5")
+    .textContent =
+      confirmation5?.confirmed
+
+        ? (
+            confirmation5.direction ||
+            "CONFIRMED"
+          )
+
+        : "NONE";
 
 
   const activeLevel =
@@ -2049,60 +2386,110 @@ function updateUI(
     null;
 
 
-  $("liquidityLevel").textContent =
-    formatPrice(
-      activeLevel
-    );
+  $("liquidityLevel")
+    .textContent =
+      formatPrice(
+        activeLevel
+      );
 
 
-  $("signalScore").textContent =
-    String(
-      signal?.score || 0
-    );
+  $("signalScore")
+    .textContent =
+      String(
+        signal?.score || 0
+      );
 
 
-  $("atr").textContent =
-    formatPrice(
+  $("atr")
+    .textContent =
+      formatPrice(
 
-      state.data5
-        ?.diagnostics
-        ?.atr ||
+        state.data5
+          ?.diagnostics
+          ?.atr ||
 
-      state.data15
-        ?.diagnostics
-        ?.atr
+        state.data15
+          ?.diagnostics
+          ?.atr
 
-    );
-
-
-  $("entry").textContent =
-    formatPrice(
-      signal?.entry
-    );
+      );
 
 
-  $("sl").textContent =
-    formatPrice(
-      signal?.sl
-    );
+  /*
+    Trade plan is ONLY populated
+    when 15M + 5M are aligned.
+  */
+
+  if(
+    signal?.direction ===
+    "BUY" ||
+
+    signal?.direction ===
+    "SELL"
+  ){
+
+    $("entry")
+      .textContent =
+        formatPrice(
+          signal.entry
+        );
 
 
-  $("tp1").textContent =
-    formatPrice(
-      signal?.tp1
-    );
+    $("sl")
+      .textContent =
+        formatPrice(
+          signal.sl
+        );
 
 
-  $("tp2").textContent =
-    formatPrice(
-      signal?.tp2
-    );
+    $("tp1")
+      .textContent =
+        formatPrice(
+          signal.tp1
+        );
 
 
-  $("tp3").textContent =
-    formatPrice(
-      signal?.tp3
-    );
+    $("tp2")
+      .textContent =
+        formatPrice(
+          signal.tp2
+        );
+
+
+    $("tp3")
+      .textContent =
+        formatPrice(
+          signal.tp3
+        );
+
+  }
+  else{
+
+    $("entry")
+      .textContent =
+      "—";
+
+
+    $("sl")
+      .textContent =
+      "—";
+
+
+    $("tp1")
+      .textContent =
+      "—";
+
+
+    $("tp2")
+      .textContent =
+      "—";
+
+
+    $("tp3")
+      .textContent =
+      "—";
+
+  }
 
 }
 
@@ -2137,7 +2524,8 @@ function clearPriceLines(){
   }
 
 
-  priceLines = [];
+  priceLines =
+    [];
 
 }
 
@@ -2150,7 +2538,7 @@ function addPriceLine(
   price,
   title,
   color,
-  lineStyle
+  style
 ){
 
   if(
@@ -2176,7 +2564,7 @@ function addPriceLine(
         1,
 
       lineStyle:
-        lineStyle ??
+        style ??
         LightweightCharts
           .LineStyle
           .Dotted,
@@ -2197,47 +2585,7 @@ function addPriceLine(
 
 
 /* =========================================================
-   ROUNDING HELPER
-========================================================= */
-
-function priceKey(
-  value
-){
-
-  if(
-    !Number.isFinite(
-      Number(value)
-    )
-  ){
-
-    return null;
-
-  }
-
-
-  const n =
-    Number(value);
-
-
-  /*
-    Enough precision to distinguish
-    meaningful liquidity levels without
-    creating duplicate visual lines.
-  */
-
-  return n.toFixed(
-    n >= 1000
-      ? 2
-      : n >= 100
-        ? 3
-        : 5
-  );
-
-}
-
-
-/* =========================================================
-   DRAW CLEAN LIQUIDITY LEVELS
+   DRAW LIQUIDITY LEVELS
 ========================================================= */
 
 function drawLiquidityLevels(
@@ -2269,93 +2617,64 @@ function drawLiquidityLevels(
       : [];
 
 
-  const used =
-    new Set();
+  /*
+    Only latest 4 highs
+  */
+
+  highs
+    .slice(-4)
+    .forEach(
+      level => {
+
+        addPriceLine(
+
+          level.price,
+
+          "LIQ HIGH",
+
+          "#a9535e",
+
+          LightweightCharts
+            .LineStyle
+            .Dotted
+
+        );
+
+      }
+    );
 
 
   /*
-    Only the most recent levels are displayed.
-    This prevents the chart from becoming crowded.
+    Only latest 4 lows
   */
 
-  const recentHighs =
-    highs.slice(-4);
+  lows
+    .slice(-4)
+    .forEach(
+      level => {
 
+        addPriceLine(
 
-  const recentLows =
-    lows.slice(-4);
+          level.price,
 
+          "LIQ LOW",
 
-  for(
-    const level of recentHighs
-  ){
+          "#5ba367",
 
-    const key =
-      "H|" +
-      priceKey(level.price);
+          LightweightCharts
+            .LineStyle
+            .Dotted
 
+        );
 
-    if(
-      used.has(key)
-    ){
-
-      continue;
-
-    }
-
-
-    used.add(key);
-
-
-    addPriceLine(
-      level.price,
-      "LIQ HIGH",
-      "#a9535e",
-      LightweightCharts
-        .LineStyle
-        .Dotted
+      }
     );
-
-  }
-
-
-  for(
-    const level of recentLows
-  ){
-
-    const key =
-      "L|" +
-      priceKey(level.price);
-
-
-    if(
-      used.has(key)
-    ){
-
-      continue;
-
-    }
-
-
-    used.add(key);
-
-
-    addPriceLine(
-      level.price,
-      "LIQ LOW",
-      "#5ba367",
-      LightweightCharts
-        .LineStyle
-        .Dotted
-    );
-
-  }
 
 }
 
 
 /* =========================================================
-   DRAW ACTIVE SWEEP
+   DRAW SWEEP
 ========================================================= */
 
 function drawActiveSweep(
@@ -2394,24 +2713,34 @@ function drawActiveSweep(
   ){
 
     addPriceLine(
+
       price,
+
       "SWEEP LOW",
+
       "#79dc8a",
+
       LightweightCharts
         .LineStyle
         .Dashed
+
     );
 
   }
   else{
 
     addPriceLine(
+
       price,
+
       "SWEEP HIGH",
+
       "#ff7884",
+
       LightweightCharts
         .LineStyle
         .Dashed
+
     );
 
   }
@@ -2429,8 +2758,13 @@ function drawTradePlan(
 
   if(
     !signal ||
-    signal.direction ===
-    "WAIT"
+    (
+      signal.direction !==
+      "BUY" &&
+
+      signal.direction !==
+      "SELL"
+    )
   ){
 
     return;
@@ -2450,52 +2784,77 @@ function drawTradePlan(
 
 
   addPriceLine(
+
     signal.entry,
+
     "ENTRY",
+
     "#d9d9d9",
+
     LightweightCharts
       .LineStyle
       .Solid
+
   );
 
 
   addPriceLine(
+
     signal.sl,
+
     "SL",
+
     "#ef6874",
+
     LightweightCharts
       .LineStyle
       .Dashed
+
   );
 
 
   addPriceLine(
+
     signal.tp1,
+
     "TP1",
+
     "#69c979",
+
     LightweightCharts
       .LineStyle
       .Dotted
+
   );
 
 
   addPriceLine(
+
     signal.tp2,
+
     "TP2",
+
     "#69c979",
+
     LightweightCharts
       .LineStyle
       .Dotted
+
   );
 
 
   addPriceLine(
+
     signal.tp3,
+
     "TP3",
+
     "#69c979",
+
     LightweightCharts
       .LineStyle
       .Dotted
+
   );
 
 }
@@ -2519,7 +2878,9 @@ function drawMarkers(){
   const data =
     state.chartTimeframe ===
     "15min"
+
       ? state.data15
+
       : state.data5;
 
 
@@ -2534,10 +2895,6 @@ function drawMarkers(){
 
   const markers=[];
 
-
-  /* -------------------------------------------------------
-     Swing highs
-  ------------------------------------------------------- */
 
   const highs =
     Array.isArray(
@@ -2575,10 +2932,6 @@ function drawMarkers(){
     );
 
 
-  /* -------------------------------------------------------
-     Swing lows
-  ------------------------------------------------------- */
-
   const lows =
     Array.isArray(
       data?.swings?.lows
@@ -2614,10 +2967,6 @@ function drawMarkers(){
       }
     );
 
-
-  /* -------------------------------------------------------
-     Only latest few sweeps
-  ------------------------------------------------------- */
 
   const sweeps =
     Array.isArray(
@@ -2658,9 +3007,7 @@ function drawMarkers(){
               : "arrowDown",
 
           text:
-            bullish
-              ? "SWEEP"
-              : "SWEEP"
+            "SWEEP"
 
         });
 
@@ -2675,13 +3022,9 @@ function drawMarkers(){
   );
 
 
-  /*
-    Remove exact duplicates.
-  */
-
   const unique=[];
 
-  const seen=
+  const seen =
     new Set();
 
 
@@ -2728,7 +3071,8 @@ function drawMarkers(){
             unique
           );
 
-    }else{
+    }
+    else{
 
       markersSeries.setMarkers(
         unique
@@ -2739,7 +3083,7 @@ function drawMarkers(){
   }catch(error){
 
     console.warn(
-      "Marker error:",
+      "Marker rendering error:",
       error
     );
 
@@ -2766,7 +3110,9 @@ function renderChart(){
   const data =
     state.chartTimeframe ===
     "15min"
+
       ? state.data15
+
       : state.data5;
 
 
@@ -2779,13 +3125,9 @@ function renderChart(){
   }
 
 
-  const candles =
-    data.candles;
-
-
   candleSeries.setData(
 
-    candles.map(
+    data.candles.map(
       candle => ({
 
         time:
@@ -2811,7 +3153,7 @@ function renderChart(){
 
   volumeSeries.setData(
 
-    candles.map(
+    data.candles.map(
       candle => ({
 
         time:
@@ -2823,8 +3165,11 @@ function renderChart(){
           ),
 
         color:
-          candle.close >= candle.open
+          candle.close >=
+          candle.open
+
             ? "rgba(105,201,121,.25)"
+
             : "rgba(239,104,116,.25)"
 
       })
@@ -2960,8 +3305,13 @@ function recordSignal(
 
   if(
     !signal ||
-    signal.direction ===
-    "WAIT"
+    (
+      signal.direction !==
+      "BUY" &&
+
+      signal.direction !==
+      "SELL"
+    )
   ){
 
     return;
@@ -3075,7 +3425,7 @@ function recordSignal(
 
 
 /* =========================================================
-   UPDATE HISTORY
+   UPDATE HISTORY OUTCOMES
 ========================================================= */
 
 function updateHistoryOutcomes(){
@@ -3358,10 +3708,11 @@ function renderHistory(){
     $("historyBody");
 
 
-  $("historyCount").textContent =
-    String(
-      state.history.length
-    );
+  $("historyCount")
+    .textContent =
+      String(
+        state.history.length
+      );
 
 
   if(
@@ -3389,7 +3740,9 @@ function renderHistory(){
           const directionClass =
             item.direction ===
             "BUY"
+
               ? "buy"
+
               : "sell";
 
 
@@ -3463,14 +3816,12 @@ function renderHistory(){
                   item.time
                 )}
 
-                •
-                Probability
+                • Probability
                 ${escapeHtml(
                   item.probability || 0
                 )}%
 
-                •
-                Score
+                • Score
                 ${escapeHtml(
                   item.score || 0
                 )}
@@ -3633,8 +3984,9 @@ async function loadMarket(){
     );
 
 
-  $("refreshText").textContent =
-    "Updating...";
+  $("refreshText")
+    .textContent =
+      "Updating...";
 
 
   hideError();
@@ -3689,24 +4041,27 @@ async function loadMarket(){
     updateHistoryOutcomes();
 
 
-    $("assetTitle").textContent =
-      state.displayName;
+    $("assetTitle")
+      .textContent =
+        state.displayName;
 
 
-    $("assetSubtitle").textContent =
+    $("assetSubtitle")
+      .textContent =
 
-      state.chartTimeframe ===
-      "15min"
+        state.chartTimeframe ===
+        "15min"
 
-        ? `${state.symbol} • 15M Swing Liquidity Structure`
+          ? `${state.symbol} • 15M Swing Liquidity Structure`
 
-        : `${state.symbol} • 5M Swing Liquidity Entry`;
+          : `${state.symbol} • 5M Swing Liquidity Entry`;
 
 
-    $("refreshText").textContent =
-      "Updated " +
-      new Date()
-        .toLocaleTimeString();
+    $("refreshText")
+      .textContent =
+        "Updated " +
+        new Date()
+          .toLocaleTimeString();
 
 
   }catch(error){
@@ -3717,22 +4072,31 @@ async function loadMarket(){
     );
 
 
-    $("refreshText").textContent =
-      "API Error";
+    $("refreshText")
+      .textContent =
+        "API Error";
 
 
-    $("direction").textContent =
-      "ERROR";
+    $("direction")
+      .textContent =
+        "ERROR";
 
 
-    $("direction").className =
-      "direction sell";
+    $("direction")
+      .className =
+        "direction sell";
+
+
+    $("signalProbability")
+      .textContent =
+        "—";
 
 
     showError(
       error?.message ||
       "Unable to load Swing Liquidity data."
     );
+
 
   }finally{
 
@@ -3776,7 +4140,7 @@ $("searchInput")
 
         $("searchResults")
           .style.display =
-          "none";
+            "none";
 
         return;
 
@@ -3803,13 +4167,6 @@ async function searchAssets(
 ){
 
   try{
-
-    /*
-      Search uses the existing
-      symbol-search endpoint only.
-
-      It does NOT run Strategy 02.
-    */
 
     const response =
       await fetch(
@@ -3862,7 +4219,7 @@ async function searchAssets(
 
       $("searchResults")
         .style.display =
-        "block";
+          "block";
 
 
       return;
@@ -3873,82 +4230,85 @@ async function searchAssets(
     $("searchResults")
       .innerHTML =
 
-      results
-        .slice(0,10)
-        .map(
-          item => {
+        results
+          .slice(0,10)
+          .map(
+            item => {
 
-            const symbol =
-              item.symbol ||
-              item.ticker ||
-              item.value ||
-              "";
-
-
-            const name =
-              item.name ||
-              symbol;
+              const symbol =
+                item.symbol ||
+                item.ticker ||
+                item.value ||
+                "";
 
 
-            const category =
-              item.category ||
-              item.type ||
-              "";
+              const name =
+                item.name ||
+                symbol;
 
 
-            return `
+              const category =
+                item.category ||
+                item.type ||
+                "";
 
-              <div
-                class="searchItem"
 
-                data-symbol="${escapeHtml(
-                  symbol
-                )}"
+              return `
 
-                data-name="${escapeHtml(
-                  name
-                )}"
+                <div
+                  class="searchItem"
 
-                data-category="${escapeHtml(
-                  category
-                )}"
-              >
-
-                <strong>
-                  ${escapeHtml(
+                  data-symbol="${escapeHtml(
                     symbol
-                  )}
-                </strong>
+                  )}"
 
-                <span>
-
-                  ${escapeHtml(
+                  data-name="${escapeHtml(
                     name
-                  )}
+                  )}"
 
-                  ${
+                  data-category="${escapeHtml(
                     category
-                      ? " • " +
-                        escapeHtml(
-                          category
-                        )
-                      : ""
-                  }
+                  )}"
+                >
 
-                </span>
+                  <strong>
 
-              </div>
+                    ${escapeHtml(
+                      symbol
+                    )}
 
-            `;
+                  </strong>
 
-          }
-        )
-        .join("");
+
+                  <span>
+
+                    ${escapeHtml(
+                      name
+                    )}
+
+                    ${
+                      category
+                        ? " • " +
+                          escapeHtml(
+                            category
+                          )
+                        : ""
+                    }
+
+                  </span>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
 
 
     $("searchResults")
       .style.display =
-      "block";
+        "block";
 
 
     document
@@ -3986,7 +4346,7 @@ async function searchAssets(
 
               $("searchResults")
                 .style.display =
-                "none";
+                  "none";
 
 
               loadMarket();
@@ -4008,16 +4368,16 @@ async function searchAssets(
 
     $("searchResults")
       .innerHTML =
-      `
-      <div class="empty">
-        Search error
-      </div>
-      `;
+        `
+        <div class="empty">
+          Search error
+        </div>
+        `;
 
 
     $("searchResults")
       .style.display =
-      "block";
+        "block";
 
   }
 
@@ -4040,7 +4400,7 @@ document.addEventListener(
 
       $("searchResults")
         .style.display =
-        "none";
+          "none";
 
     }
 
@@ -4089,7 +4449,7 @@ document
 
 
 /* =========================================================
-   15M STRUCTURE
+   15M
 ========================================================= */
 
 $("tf15")
@@ -4118,15 +4478,16 @@ $("tf15")
       renderChart();
 
 
-      $("assetSubtitle").textContent =
-        `${state.symbol} • 15M Swing Liquidity Structure`;
+      $("assetSubtitle")
+        .textContent =
+          `${state.symbol} • 15M Swing Liquidity Structure`;
 
     }
   );
 
 
 /* =========================================================
-   5M ENTRY
+   5M
 ========================================================= */
 
 $("tf5")
@@ -4155,8 +4516,9 @@ $("tf5")
       renderChart();
 
 
-      $("assetSubtitle").textContent =
-        `${state.symbol} • 5M Swing Liquidity Entry`;
+      $("assetSubtitle")
+        .textContent =
+          `${state.symbol} • 5M Swing Liquidity Entry`;
 
     }
   );
@@ -4189,4 +4551,4 @@ loadMarket();
 </script>
 
 </body>
-              </html>
+</html>
