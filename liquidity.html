@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owajid & Bokul — Swing Points & Liquidity</title>
+
+  <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+
+  <style>
+    :root {
+      --bg: #070a0f;
+      --panel: #0d1219;
+      --panel2: #111821;
+      --border: #202a36;
+      --text: #eef3f8;
+      --muted: #8995a4;
+      --green: #39d98a;
+      --green-soft: rgba(57, 217, 138, .15);
+      --red: #ff5364;
+      --red-soft: rgba(255, 83, 100, .14);
+      --yellow: #f4c95d;
+      --blue: #55a7ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(7, 10, 15, .94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1500px;
+      margin: auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #1c9bff, #7c4dff);
+      font-weight: 900;
+      color: white;
+      letter-spacing: -1px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .back-btn {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--panel);
+      padding: 9px 13px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .controls {
+      padding: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .market-buttons {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .market-btn,
+    .tf-btn {
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .market-btn.active,
+    .tf-btn.active {
+      color: white;
+      border-color: #3a78aa;
+      background: #12283b;
+    }
+
+    .asset-select {
+      min-width: 160px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 570px;
+      background: #080c11;
+    }
+
+    #chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-loading {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px rgba(57,217,138,.55);
+    }
+
+    .error-dot {
+      background: var(--red);
+      box-shadow: 0 0 10px rgba(255,83,100,.55);
+    }
+
+    .side {
+      padding: 15px;
+    }
+
+    .side-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .signal-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: var(--panel2);
+    }
+
+    .signal-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .9px;
+      font-weight: 800;
+    }
+
+    .signal-main {
+      margin-top: 5px;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .signal-main.buy {
+      color: var(--green);
+    }
+
+    .signal-main.sell {
+      color: var(--red);
+    }
+
+    .signal-main.wait {
+      color: var(--yellow);
+    }
+
+    .signal-reason {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+      margin-top: 7px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      font-size: 14px;
+    }
+
+    .levels {
+      margin-top: 12px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .level {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: #0a0f15;
+      border: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .level span {
+      color: var(--muted);
+    }
+
+    .level.buy-level strong {
+      color: var(--green);
+    }
+
+    .level.sell-level strong {
+      color: var(--red);
+    }
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section-head {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .liquidity-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .liq-card {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--panel2);
+      padding: 12px;
+    }
+
+    .liq-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .liq-type {
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .liq-type.high {
+      color: var(--red);
+    }
+
+    .liq-type.low {
+      color: var(--green);
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 4px 7px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .badge.active {
+      color: var(--green);
+      border-color: rgba(57,217,138,.3);
+      background: var(--green-soft);
+    }
+
+    .badge.filled {
+      color: var(--red);
+      border-color: rgba(255,83,100,.3);
+      background: var(--red-soft);
+    }
+
+    .liq-price {
+      font-size: 19px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .liq-meta {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      grid-column: 1 / -1;
+    }
+
+    .rules {
+      padding: 13px 15px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.75;
+    }
+
+    .rules b {
+      color: var(--text);
+    }
+
+    footer {
+      max-width: 1500px;
+      margin: auto;
+      padding: 20px 16px 35px;
+      color: #596575;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    @media (max-width: 1000px) {
+      .top-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .liquidity-list {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .header-inner {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+
+      .brand h1 {
+        font-size: 14px;
+      }
+
+      .chart-wrap {
+        height: 470px;
+      }
+
+      .liquidity-list {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        padding: 10px;
+      }
+
+      .asset-select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo">O&B</div>
+        <div>
+          <h1>Owajid & Bokul Trading Assistant</h1>
+          <p>Swing Points & Liquidity Engine</p>
+        </div>
+      </div>
+
+      <button class="back-btn" onclick="goHome()">← Strong SD Magnet</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="top-grid">
+
+      <section class="panel">
+
+        <div class="controls">
+
+          <div class="market-buttons">
+            <button class="market-btn active" data-market="gold">🥇 Gold</button>
+            <button class="market-btn" data-market="oil">🛢 Oil</button>
+            <button class="market-btn" data-market="forex">💱 Forex</button>
+          </div>
+
+          <select id="assetSelect" class="asset-select"></select>
+
+          <div style="display:flex;gap:7px;">
+            <button class="tf-btn active" data-tf="15min">15M</button>
+            <button class="tf-btn" data-tf="5min">5M</button>
+            <button class="tf-btn" data-tf="1h">1H</button>
+          </div>
+
+        </div>
+
+        <div class="chart-wrap">
+          <div id="chart"></div>
+          <div id="chartLoading" class="chart-loading">Loading market data...</div>
+        </div>
+
+        <div class="status">
+          <div class="status-left">
+            <span id="statusDot" class="dot"></span>
+            <span id="statusText">Connecting to market...</span>
+          </div>
+
+          <span id="lastUpdate">—</span>
+        </div>
+
+      </section>
+
+      <aside class="panel side">
+
+        <div class="side-title">SWING LIQUIDITY SIGNAL</div>
+
+        <div class="signal-box">
+          <div class="signal-label">CURRENT SIGNAL</div>
+          <div id="signalMain" class="signal-main wait">WAIT</div>
+          <div id="signalReason" class="signal-reason">
+            Waiting for a valid swing/liquidity setup.
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>PRICE</span>
+            <strong id="priceValue">—</strong>
+          </div>
+
+          <div class="stat">
+            <span>TIMEFRAME</span>
+            <strong id="tfValue">15M</strong>
+          </div>
+
+          <div class="stat">
+            <span>SWING HIGH</span>
+            <strong id="highValue">—</strong>
+          </div>
+
+          <div class="stat">
+            <span>SWING LOW</span>
+            <strong id="lowValue">—</strong>
+          </div>
+
+          <div class="stat">
+            <span>HIGH STATUS</span>
+            <strong id="highStatus">—</strong>
+          </div>
+
+          <div class="stat">
+            <span>LOW STATUS</span>
+            <strong id="lowStatus">—</strong>
+          </div>
+        </div>
+
+        <div class="side-title" style="margin-top:16px;">TRADE PLAN</div>
+
+        <div class="levels">
+
+          <div class="level">
+            <span>Entry</span>
+            <strong id="entryValue">—</strong>
+          </div>
+
+          <div class="level">
+            <span>Stop Loss</span>
+            <strong id="slValue">—</strong>
+          </div>
+
+          <div class="level">
+            <span>TP1</span>
+            <strong id="tp1Value">—</strong>
+          </div>
+
+          <div class="level">
+            <span>TP2</span>
+            <strong id="tp2Value">—</strong>
+          </div>
+
+          <div class="level">
+            <span>TP3</span>
+            <strong id="tp3Value">—</strong>
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+    <section class="panel section">
+
+      <div class="section-head">
+        <h2>Liquidity Levels</h2>
+        <span id="zoneCount">0 active</span>
+      </div>
+
+      <div id="liquidityList" class="liquidity-list">
+        <div class="empty">No liquidity levels yet.</div>
+      </div>
+
+    </section>
+
+    <section class="panel section">
+
+      <div class="section-head">
+        <h2>Engine Rules</h2>
+        <span>Non-repainting</span>
+      </div>
+
+      <div class="rules">
+        <b>Swing High:</b> confirmed local high → red liquidity level.<br>
+        <b>Swing Low:</b> confirmed local low → green liquidity level.<br>
+        <b>Signal activation:</b> the engine becomes active from the candle immediately after the detected swing.<br>
+        <b>Liquidity fill:</b> if price trades through/touches the swing level, that liquidity is marked filled.<br>
+        <b>BUY:</b> price interacts with a valid Swing Low/liquidity area and shows bullish confirmation.<br>
+        <b>SELL:</b> price interacts with a valid Swing High/liquidity area and shows bearish confirmation.<br>
+        <b>Risk:</b> trade plan is derived from the active liquidity level and ATR.
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    Swing Points & Liquidity Engine • Gold / Oil / Forex only • Charting by TradingView Lightweight Charts
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   ASSET CONFIG
+   ============================================================ */
+
+const ASSETS = {
+  gold: [
+    {
+      symbol: "XAU/USD",
+      label: "Gold — XAU/USD"
+    }
+  ],
+
+  oil: [
+    {
+      symbol: "WTI/USD",
+      label: "WTI Crude Oil"
+    },
+    {
+      symbol: "BRENT/USD",
+      label: "Brent Crude Oil"
+    }
+  ],
+
+  forex: [
+    { symbol: "EUR/USD", label: "EUR/USD" },
+    { symbol: "GBP/USD", label: "GBP/USD" },
+    { symbol: "USD/JPY", label: "USD/JPY" },
+    { symbol: "USD/CHF", label: "USD/CHF" },
+    { symbol: "AUD/USD", label: "AUD/USD" },
+    { symbol: "NZD/USD", label: "NZD/USD" },
+    { symbol: "USD/CAD", label: "USD/CAD" },
+    { symbol: "EUR/GBP", label: "EUR/GBP" },
+    { symbol: "EUR/JPY", label: "EUR/JPY" },
+    { symbol: "GBP/JPY", label: "GBP/JPY" },
+    { symbol: "GBP/CHF", label: "GBP/CHF" },
+    { symbol: "AUD/JPY", label: "AUD/JPY" },
+    { symbol: "NZD/JPY", label: "NZD/JPY" }
+  ]
+};
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+
+const SETTINGS = {
+  swingLeft: 15,
+  swingRight: 10,
+
+  atrPeriod: 14,
+
+  zoneWidthATR: 0.10,
+
+  signalLookback: 3,
+
+  minRR: 1.5,
+
+  refreshMs: 60000,
+
+  candles: 300
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+let currentMarket = "gold";
+let currentSymbol = "XAU/USD";
+let currentTF = "15min";
+
+let candles = [];
+
+let activeHighs = [];
+let activeLows = [];
+
+let latestAnalysis = null;
+
+let refreshTimer = null;
+
+/* ============================================================
+   DOM
+   ============================================================ */
+
+const assetSelect = document.getElementById("assetSelect");
+const chartContainer = document.getElementById("chart");
+const chartLoading = document.getElementById("chartLoading");
+
+const statusText = document.getElementById("statusText");
+const statusDot = document.getElementById("statusDot");
+const lastUpdate = document.getElementById("lastUpdate");
+
+const signalMain = document.getElementById("signalMain");
+const signalReason = document.getElementById("signalReason");
+
+const priceValue = document.getElementById("priceValue");
+const tfValue = document.getElementById("tfValue");
+
+const highValue = document.getElementById("highValue");
+const lowValue = document.getElementById("lowValue");
+
+const highStatus = document.getElementById("highStatus");
+const lowStatus = document.getElementById("lowStatus");
+
+const entryValue = document.getElementById("entryValue");
+const slValue = document.getElementById("slValue");
+const tp1Value = document.getElementById("tp1Value");
+const tp2Value = document.getElementById("tp2Value");
+const tp3Value = document.getElementById("tp3Value");
+
+const liquidityList = document.getElementById("liquidityList");
+const zoneCount = document.getElementById("zoneCount");
+
+/* ============================================================
+   CHART
+   ============================================================ */
+
+const chart = LightweightCharts.createChart(chartContainer, {
+  layout: {
+    background: {
+      color: "#080c11"
+    },
+    textColor: "#9aa6b5"
+  },
+
+  grid: {
+    vertLines: {
+      color: "rgba(255,255,255,.035)"
+    },
+    horzLines: {
+      color: "rgba(255,255,255,.035)"
+    }
+  },
+
+  rightPriceScale: {
+    borderColor: "#202a36"
+  },
+
+  timeScale: {
+    borderColor: "#202a36",
+    timeVisible: true,
+    secondsVisible: false
+  },
+
+  crosshair: {
+    mode: LightweightCharts.CrosshairMode.Normal
+  }
+});
+
+const candleSeries = chart.addSeries(
+  LightweightCharts.CandlestickSeries,
+  {
+    upColor: "#19b982",
+    downColor: "#e94759",
+    borderUpColor: "#19b982",
+    borderDownColor: "#e94759",
+    wickUpColor: "#19b982",
+    wickDownColor: "#e94759"
+  }
+);
+
+const highLines = [];
+const lowLines = [];
+const tradeLines = [];
+
+function clearLines(arr) {
+  while (arr.length) {
+    try {
+      candleSeries.removePriceLine(arr.pop());
+    } catch (_) {}
+  }
+}
+
+function clearChartLines() {
+  clearLines(highLines);
+  clearLines(lowLines);
+  clearLines(tradeLines);
+}
+
+function drawPriceLines(analysis) {
+  clearChartLines();
+
+  if (!analysis) return;
+
+  activeHighs.forEach(zone => {
+    if (!zone.filled) {
+      const line = candleSeries.createPriceLine({
+        price: zone.price,
+        color: "#aa2430",
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Dotted,
+        axisLabelVisible: true,
+        title: "SWING HIGH"
+      });
+
+      highLines.push(line);
+    }
+  });
+
+  activeLows.forEach(zone => {
+    if (!zone.filled) {
+      const line = candleSeries.createPriceLine({
+        price: zone.price,
+        color: "#66bb6a",
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Dotted,
+        axisLabelVisible: true,
+        title: "SWING LOW"
+      });
+
+      lowLines.push(line);
+    }
+  });
+
+  if (analysis.signal !== "WAIT") {
+
+    const entry = candleSeries.createPriceLine({
+      price: analysis.entry,
+      color: "#55a7ff",
+      lineWidth: 2,
+      lineStyle: LightweightCharts.LineStyle.Solid,
+      axisLabelVisible: true,
+      title: "ENTRY"
+    });
+
+    const sl = candleSeries.createPriceLine({
+      price: analysis.sl,
+      color: "#ff5364",
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true,
+      title: "SL"
+    });
+
+    const tp1 = candleSeries.createPriceLine({
+      price: analysis.tp1,
+      color: "#39d98a",
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true,
+      title: "TP1"
+    });
+
+    const tp2 = candleSeries.createPriceLine({
+      price: analysis.tp2,
+      color: "#39d98a",
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true,
+      title: "TP2"
+    });
+
+    const tp3 = candleSeries.createPriceLine({
+      price: analysis.tp3,
+      color: "#39d98a",
+      lineWidth: 1,
+      lineStyle: LightweightCharts.LineStyle.Dashed,
+      axisLabelVisible: true,
+      title: "TP3"
+    });
+
+    tradeLines.push(entry, sl, tp1, tp2, tp3);
+  }
+}
+
+function resizeChart() {
+  chart.applyOptions({
+    width: chartContainer.clientWidth,
+    height: chartContainer.clientHeight
+  });
+}
+
+window.addEventListener("resize", resizeChart);
+
+/* ============================================================
+   MARKET SELECTOR
+   ============================================================ */
+
+function renderAssets() {
+
+  assetSelect.innerHTML = "";
+
+  const list = ASSETS[currentMarket] || [];
+
+  list.forEach(asset => {
+
+    const option = document.createElement("option");
+
+    option.value = asset.symbol;
+    option.textContent = asset.label;
+
+    if (asset.symbol === currentSymbol) {
+      option.selected = true;
+    }
+
+    assetSelect.appendChild(option);
+  });
+
+  if (!list.some(x => x.symbol === currentSymbol)) {
+    currentSymbol = list[0]?.symbol || "";
+    assetSelect.value = currentSymbol;
+  }
+}
+
+document.querySelectorAll(".market-btn").forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    document.querySelectorAll(".market-btn")
+      .forEach(x => x.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    currentMarket = btn.dataset.market;
+
+    const first = ASSETS[currentMarket][0];
+
+    currentSymbol = first.symbol;
+
+    renderAssets();
+
+    loadMarket();
+  });
+
+});
+
+assetSelect.addEventListener("change", () => {
+
+  currentSymbol = assetSelect.value;
+
+  loadMarket();
+
+});
+
+document.querySelectorAll(".tf-btn").forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    document.querySelectorAll(".tf-btn")
+      .forEach(x => x.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    currentTF = btn.dataset.tf;
+
+    tfValue.textContent = currentTF.toUpperCase();
+
+    loadMarket();
+
+  });
+
+});
+
+/* ============================================================
+   API
+   ============================================================ */
+
+async function fetchCandles(symbol, interval) {
+
+  const url =
+    `/api/market?action=timeseries` +
+    `&symbol=${encodeURIComponent(symbol)}` +
+    `&interval=${encodeURIComponent(interval)}` +
+    `&outputsize=${SETTINGS.candles}`;
+
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error("Market API HTTP " + response.status);
+  }
+
+  const json = await response.json();
+
+  return normalizeCandles(json);
+}
+
+/* ============================================================
+   NORMALIZE API RESPONSE
+   ============================================================ */
+
+function normalizeCandles(json) {
+
+  let values =
+    json?.values ||
+    json?.data ||
+    json?.candles ||
+    json?.results ||
+    [];
+
+  if (!Array.isArray(values)) {
+    throw new Error("Invalid candle response");
+  }
+
+  const output = [];
+
+  for (const item of values) {
+
+    const timeRaw =
+      item.datetime ??
+      item.time ??
+      item.timestamp ??
+      item.date;
+
+    const openRaw =
+      item.open ??
+      item.o;
+
+    const highRaw =
+      item.high ??
+      item.h;
+
+    const lowRaw =
+      item.low ??
+      item.l;
+
+    const closeRaw =
+      item.close ??
+      item.c;
+
+    const volumeRaw =
+      item.volume ??
+      item.v ??
+      0;
+
+    const open = Number(openRaw);
+    const high = Number(highRaw);
+    const low = Number(lowRaw);
+    const close = Number(closeRaw);
+    const volume = Number(volumeRaw) || 0;
+
+    if (
+      !Number.isFinite(open) ||
+      !Number.isFinite(high) ||
+      !Number.isFinite(low) ||
+      !Number.isFinite(close)
+    ) {
+      continue;
+    }
+
+    const time = parseCandleTime(timeRaw);
+
+    if (!Number.isFinite(time)) continue;
+
+    output.push({
+      time,
+      open,
+      high,
+      low,
+      close,
+      volume
+    });
+  }
+
+  output.sort((a,b) => a.time - b.time);
+
+  const unique = [];
+
+  const seen = new Set();
+
+  for (const c of output) {
+
+    if (seen.has(c.time)) continue;
+
+    seen.add(c.time);
+
+    unique.push(c);
+  }
+
+  if (unique.length < 40) {
+    throw new Error("Not enough candles received");
+  }
+
+  return unique;
+}
+
+function parseCandleTime(value) {
+
+  if (value === null || value === undefined) {
+    return NaN;
+  }
+
+  if (typeof value === "number") {
+
+    if (value > 100000000000) {
+      return Math.floor(value / 1000);
+    }
+
+    return Math.floor(value);
+  }
+
+  const str = String(value).trim();
+
+  if (/^\d+$/.test(str)) {
+
+    const n = Number(str);
+
+    if (n > 100000000000) {
+      return Math.floor(n / 1000);
+    }
+
+    return n;
+  }
+
+  const ms = Date.parse(str);
+
+  if (!Number.isFinite(ms)) {
+    return NaN;
+  }
+
+  return Math.floor(ms / 1000);
+}
+
+/* ============================================================
+   ATR
+   ============================================================ */
+
+function calculateATR(data, period = 14) {
+
+  if (data.length <= period) {
+    return 0;
+  }
+
+  const trs = [];
+
+  for (let i = 1; i < data.length; i++) {
+
+    const c = data[i];
+    const p = data[i - 1];
+
+    const tr = Math.max(
+      c.high - c.low,
+      Math.abs(c.high - p.close),
+      Math.abs(c.low - p.close)
+    );
+
+    trs.push(tr);
+  }
+
+  if (trs.length < period) return 0;
+
+  let atr =
+    trs
+      .slice(0, period)
+      .reduce((a,b) => a+b, 0) / period;
+
+  for (let i = period; i < trs.length; i++) {
+
+    atr =
+      ((atr * (period - 1)) + trs[i]) / period;
+  }
+
+  return atr;
+}
+
+/* ============================================================
+   SWING DETECTION
+   ============================================================ */
+
+/*
+  Important:
+
+  A pivot is only accepted when enough candles exist
+  on both sides.
+
+  This avoids using future candles as a live signal.
+
+  Once a swing is confirmed, the NEXT candle becomes
+  the first candle allowed to generate a setup.
+*/
+
+function detectSwings(data) {
+
+  const highs = [];
+  const lows = [];
+
+  const L = SETTINGS.swingLeft;
+  const R = SETTINGS.swingRight;
+
+  for (let i = L; i < data.length - R; i++) {
+
+    const candidate = data[i];
+
+    let isHigh = true;
+    let isLow = true;
+
+    for (let j = i - L; j <= i + R; j++) {
+
+      if (j === i) continue;
+
+      if (data[j].high > candidate.high) {
+        isHigh = false;
+      }
+
+      if (data[j].low < candidate.low) {
+        isLow = false;
+      }
+
+      if (!isHigh && !isLow) break;
+    }
+
+    if (isHigh) {
+
+      highs.push({
+        index: i,
+        time: candidate.time,
+        price: candidate.high,
+        filled: false
+      });
+    }
+
+    if (isLow) {
+
+      lows.push({
+        index: i,
+        time: candidate.time,
+        price: candidate.low,
+        filled: false
+      });
+    }
+  }
+
+  return {
+    highs,
+    lows
+  };
+}
+
+/* ============================================================
+   LIQUIDITY STATUS
+   ============================================================ */
+
+function calculateLiquidity(data, swings) {
+
+  const lastIndex = data.length - 1;
+
+  const highs = swings.highs.map(zone => {
+
+    let filled = false;
+
+    /*
+      A swing becomes eligible from the candle after
+      the swing's confirmation point.
+
+      In the historical calculation the confirmation
+      candle is i + R.
+    */
+
+    const start = zone.index + SETTINGS.swingRight + 1;
+
+    for (
+      let j = Math.max(start, 0);
+      j <= lastIndex;
+      j++
+    ) {
+
+      const c = data[j];
+
+      if (c.high >= zone.price && c.low <= zone.price) {
+        filled = true;
+        break;
+      }
+    }
+
+    return {
+      ...zone,
+      confirmationIndex:
+        zone.index + SETTINGS.swingRight,
+      activeFrom:
+        zone.index + SETTINGS.swingRight + 1,
+      filled
+    };
+
+  });
+
+  const lows = swings.lows.map(zone => {
+
+    let filled = false;
+
+    const start = zone.index + SETTINGS.swingRight + 1;
+
+    for (
+      let j = Math.max(start, 0);
+      j <= lastIndex;
+      j++
+    ) {
+
+      const c = data[j];
+
+      if (c.high >= zone.price && c.low <= zone.price) {
+        filled = true;
+        break;
+      }
+    }
+
+    return {
+      ...zone,
+      confirmationIndex:
+        zone.index + SETTINGS.swingRight,
+      activeFrom:
+        zone.index + SETTINGS.swingRight + 1,
+      filled
+    };
+
+  });
+
+  return {
+    highs,
+    lows
+  };
+}
+
+/* ============================================================
+   RECENT ACTIVE ZONES
+   ============================================================ */
+
+function getRecentZones(zones, limit = 12) {
+
+  return zones
+    .slice()
+    .reverse()
+    .filter(z => !z.filled)
+    .slice(0, limit);
+}
+
+/* ============================================================
+   CONFIRMATION
+   ============================================================ */
+
+function bullishConfirmation(data, index) {
+
+  if (index < 2) return false;
+
+  const c = data[index];
+  const p = data[index - 1];
+
+  const body = Math.abs(c.close - c.open);
+  const range = c.high - c.low;
+
+  if (range <= 0) return false;
+
+  const closeNearHigh =
+    (c.high - c.close) / range <= 0.30;
+
+  const bullishBody =
+    c.close > c.open &&
+    body / range >= 0.35;
+
+  const higherClose =
+    c.close > p.close;
+
+  return (
+    bullishBody &&
+    closeNearHigh &&
+    higherClose
+  );
+}
+
+function bearishConfirmation(data, index) {
+
+  if (index < 2) return false;
+
+  const c = data[index];
+  const p = data[index - 1];
+
+  const body = Math.abs(c.close - c.open);
+  const range = c.high - c.low;
+
+  if (range <= 0) return false;
+
+  const closeNearLow =
+    (c.close - c.low) / range <= 0.30;
+
+  const bearishBody =
+    c.close < c.open &&
+    body / range >= 0.35;
+
+  const lowerClose =
+    c.close < p.close;
+
+  return (
+    bearishBody &&
+    closeNearLow &&
+    lowerClose
+  );
+}
+
+/* ============================================================
+   SIGNAL ENGINE
+   ============================================================ */
+
+function analyzeMarket(data) {
+
+  const lastIndex = data.length - 1;
+
+  const current = data[lastIndex];
+
+  const atr =
+    calculateATR(data, SETTINGS.atrPeriod);
+
+  const swings =
+    detectSwings(data);
+
+  const liquidity =
+    calculateLiquidity(data, swings);
+
+  const recentHighs =
+    getRecentZones(liquidity.highs);
+
+  const recentLows =
+    getRecentZones(liquidity.lows);
+
+  let bestLow = null;
+  let bestHigh = null;
+
+  /*
+    Only use zones whose activeFrom is <= current candle.
+  */
+
+  for (const zone of recentLows) {
+
+    if (zone.activeFrom > lastIndex) continue;
+
+    if (!bestLow) {
+      bestLow = zone;
+      continue;
+    }
+
+    const d1 =
+      Math.abs(current.close - zone.price);
+
+    const d2 =
+      Math.abs(current.close - bestLow.price);
+
+    if (d1 < d2) {
+      bestLow = zone;
+    }
+  }
+
+  for (const zone of recentHighs) {
+
+    if (zone.activeFrom > lastIndex) continue;
+
+    if (!bestHigh) {
+      bestHigh = zone;
+      continue;
+    }
+
+    const d1 =
+      Math.abs(current.close - zone.price);
+
+    const d2 =
+      Math.abs(current.close - bestHigh.price);
+
+    if (d1 < d2) {
+      bestHigh = zone;
+    }
+  }
+
+  let signal = "WAIT";
+  let reason =
+    "No confirmed liquidity reaction.";
+
+  let selectedZone = null;
+
+  /*
+    Distance threshold.
+    We don't want a signal when price is extremely
+    far away from the liquidity level.
+  */
+
+  const proximity =
+    Math.max(
+      atr * 1.20,
+      Math.abs(current.close) * 0.0008
+    );
+
+  if (bestLow) {
+
+    const distance =
+      Math.abs(current.close - bestLow.price);
+
+    const nearLow =
+      distance <= proximity;
+
+    const bullish =
+      bullishConfirmation(data, lastIndex);
+
+    if (nearLow && bullish) {
+
+      signal = "BUY";
+
+      selectedZone = bestLow;
+
+      reason =
+        "Price is reacting near a confirmed Swing Low liquidity level with bullish candle confirmation.";
+    }
+  }
+
+  if (signal === "WAIT" && bestHigh) {
+
+    const distance =
+      Math.abs(current.close - bestHigh.price);
+
+    const nearHigh =
+      distance <= proximity;
+
+    const bearish =
+      bearishConfirmation(data, lastIndex);
+
+    if (nearHigh && bearish) {
+
+      signal = "SELL";
+
+      selectedZone = bestHigh;
+
+      reason =
+        "Price is reacting near a confirmed Swing High liquidity level with bearish candle confirmation.";
+    }
+  }
+
+  let entry = current.close;
+  let sl = null;
+  let tp1 = null;
+  let tp2 = null;
+  let tp3 = null;
+
+  if (signal === "BUY" && selectedZone) {
+
+    entry = current.close;
+
+    sl =
+      selectedZone.price -
+      Math.max(atr * 0.55, atr * 0.20);
+
+    const risk =
+      Math.abs(entry - sl);
+
+    tp1 = entry + risk * 1.0;
+    tp2 = entry + risk * 2.0;
+    tp3 = entry + risk * 3.0;
+  }
+
+  if (signal === "SELL" && selectedZone) {
+
+    entry = current.close;
+
+    sl =
+      selectedZone.price +
+      Math.max(atr * 0.55, atr * 0.20);
+
+    const risk =
+      Math.abs(entry - sl);
+
+    tp1 = entry - risk * 1.0;
+    tp2 = entry - risk * 2.0;
+    tp3 = entry - risk * 3.0;
+  }
+
+  return {
+
+    signal,
+
+    reason,
+
+    price: current.close,
+
+    atr,
+
+    selectedZone,
+
+    latestHigh:
+      liquidity.highs.length
+        ? liquidity.highs[liquidity.highs.length - 1]
+        : null,
+
+    latestLow:
+      liquidity.lows.length
+        ? liquidity.lows[liquidity.lows.length - 1]
+        : null,
+
+    entry,
+    sl,
+    tp1,
+    tp2,
+    tp3,
+
+    highs: liquidity.highs,
+    lows: liquidity.lows
+  };
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
+
+function formatPrice(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    !Number.isFinite(Number(value))
+  ) {
+    return "—";
+  }
+
+  const n = Number(value);
+
+  let decimals = 2;
+
+  if (n < 1) decimals = 5;
+  else if (n < 10) decimals = 4;
+  else if (n < 100) decimals = 3;
+
+  return n.toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }
+  );
+}
+
+function setSignalUI(analysis) {
+
+  signalMain.className = "signal-main";
+
+  if (analysis.signal === "BUY") {
+
+    signalMain.textContent = "BUY";
+    signalMain.classList.add("buy");
+
+  } else if (analysis.signal === "SELL") {
+
+    signalMain.textContent = "SELL";
+    signalMain.classList.add("sell");
+
+  } else {
+
+    signalMain.textContent = "WAIT";
+    signalMain.classList.add("wait");
+  }
+
+  signalReason.textContent = analysis.reason;
+
+  priceValue.textContent =
+    formatPrice(analysis.price);
+
+  highValue.textContent =
+    analysis.latestHigh
+      ? formatPrice(analysis.latestHigh.price)
+      : "—";
+
+  lowValue.textContent =
+    analysis.latestLow
+      ? formatPrice(analysis.latestLow.price)
+      : "—";
+
+  highStatus.textContent =
+    analysis.latestHigh
+      ? analysis.latestHigh.filled
+        ? "FILLED"
+        : "ACTIVE"
+      : "—";
+
+  lowStatus.textContent =
+    analysis.latestLow
+      ? analysis.latestLow.filled
+        ? "FILLED"
+        : "ACTIVE"
+      : "—";
+
+  if (analysis.signal !== "WAIT") {
+
+    entryValue.textContent =
+      formatPrice(analysis.entry);
+
+    slValue.textContent =
+      formatPrice(analysis.sl);
+
+    tp1Value.textContent =
+      formatPrice(analysis.tp1);
+
+    tp2Value.textContent =
+      formatPrice(analysis.tp2);
+
+    tp3Value.textContent =
+      formatPrice(analysis.tp3);
+
+  } else {
+
+    entryValue.textContent = "—";
+    slValue.textContent = "—";
+    tp1Value.textContent = "—";
+    tp2Value.textContent = "—";
+    tp3Value.textContent = "—";
+  }
+}
+
+function renderLiquidityList(analysis) {
+
+  const zones = [
+    ...analysis.highs
+      .slice()
+      .reverse()
+      .slice(0, 6)
+      .map(z => ({
+        ...z,
+        type: "HIGH"
+      })),
+
+    ...analysis.lows
+      .slice()
+      .reverse()
+      .slice(0, 6)
+      .map(z => ({
+        ...z,
+        type: "LOW"
+      }))
+  ]
+  .sort((a,b) => b.time - a.time);
+
+  zoneCount.textContent =
+    zones.filter(z => !z.filled).length +
+    " active";
+
+  if (!zones.length) {
+
+    liquidityList.innerHTML =
+      `<div class="empty">No liquidity levels detected.</div>`;
+
+    return;
+  }
+
+  liquidityList.innerHTML = zones.map(zone => {
+
+    const isHigh =
+      zone.type === "HIGH";
+
+    const typeClass =
+      isHigh ? "high" : "low";
+
+    const statusClass =
+      zone.filled ? "filled" : "active";
+
+    const statusTextValue =
+      zone.filled ? "FILLED" : "ACTIVE";
+
+    const time =
+      new Date(zone.time * 1000)
+        .toLocaleString(
+          undefined,
+          {
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        );
+
+    return `
+      <div class="liq-card">
+
+        <div class="liq-top">
+          <div class="liq-type ${typeClass}">
+            ${isHigh ? "🔴 SWING HIGH" : "🟢 SWING LOW"}
+          </div>
+
+          <div class="badge ${statusClass}">
+            ${statusTextValue}
+          </div>
+        </div>
+
+        <div class="liq-price">
+          ${formatPrice(zone.price)}
+        </div>
+
+        <div class="liq-meta">
+          Swing candle: ${time}<br>
+          Signal starts: next candle after confirmation<br>
+          Liquidity: ${zone.filled ? "Touched / filled" : "Still active"}
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+/* ============================================================
+   LOAD MARKET
+   ============================================================ */
+
+async function loadMarket() {
+
+  if (!currentSymbol) return;
+
+  chartLoading.style.display = "grid";
+
+  chartLoading.textContent =
+    `Loading ${currentSymbol} ${currentTF}...`;
+
+  statusText.textContent =
+    "Loading market data...";
+
+  statusDot.classList.remove("error-dot");
+
+  try {
+
+    const data =
+      await fetchCandles(
+        currentSymbol,
+        currentTF
+      );
+
+    candles = data;
+
+    candleSeries.setData(
+      candles.map(c => ({
+        time: c.time,
+        open: c.open,
+        high: c.high,
+        low: c.low,
+        close: c.close
+      }))
+    );
+
+    latestAnalysis =
+      analyzeMarket(candles);
+
+    activeHighs =
+      latestAnalysis.highs;
+
+    activeLows =
+      latestAnalysis.lows;
+
+    setSignalUI(latestAnalysis);
+
+    renderLiquidityList(latestAnalysis);
+
+    drawPriceLines(latestAnalysis);
+
+    statusText.textContent =
+      `${currentSymbol} • ${currentTF.toUpperCase()} • LIVE`;
+
+    lastUpdate.textContent =
+      new Date().toLocaleTimeString();
+
+    chartLoading.style.display = "none";
+
+    /*
+      First load: show latest candles.
+    */
+
+    chart.timeScale().fitContent();
+
+  } catch (error) {
+
+    console.error(error);
+
+    statusText.textContent =
+      "Market data error: " + error.message;
+
+    statusDot.classList.add("error-dot");
+
+    chartLoading.style.display = "grid";
+
+    chartLoading.textContent =
+      "Unable to load market data.";
+
+  }
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+
+function goHome() {
+
+  window.location.href = "/";
+
+}
+
+/* ============================================================
+   AUTO REFRESH
+   ============================================================ */
+
+function startAutoRefresh() {
+
+  if (refreshTimer) {
+    clearInterval(refreshTimer);
+  }
+
+  refreshTimer =
+    setInterval(
+      loadMarket,
+      SETTINGS.refreshMs
+    );
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+
+renderAssets();
+
+resizeChart();
+
+loadMarket();
+
+startAutoRefresh();
+
+</script>
+
+</body>
+  </html>
