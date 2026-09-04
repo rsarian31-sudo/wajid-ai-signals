@@ -1,1800 +1,1445 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  >
-
-  <title>Owajid & Bokul Trading Assistant</title>
-
-  <!-- TradingView Lightweight Charts -->
-  <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background: #071018;
-      color: #e8f0f7;
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 1500px;
-      margin: auto;
-      padding: 14px;
-    }
-
-    /* =====================================================
-       HEADER
-       ===================================================== */
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background:
-        linear-gradient(
-          135deg,
-          #18d6a3,
-          #176cff
-        );
-
-      color: white;
-      font-size: 14px;
-      font-weight: 1000;
-
-      box-shadow:
-        0 8px 30px rgba(22, 119, 255, .25);
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 21px;
-      line-height: 1.15;
-    }
-
-    .brand small {
-      display: block;
-      margin-top: 4px;
-      color: #7e94a8;
-      font-size: 11px;
-    }
-
-    .connection {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      padding: 8px 12px;
-
-      border: 1px solid #173041;
-      border-radius: 999px;
-
-      background: #0b1721;
-
-      color: #9fb3c4;
-      font-size: 11px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #7f8c96;
-    }
-
-    .dot.online {
-      background: #16d49b;
-      box-shadow:
-        0 0 12px rgba(22, 212, 155, .7);
-    }
-
-    .dot.error {
-      background: #ff5d6c;
-    }
-
-    /* =====================================================
-       SEARCH
-       ===================================================== */
-
-    .search-panel {
-      background: #0b1721;
-      border: 1px solid #173041;
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 0;
-
-      background: #071018;
-      color: #eef7ff;
-
-      border: 1px solid #203746;
-      border-radius: 11px;
-
-      padding: 12px 13px;
-
-      outline: none;
-    }
-
-    .search-input:focus {
-      border-color: #287cff;
-
-      box-shadow:
-        0 0 0 3px
-        rgba(40, 124, 255, .1);
-    }
-
-    .search-btn {
-      border: 0;
-      border-radius: 11px;
-
-      padding: 0 17px;
-
-      color: white;
-      background: #1669e8;
-
-      font-weight: 800;
-    }
-
-    .category-row {
-      display: flex;
-      gap: 7px;
-
-      overflow-x: auto;
-
-      padding-top: 10px;
-
-      scrollbar-width: none;
-    }
-
-    .category-row::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-btn {
-      flex: 0 0 auto;
-
-      background: #0f202c;
-      border: 1px solid #1d384a;
-
-      color: #91a7b9;
-
-      border-radius: 999px;
-
-      padding: 7px 12px;
-
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .category-btn.active {
-      background: #153e62;
-      border-color: #2c7ed0;
-      color: #e8f4ff;
-    }
-
-    .search-results {
-      display: none;
-
-      margin-top: 10px;
-
-      max-height: 270px;
-      overflow-y: auto;
-
-      border-top: 1px solid #173041;
-
-      padding-top: 8px;
-    }
-
-    .search-results.show {
-      display: block;
-    }
-
-    .result-item {
-      width: 100%;
-
-      border: 1px solid transparent;
-
-      background: transparent;
-
-      color: #dce8f1;
-
-      text-align: left;
-
-      border-radius: 10px;
-
-      padding: 10px;
-
-      margin-bottom: 4px;
-    }
-
-    .result-item:hover {
-      background: #102331;
-      border-color: #1d3b4e;
-    }
-
-    .result-main {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .result-symbol {
-      font-weight: 900;
-    }
-
-    .result-type {
-      font-size: 9px;
-
-      border: 1px solid #294354;
-
-      color: #8eabc0;
-
-      border-radius: 999px;
-
-      padding: 3px 6px;
-    }
-
-    .result-name {
-      margin-top: 4px;
-
-      color: #8198aa;
-
-      font-size: 11px;
-    }
-
-    .result-meta {
-      margin-top: 3px;
-
-      color: #5f7789;
-
-      font-size: 9px;
-    }
-
-    /* =====================================================
-       ASSET
-       ===================================================== */
-
-    .asset-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 10px;
-
-      background: #0b1721;
-
-      border: 1px solid #173041;
-
-      border-radius: 16px;
-
-      padding: 12px;
-
-      margin-bottom: 12px;
-    }
-
-    .asset-info {
-      min-width: 0;
-    }
-
-    .asset-symbol {
-      font-size: 20px;
-      font-weight: 1000;
-    }
-
-    .asset-name {
-      margin-top: 3px;
-
-      color: #7991a4;
-
-      font-size: 11px;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .timeframes {
-      display: flex;
-      gap: 5px;
-    }
-
-    .tf-btn {
-      background: #0d202d;
-
-      color: #8da4b7;
-
-      border: 1px solid #1b3546;
-
-      border-radius: 8px;
-
-      padding: 8px 11px;
-
-      font-size: 11px;
-
-      font-weight: 900;
-    }
-
-    .tf-btn.active {
-      color: white;
-
-      background: #15528d;
-
-      border-color: #277dc4;
-    }
-
-    /* =====================================================
-       GRID
-       ===================================================== */
-
-    .main-grid {
-      display: grid;
-
-      grid-template-columns:
-        minmax(0, 1fr)
-        340px;
-
-      gap: 12px;
-    }
-
-    .card {
-      background: #0b1721;
-
-      border: 1px solid #173041;
-
-      border-radius: 16px;
-
-      overflow: hidden;
-    }
-
-    .card-header {
-      padding: 11px 13px;
-
-      border-bottom: 1px solid #173041;
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 10px;
-    }
-
-    .card-title {
-      font-size: 12px;
-
-      font-weight: 900;
-
-      letter-spacing: .4px;
-    }
-
-    .card-subtitle {
-      color: #6f8799;
-
-      font-size: 9px;
-    }
-
-    /* =====================================================
-       CHART
-       ===================================================== */
-
-    .chart-wrap {
-      position: relative;
-
-      width: 100%;
-
-      height: 560px;
-
-      background: #071018;
-
-      overflow: hidden;
-    }
-
-    #chart {
-      position: absolute;
-
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      z-index: 1;
-    }
-
-    /*
-      SVG overlay is used for real Supply/Demand
-      shaded boxes and Magnet connectors.
-    */
-
-    #chartOverlay {
-      position: absolute;
-
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      z-index: 3;
-
-      pointer-events: none;
-    }
-
-    .chart-loading {
-      position: absolute;
-
-      inset: 0;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      background:
-        rgba(7, 16, 24, .65);
-
-      color: #8da4b7;
-
-      font-size: 12px;
-
-      pointer-events: none;
-
-      z-index: 8;
-    }
-
-    .chart-loading.hidden {
-      display: none;
-    }
-
-    .chart-error {
-      position: absolute;
-
-      left: 12px;
-      right: 12px;
-      top: 12px;
-
-      z-index: 10;
-
-      padding: 10px;
-
-      border-radius: 9px;
-
-      background:
-        rgba(117, 25, 35, .92);
-
-      border: 1px solid #9e3b47;
-
-      color: #ffdce0;
-
-      font-size: 11px;
-
-      display: none;
-    }
-
-    .chart-error.show {
-      display: block;
-    }
-
-    /* =====================================================
-       SVG ZONE STYLE
-       ===================================================== */
-
-    .zone-supply {
-      fill: rgba(239, 83, 96, .16);
-
-      stroke: rgba(239, 83, 96, .85);
-
-      stroke-width: 1;
-    }
-
-    .zone-demand {
-      fill: rgba(25, 209, 154, .15);
-
-      stroke: rgba(25, 209, 154, .85);
-
-      stroke-width: 1;
-    }
-
-    .zone-supply-strong {
-      fill: rgba(239, 83, 96, .23);
-
-      stroke: #ff5968;
-
-      stroke-width: 1.5;
-    }
-
-    .zone-demand-strong {
-      fill: rgba(25, 209, 154, .22);
-
-      stroke: #19d19a;
-
-      stroke-width: 1.5;
-    }
-
-    .zone-label-bg-supply {
-      fill: rgba(117, 25, 35, .92);
-    }
-
-    .zone-label-bg-demand {
-      fill: rgba(8, 103, 75, .92);
-    }
-
-    .zone-label-text {
-      fill: white;
-
-      font-size: 10px;
-
-      font-weight: 900;
-
-      font-family:
-        Inter,
-        system-ui,
-        sans-serif;
-    }
-
-    .trade-entry-line {
-      stroke: #4aa8ff;
-
-      stroke-width: 2;
-
-      stroke-dasharray: 7 5;
-    }
-
-    .trade-sl-line {
-      stroke: #ff5968;
-
-      stroke-width: 2;
-
-      stroke-dasharray: 6 4;
-    }
-
-    .trade-tp-line {
-      stroke: #1edaa1;
-
-      stroke-width: 1.7;
-
-      stroke-dasharray: 6 4;
-    }
-
-    .trade-label-entry {
-      fill: #1769a8;
-    }
-
-    .trade-label-sl {
-      fill: #a72d3b;
-    }
-
-    .trade-label-tp {
-      fill: #087453;
-    }
-
-    .trade-label-text {
-      fill: white;
-
-      font-size: 10px;
-
-      font-weight: 1000;
-
-      font-family:
-        Inter,
-        system-ui,
-        sans-serif;
-    }
-
-    .magnet-line-up {
-      stroke: #18d69e;
-
-      stroke-width: 2;
-
-      opacity: .9;
-
-      stroke-dasharray: 8 5;
-    }
-
-    .magnet-line-down {
-      stroke: #ff6370;
-
-      stroke-width: 2;
-
-      opacity: .9;
-
-      stroke-dasharray: 8 5;
-    }
-
-    .magnet-source {
-      fill: #d0a85b;
-
-      stroke: #fff0bb;
-
-      stroke-width: 1;
-    }
-
-    .magnet-target {
-      fill: #d0a85b;
-
-      stroke: #fff0bb;
-
-      stroke-width: 1;
-    }
-
-    /* =====================================================
-       SIGNAL
-       ===================================================== */
-
-    .signal-card {
-      padding: 13px;
-    }
-
-    .signal-status {
-      border-radius: 13px;
-
-      padding: 15px;
-
-      text-align: center;
-
-      border: 1px solid #213746;
-
-      background: #09151e;
-
-      margin-bottom: 10px;
-    }
-
-    .signal-label {
-      color: #70889a;
-
-      font-size: 9px;
-
-      letter-spacing: 1px;
-
-      font-weight: 900;
-    }
-
-    .signal-value {
-      margin-top: 5px;
-
-      font-size: 30px;
-
-      line-height: 1;
-
-      font-weight: 1000;
-    }
-
-    .signal-value.buy {
-      color: #15d89d;
-    }
-
-    .signal-value.sell {
-      color: #ff6472;
-    }
-
-    .signal-value.wait {
-      color: #e4a94b;
-    }
-
-    .signal-prob {
-      margin-top: 8px;
-
-      color: #8ca4b6;
-
-      font-size: 10px;
-    }
-
-    .metrics {
-      display: grid;
-
-      grid-template-columns:
-        1fr 1fr;
-
-      gap: 7px;
-    }
-
-    .metric {
-      background: #09151e;
-
-      border: 1px solid #173041;
-
-      border-radius: 10px;
-
-      padding: 9px;
-    }
-
-    .metric-label {
-      color: #667f91;
-
-      font-size: 9px;
-    }
-
-    .metric-value {
-      margin-top: 4px;
-
-      color: #e8f1f7;
-
-      font-size: 12px;
-
-      font-weight: 800;
-    }
-
-    /* =====================================================
-       TRADE PLAN
-       ===================================================== */
-
-    .trade-plan {
-      padding: 12px;
-
-      border-top: 1px solid #173041;
-    }
-
-    .trade-plan-title {
-      color: #7d95a7;
-
-      font-size: 10px;
-
-      font-weight: 900;
-
-      letter-spacing: .8px;
-
-      margin-bottom: 8px;
-    }
-
-    .price-row {
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      padding: 7px 0;
-
-      border-bottom: 1px solid #112532;
-
-      font-size: 10px;
-    }
-
-    .price-name {
-      color: #718a9d;
-    }
-
-    .price-value {
-      font-weight: 900;
-    }
-
-    .entry {
-      color: #65b6ff;
-    }
-
-    .sl {
-      color: #ff6d79;
-    }
-
-    .tp {
-      color: #1edaa1;
-    }
-
-    /* =====================================================
-       ZONES PANEL
-       ===================================================== */
-
-    .zone-section {
-      padding: 12px;
-
-      border-top: 1px solid #173041;
-    }
-
-    .zone-title {
-      font-size: 10px;
-
-      font-weight: 900;
-
-      color: #8198aa;
-
-      margin-bottom: 8px;
-
-      letter-spacing: .7px;
-    }
-
-    .zone-box {
-      border: 1px solid #1c3646;
-
-      background: #09151e;
-
-      border-radius: 10px;
-
-      padding: 9px;
-
-      margin-bottom: 7px;
-    }
-
-    .zone-box.supply {
-      border-left: 3px solid #ef5360;
-    }
-
-    .zone-box.demand {
-      border-left: 3px solid #19d19a;
-    }
-
-    .zone-top {
-      display: flex;
-
-      justify-content: space-between;
-
-      gap: 8px;
-
-      font-size: 10px;
-    }
-
-    .zone-name {
-      font-weight: 900;
-    }
-
-    .zone-score {
-      color: #a8bdd0;
-    }
-
-    .zone-data {
-      display: flex;
-
-      gap: 10px;
-
-      flex-wrap: wrap;
-
-      margin-top: 5px;
-
-      color: #6e8799;
-
-      font-size: 9px;
-    }
-
-    /* =====================================================
-       MAGNET
-       ===================================================== */
-
-    .magnet {
-      padding: 11px;
-
-      background: #09151e;
-
-      border: 1px solid #263b4a;
-
-      border-radius: 11px;
-    }
-
-    .magnet-direction {
-      font-size: 14px;
-
-      font-weight: 1000;
-    }
-
-    .magnet-up {
-      color: #19d19a;
-    }
-
-    .magnet-down {
-      color: #ff6370;
-    }
-
-    .magnet-details {
-      margin-top: 7px;
-
-      display: grid;
-
-      grid-template-columns:
-        1fr 1fr;
-
-      gap: 5px;
-
-      color: #718a9c;
-
-      font-size: 9px;
-    }
-
-    /* =====================================================
-       DIAGNOSTICS
-       ===================================================== */
-
-    .diagnostics {
-      margin-top: 12px;
-
-      padding: 12px;
-    }
-
-    .diag-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(6, minmax(0, 1fr));
-
-      gap: 7px;
-    }
-
-    .diag {
-      background: #09151e;
-
-      border: 1px solid #173041;
-
-      border-radius: 9px;
-
-      padding: 8px;
-    }
-
-    .diag-title {
-      color: #5f7789;
-
-      font-size: 8px;
-
-      text-transform: uppercase;
-    }
-
-    .diag-value {
-      margin-top: 4px;
-
-      font-size: 11px;
-
-      font-weight: 900;
-    }
-
-    /* =====================================================
-       FOOTER
-       ===================================================== */
-
-    .footer {
-      padding: 15px 3px 5px;
-
-      color: #506879;
-
-      font-size: 9px;
-
-      text-align: center;
-    }
-
-    /* =====================================================
-       MOBILE
-       ===================================================== */
-
-    @media (max-width: 1050px) {
-
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .diag-grid {
-        grid-template-columns:
-          repeat(3, minmax(0, 1fr));
-      }
-
-    }
-
-    @media (max-width: 650px) {
-
-      .app {
-        padding: 8px;
-      }
-
-      .header {
-        align-items: flex-start;
-      }
-
-      .brand h1 {
-        font-size: 17px;
-      }
-
-      .brand small {
-        font-size: 10px;
-      }
-
-      .connection {
-        font-size: 9px;
-        padding: 6px 8px;
-      }
-
-      .asset-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .timeframes {
-        width: 100%;
-      }
-
-      .tf-btn {
-        flex: 1;
-      }
-
-      .chart-wrap {
-        height: 470px;
-      }
-
-      .diag-grid {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
-
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Owajid & Bokul Trading Assistant</title>
+
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+margin:0;
+padding:0;
+min-height:100%;
+background:#071018;
+color:#e8f0f7;
+font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+
+body{min-height:100vh}
+
+button,input{font:inherit}
+button{cursor:pointer}
+
+.app{
+width:100%;
+max-width:1500px;
+margin:auto;
+padding:14px
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+margin-bottom:14px
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:11px
+}
+
+.logo{
+width:46px;
+height:46px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#18d6a3,#176cff);
+color:#fff;
+font-size:14px;
+font-weight:1000;
+box-shadow:0 8px 30px rgba(22,119,255,.25)
+}
+
+.brand h1{
+margin:0;
+font-size:21px;
+line-height:1.15
+}
+
+.brand small{
+display:block;
+margin-top:4px;
+color:#7e94a8;
+font-size:11px
+}
+
+.connection{
+display:flex;
+align-items:center;
+gap:7px;
+padding:8px 12px;
+border:1px solid #173041;
+border-radius:999px;
+background:#0b1721;
+color:#9fb3c4;
+font-size:11px
+}
+
+.dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#7f8c96
+}
+
+.dot.online{
+background:#16d49b;
+box-shadow:0 0 12px rgba(22,212,155,.7)
+}
+
+.dot.error{background:#ff5d6c}
+
+/* SEARCH */
+
+.search-panel{
+background:#0b1721;
+border:1px solid #173041;
+border-radius:16px;
+padding:12px;
+margin-bottom:12px
+}
+
+.search-row{
+display:flex;
+gap:8px
+}
+
+.search-input{
+flex:1;
+min-width:0;
+background:#071018;
+color:#eef7ff;
+border:1px solid #203746;
+border-radius:11px;
+padding:12px 13px;
+outline:none
+}
+
+.search-input:focus{
+border-color:#287cff;
+box-shadow:0 0 0 3px rgba(40,124,255,.1)
+}
+
+.search-btn{
+border:0;
+border-radius:11px;
+padding:0 17px;
+color:#fff;
+background:#1669e8;
+font-weight:800
+}
+
+.category-row{
+display:flex;
+gap:7px;
+overflow-x:auto;
+padding-top:10px;
+scrollbar-width:none
+}
+
+.category-row::-webkit-scrollbar{display:none}
+
+.category-btn{
+flex:0 0 auto;
+background:#0f202c;
+border:1px solid #1d384a;
+color:#91a7b9;
+border-radius:999px;
+padding:7px 12px;
+font-size:11px;
+font-weight:800
+}
+
+.category-btn.active{
+background:#153e62;
+border-color:#2c7ed0;
+color:#e8f4ff
+}
+
+.search-results{
+display:none;
+margin-top:10px;
+max-height:270px;
+overflow-y:auto;
+border-top:1px solid #173041;
+padding-top:8px
+}
+
+.search-results.show{display:block}
+
+.result-item{
+width:100%;
+border:1px solid transparent;
+background:transparent;
+color:#dce8f1;
+text-align:left;
+border-radius:10px;
+padding:10px;
+margin-bottom:4px
+}
+
+.result-item:hover{
+background:#102331;
+border-color:#1d3b4e
+}
+
+.result-main{
+display:flex;
+justify-content:space-between;
+gap:8px
+}
+
+.result-symbol{font-weight:900}
+
+.result-type{
+font-size:9px;
+border:1px solid #294354;
+color:#8eabc0;
+border-radius:999px;
+padding:3px 6px
+}
+
+.result-name{
+margin-top:4px;
+color:#8198aa;
+font-size:11px
+}
+
+.result-meta{
+margin-top:3px;
+color:#5f7789;
+font-size:9px
+}
+
+/* ASSET */
+
+.asset-bar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+background:#0b1721;
+border:1px solid #173041;
+border-radius:16px;
+padding:12px;
+margin-bottom:12px
+}
+
+.asset-symbol{
+font-size:20px;
+font-weight:1000
+}
+
+.asset-name{
+margin-top:3px;
+color:#7991a4;
+font-size:11px
+}
+
+.timeframes{
+display:flex;
+gap:5px
+}
+
+.tf-btn{
+background:#0d202d;
+color:#8da4b7;
+border:1px solid #1b3546;
+border-radius:8px;
+padding:8px 11px;
+font-size:11px;
+font-weight:900
+}
+
+.tf-btn.active{
+color:#fff;
+background:#15528d;
+border-color:#277dc4
+}
+
+/* GRID */
+
+.main-grid{
+display:grid;
+grid-template-columns:minmax(0,1fr) 340px;
+gap:12px
+}
+
+.card{
+background:#0b1721;
+border:1px solid #173041;
+border-radius:16px;
+overflow:hidden
+}
+
+.card-header{
+padding:11px 13px;
+border-bottom:1px solid #173041;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px
+}
+
+.card-title{
+font-size:12px;
+font-weight:900;
+letter-spacing:.4px
+}
+
+.card-subtitle{
+color:#6f8799;
+font-size:9px
+}
+
+/* CHART */
+
+.chart-wrap{
+position:relative;
+width:100%;
+height:560px;
+background:#071018;
+overflow:hidden
+}
+
+#chart{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+z-index:1
+}
+
+#chartOverlay{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+z-index:3;
+pointer-events:none
+}
+
+.chart-loading{
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(7,16,24,.65);
+color:#8da4b7;
+font-size:12px;
+pointer-events:none;
+z-index:8
+}
+
+.chart-loading.hidden{display:none}
+
+.chart-error{
+position:absolute;
+left:12px;
+right:12px;
+top:12px;
+z-index:10;
+padding:10px;
+border-radius:9px;
+background:rgba(117,25,35,.92);
+border:1px solid #9e3b47;
+color:#ffdce0;
+font-size:11px;
+display:none
+}
+
+.chart-error.show{display:block}
+
+/* SVG */
+
+.zone-supply{
+fill:rgba(239,83,96,.16);
+stroke:rgba(239,83,96,.85);
+stroke-width:1
+}
+
+.zone-demand{
+fill:rgba(25,209,154,.15);
+stroke:rgba(25,209,154,.85);
+stroke-width:1
+}
+
+.zone-supply-strong{
+fill:rgba(239,83,96,.23);
+stroke:#ff5968;
+stroke-width:1.5
+}
+
+.zone-demand-strong{
+fill:rgba(25,209,154,.22);
+stroke:#19d19a;
+stroke-width:1.5
+}
+
+.zone-label-bg-supply{fill:rgba(117,25,35,.92)}
+.zone-label-bg-demand{fill:rgba(8,103,75,.92)}
+
+.trade-entry-line{
+stroke:#4aa8ff;
+stroke-width:2;
+stroke-dasharray:7 5
+}
+
+.trade-sl-line{
+stroke:#ff5968;
+stroke-width:2;
+stroke-dasharray:6 4
+}
+
+.trade-tp-line{
+stroke:#1edaa1;
+stroke-width:1.7;
+stroke-dasharray:6 4
+}
+
+.trade-label-entry{fill:#1769a8}
+.trade-label-sl{fill:#a72d3b}
+.trade-label-tp{fill:#087453}
+
+.trade-label-text{
+fill:#fff;
+font-size:10px;
+font-weight:1000;
+font-family:Inter,system-ui,sans-serif
+}
+
+.magnet-line-up{
+stroke:#18d69e;
+stroke-width:2;
+opacity:.9;
+stroke-dasharray:8 5
+}
+
+.magnet-line-down{
+stroke:#ff6370;
+stroke-width:2;
+opacity:.9;
+stroke-dasharray:8 5
+}
+
+.magnet-source,
+.magnet-target{
+fill:#d0a85b;
+stroke:#fff0bb;
+stroke-width:1
+}
+
+/* SIGNAL */
+
+.signal-card{padding:13px}
+
+.signal-status{
+border-radius:13px;
+padding:15px;
+text-align:center;
+border:1px solid #213746;
+background:#09151e;
+margin-bottom:10px
+}
+
+.signal-label{
+color:#70889a;
+font-size:9px;
+letter-spacing:1px;
+font-weight:900
+}
+
+.signal-value{
+margin-top:5px;
+font-size:30px;
+line-height:1;
+font-weight:1000
+}
+
+.signal-value.buy{color:#15d89d}
+.signal-value.sell{color:#ff6472}
+.signal-value.wait{color:#e4a94b}
+
+.signal-prob{
+margin-top:8px;
+color:#8ca4b6;
+font-size:10px
+}
+
+.metrics{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px
+}
+
+.metric{
+background:#09151e;
+border:1px solid #173041;
+border-radius:10px;
+padding:9px
+}
+
+.metric-label{
+color:#667f91;
+font-size:9px
+}
+
+.metric-value{
+margin-top:4px;
+color:#e8f1f7;
+font-size:12px;
+font-weight:800
+}
+
+/* TRADE PLAN */
+
+.trade-plan{
+padding:12px;
+border-top:1px solid #173041
+}
+
+.trade-plan-title{
+color:#7d95a7;
+font-size:10px;
+font-weight:900;
+letter-spacing:.8px;
+margin-bottom:8px
+}
+
+.price-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:7px 0;
+border-bottom:1px solid #112532;
+font-size:10px
+}
+
+.price-name{color:#718a9d}
+.price-value{font-weight:900}
+.entry{color:#65b6ff}
+.sl{color:#ff6d79}
+.tp{color:#1edaa1}
+
+/* ZONES */
+
+.zone-section{
+padding:12px;
+border-top:1px solid #173041
+}
+
+.zone-title{
+font-size:10px;
+font-weight:900;
+color:#8198aa;
+margin-bottom:8px;
+letter-spacing:.7px
+}
+
+.zone-box{
+border:1px solid #1c3646;
+background:#09151e;
+border-radius:10px;
+padding:9px;
+margin-bottom:7px
+}
+
+.zone-box.supply{border-left:3px solid #ef5360}
+.zone-box.demand{border-left:3px solid #19d19a}
+
+.zone-top{
+display:flex;
+justify-content:space-between;
+gap:8px;
+font-size:10px
+}
+
+.zone-name{font-weight:900}
+.zone-score{color:#a8bdd0}
+
+.zone-data{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:5px;
+color:#6e8799;
+font-size:9px
+}
+
+/* MAGNET */
+
+.magnet{
+padding:11px;
+background:#09151e;
+border:1px solid #263b4a;
+border-radius:11px
+}
+
+.magnet-direction{
+font-size:14px;
+font-weight:1000
+}
+
+.magnet-up{color:#19d19a}
+.magnet-down{color:#ff6370}
+
+.magnet-details{
+margin-top:7px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:5px;
+color:#718a9c;
+font-size:9px
+}
+
+/* DIAGNOSTICS */
+
+.diagnostics{
+margin-top:12px;
+padding:0
+}
+
+.diag-grid{
+display:grid;
+grid-template-columns:repeat(6,minmax(0,1fr));
+gap:7px;
+padding:12px
+}
+
+.diag{
+background:#09151e;
+border:1px solid #173041;
+border-radius:9px;
+padding:8px
+}
+
+.diag-title{
+color:#5f7789;
+font-size:8px;
+text-transform:uppercase
+}
+
+.diag-value{
+margin-top:4px;
+font-size:11px;
+font-weight:900
+}
+
+/* =====================================================
+   SIGNAL HISTORY
+   ===================================================== */
+
+.history-card{
+margin-top:12px
+}
+
+.history-stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+padding:12px
+}
+
+.history-stat{
+background:#09151e;
+border:1px solid #173041;
+border-radius:10px;
+padding:10px
+}
+
+.history-stat-label{
+font-size:8px;
+color:#61798b;
+text-transform:uppercase
+}
+
+.history-stat-value{
+font-size:18px;
+font-weight:1000;
+margin-top:4px
+}
+
+.history-stat-value.win{color:#19d19a}
+.history-stat-value.loss{color:#ff6370}
+.history-stat-value.open{color:#e4a94b}
+
+.history-filter{
+display:flex;
+gap:6px;
+padding:0 12px 12px;
+overflow-x:auto
+}
+
+.history-filter button{
+background:#0e202c;
+border:1px solid #1d384a;
+color:#8198aa;
+border-radius:999px;
+padding:6px 12px;
+font-size:9px;
+font-weight:900
+}
+
+.history-filter button.active{
+background:#164b70;
+color:#fff;
+border-color:#277dc4
+}
+
+.history-actions{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 12px 10px;
+gap:8px
+}
+
+.history-count{
+font-size:9px;
+color:#647d90
+}
+
+.clear-history{
+background:#2b151b;
+border:1px solid #6a3039;
+color:#ff7b87;
+border-radius:8px;
+padding:6px 9px;
+font-size:9px;
+font-weight:900
+}
+
+.history-list{
+padding:0 12px 12px;
+display:grid;
+gap:8px
+}
+
+.history-empty{
+padding:25px 10px;
+text-align:center;
+color:#5e7789;
+font-size:10px;
+border:1px dashed #1c3545;
+border-radius:10px
+}
+
+.history-item{
+background:#09151e;
+border:1px solid #173041;
+border-radius:12px;
+padding:11px
+}
+
+.history-item.buy{border-left:3px solid #19d19a}
+.history-item.sell{border-left:3px solid #ff6370}
+
+.history-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px
+}
+
+.history-symbol{
+font-size:12px;
+font-weight:1000
+}
+
+.history-direction{
+font-size:10px;
+font-weight:1000;
+padding:4px 7px;
+border-radius:6px
+}
+
+.history-direction.buy{
+background:rgba(25,209,154,.12);
+color:#19d19a
+}
+
+.history-direction.sell{
+background:rgba(255,99,112,.12);
+color:#ff6370
+}
+
+.history-time{
+font-size:9px;
+color:#60798b;
+margin-top:5px
+}
+
+.history-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:5px;
+margin-top:9px
+}
+
+.history-price{
+background:#071018;
+border-radius:7px;
+padding:6px
+}
+
+.history-price-label{
+font-size:7px;
+color:#5f7789
+}
+
+.history-price-value{
+font-size:9px;
+font-weight:900;
+margin-top:3px
+}
+
+.history-result{
+margin-top:9px;
+padding:7px 8px;
+border-radius:8px;
+font-size:9px;
+font-weight:900
+}
+
+.history-result.open{
+background:rgba(228,169,75,.1);
+color:#e4a94b
+}
+
+.history-result.win{
+background:rgba(25,209,154,.1);
+color:#19d19a
+}
+
+.history-result.loss{
+background:rgba(255,99,112,.1);
+color:#ff6370
+}
+
+.history-meta{
+display:flex;
+justify-content:space-between;
+gap:8px;
+margin-top:7px;
+font-size:8px;
+color:#60798b
+}
+
+/* FOOTER */
+
+.footer{
+padding:15px 3px 5px;
+color:#506879;
+font-size:9px;
+text-align:center
+}
+
+/* MOBILE */
+
+@media(max-width:1050px){
+
+.main-grid{
+grid-template-columns:1fr
+}
+
+.diag-grid{
+grid-template-columns:repeat(3,minmax(0,1fr))
+}
+
+}
+
+@media(max-width:650px){
+
+.app{padding:8px}
+
+.header{
+align-items:flex-start
+}
+
+.brand h1{font-size:17px}
+.brand small{font-size:10px}
+
+.connection{
+font-size:9px;
+padding:6px 8px
+}
+
+.asset-bar{
+flex-direction:column;
+align-items:flex-start
+}
+
+.timeframes{
+width:100%
+}
+
+.tf-btn{flex:1}
+
+.chart-wrap{height:470px}
+
+.diag-grid{
+grid-template-columns:repeat(2,minmax(0,1fr))
+}
+
+.history-stats{
+grid-template-columns:repeat(2,1fr)
+}
+
+.history-grid{
+grid-template-columns:repeat(2,1fr)
+}
+
+}
+</style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
+<header class="header">
 
-  <header class="header">
+<div class="brand">
 
-    <div class="brand">
+<div class="logo">O&B</div>
 
-      <div class="logo">
-        O&B
-      </div>
+<div>
+<h1>Owajid & Bokul Trading Assistant</h1>
+<small>Strong SD Magnet • Personal Market Workstation</small>
+</div>
 
-      <div>
+</div>
 
-        <h1>
-          Owajid & Bokul Trading Assistant
-        </h1>
+<div class="connection">
 
-        <small>
-          Strong SD Magnet • Personal Market Workstation
-        </small>
-
-      </div>
+<span id="connectionDot" class="dot"></span>
 
-    </div>
+<span id="connectionText">
+Connecting...
+</span>
 
+</div>
 
-    <div class="connection">
+</header>
 
-      <span
-        id="connectionDot"
-        class="dot"
-      ></span>
 
-      <span id="connectionText">
-        Connecting...
-      </span>
+<!-- SEARCH -->
 
-    </div>
+<section class="search-panel">
 
-  </header>
+<div class="search-row">
 
+<input
+id="searchInput"
+class="search-input"
+type="search"
+placeholder="Search BTC, ETH, Gold, Oil, EUR/USD, AAPL..."
+autocomplete="off"
+>
 
-  <!-- =====================================================
-       SEARCH
-       ===================================================== -->
+<button id="searchBtn" class="search-btn">
+Search
+</button>
 
-  <section class="search-panel">
+</div>
 
-    <div class="search-row">
+<div id="categoryRow" class="category-row">
 
-      <input
-        id="searchInput"
-        class="search-input"
-        type="search"
-        placeholder="Search BTC, ETH, Gold, Oil, EUR/USD, AAPL..."
-        autocomplete="off"
-      >
+<button class="category-btn active" data-category="all">
+All
+</button>
 
-      <button
-        id="searchBtn"
-        class="search-btn"
-      >
-        Search
-      </button>
+<button class="category-btn" data-category="crypto">
+🪙 Crypto
+</button>
 
-    </div>
+<button class="category-btn" data-category="forex">
+💱 Forex
+</button>
 
+<button class="category-btn" data-category="metals">
+🥇 Metals
+</button>
 
-    <div
-      id="categoryRow"
-      class="category-row"
-    >
+<button class="category-btn" data-category="energy">
+🛢️ Energy
+</button>
 
-      <button
-        class="category-btn active"
-        data-category="all"
-      >
-        All
-      </button>
+<button class="category-btn" data-category="stocks">
+📈 Stocks
+</button>
 
-      <button
-        class="category-btn"
-        data-category="crypto"
-      >
-        🪙 Crypto
-      </button>
+<button class="category-btn" data-category="etf">
+📊 ETF
+</button>
 
-      <button
-        class="category-btn"
-        data-category="forex"
-      >
-        💱 Forex
-      </button>
+</div>
 
-      <button
-        class="category-btn"
-        data-category="metals"
-      >
-        🥇 Metals
-      </button>
+<div id="searchResults" class="search-results"></div>
 
-      <button
-        class="category-btn"
-        data-category="energy"
-      >
-        🛢️ Energy
-      </button>
+</section>
 
-      <button
-        class="category-btn"
-        data-category="stocks"
-      >
-        📈 Stocks
-      </button>
 
-      <button
-        class="category-btn"
-        data-category="etf"
-      >
-        📊 ETF
-      </button>
+<!-- ASSET -->
 
-    </div>
+<section class="asset-bar">
 
+<div>
 
-    <div
-      id="searchResults"
-      class="search-results"
-    ></div>
+<div id="assetSymbol" class="asset-symbol">
+XAU/USD
+</div>
 
-  </section>
+<div id="assetName" class="asset-name">
+Gold / US Dollar
+</div>
 
+</div>
 
-  <!-- =====================================================
-       ASSET
-       ===================================================== -->
+<div class="timeframes">
 
-  <section class="asset-bar">
+<button class="tf-btn active" data-timeframe="15min">
+15M STRUCTURE
+</button>
 
-    <div class="asset-info">
+<button class="tf-btn" data-timeframe="5min">
+5M ENTRY
+</button>
 
-      <div
-        id="assetSymbol"
-        class="asset-symbol"
-      >
-        XAU/USD
-      </div>
+</div>
 
-      <div
-        id="assetName"
-        class="asset-name"
-      >
-        Gold / US Dollar
-      </div>
+</section>
 
-    </div>
 
+<!-- MAIN -->
 
-    <div class="timeframes">
+<main class="main-grid">
 
-      <button
-        class="tf-btn active"
-        data-timeframe="15min"
-      >
-        15M STRUCTURE
-      </button>
+<!-- CHART -->
 
-      <button
-        class="tf-btn"
-        data-timeframe="5min"
-      >
-        5M ENTRY
-      </button>
+<section class="card">
 
-    </div>
+<div class="card-header">
 
-  </section>
+<div>
 
+<div class="card-title">
+Market Chart
+</div>
 
-  <!-- =====================================================
-       MAIN
-       ===================================================== -->
+<div id="chartSubtitle" class="card-subtitle">
+15M STRUCTURE • Strong SD Magnet
+</div>
 
-  <main class="main-grid">
+</div>
 
+<div id="lastPrice" class="card-title">
+—
+</div>
 
-    <!-- ===================================================
-         CHART
-         =================================================== -->
+</div>
 
-    <section class="card">
+<div class="chart-wrap">
 
-      <div class="card-header">
+<div id="chart"></div>
 
-        <div>
+<svg
+id="chartOverlay"
+preserveAspectRatio="none"
+></svg>
 
-          <div class="card-title">
-            Market Chart
-          </div>
+<div id="chartLoading" class="chart-loading">
+Loading market data...
+</div>
 
-          <div
-            id="chartSubtitle"
-            class="card-subtitle"
-          >
-            15M STRUCTURE • Strong SD Magnet
-          </div>
+<div id="chartError" class="chart-error"></div>
 
-        </div>
+</div>
 
+</section>
 
-        <div
-          id="lastPrice"
-          class="card-title"
-        >
-          —
-        </div>
 
-      </div>
+<!-- SIGNAL PANEL -->
 
+<aside class="card">
 
-      <div class="chart-wrap">
+<div class="card-header">
 
-        <div id="chart"></div>
+<div class="card-title">
+Signal Engine
+</div>
 
-        <!-- SVG visualization layer -->
+<div id="engineTime" class="card-subtitle">
+—
+</div>
 
-        <svg
-          id="chartOverlay"
-          preserveAspectRatio="none"
-        ></svg>
+</div>
 
+<div class="signal-card">
 
-        <div
-          id="chartLoading"
-          class="chart-loading"
-        >
-          Loading market data...
-        </div>
+<div class="signal-status">
 
+<div class="signal-label">
+CURRENT SIGNAL
+</div>
 
-        <div
-          id="chartError"
-          class="chart-error"
-        ></div>
+<div id="signalValue" class="signal-value wait">
+WAIT
+</div>
 
-      </div>
+<div id="signalProbability" class="signal-prob">
+No confirmed setup
+</div>
 
-    </section>
+</div>
 
+<div class="metrics">
 
-    <!-- ===================================================
-         SIGNAL PANEL
-         =================================================== -->
+<div class="metric">
+<div class="metric-label">Price</div>
+<div id="metricPrice" class="metric-value">—</div>
+</div>
 
-    <aside class="card">
+<div class="metric">
+<div class="metric-label">ATR</div>
+<div id="metricAtr" class="metric-value">—</div>
+</div>
 
-      <div class="card-header">
+<div class="metric">
+<div class="metric-label">15M</div>
+<div id="metric15" class="metric-value">WAIT</div>
+</div>
 
-        <div class="card-title">
-          Signal Engine
-        </div>
+<div class="metric">
+<div class="metric-label">5M</div>
+<div id="metric5" class="metric-value">WAIT</div>
+</div>
 
-        <div
-          id="engineTime"
-          class="card-subtitle"
-        >
-          —
-        </div>
+<div class="metric">
+<div class="metric-label">SD Score</div>
+<div id="metricScore" class="metric-value">—</div>
+</div>
 
-      </div>
+<div class="metric">
+<div class="metric-label">Retests</div>
+<div id="metricRetests" class="metric-value">—</div>
+</div>
 
+</div>
 
-      <div class="signal-card">
+</div>
 
-        <div class="signal-status">
 
-          <div class="signal-label">
-            CURRENT SIGNAL
-          </div>
+<!-- TRADE PLAN -->
 
-          <div
-            id="signalValue"
-            class="signal-value wait"
-          >
-            WAIT
-          </div>
+<div class="trade-plan">
 
-          <div
-            id="signalProbability"
-            class="signal-prob"
-          >
-            No confirmed setup
-          </div>
+<div class="trade-plan-title">
+TRADE PLAN
+</div>
 
-        </div>
+<div class="price-row">
+<span class="price-name">Entry</span>
+<span id="tradeEntry" class="price-value entry">—</span>
+</div>
 
+<div class="price-row">
+<span class="price-name">Stop Loss</span>
+<span id="tradeSL" class="price-value sl">—</span>
+</div>
 
-        <div class="metrics">
+<div class="price-row">
+<span class="price-name">TP1</span>
+<span id="tradeTP1" class="price-value tp">—</span>
+</div>
 
-          <div class="metric">
+<div class="price-row">
+<span class="price-name">TP2</span>
+<span id="tradeTP2" class="price-value tp">—</span>
+</div>
 
-            <div class="metric-label">
-              Price
-            </div>
+<div class="price-row">
+<span class="price-name">TP3</span>
+<span id="tradeTP3" class="price-value tp">—</span>
+</div>
 
-            <div
-              id="metricPrice"
-              class="metric-value"
-            >
-              —
-            </div>
+</div>
 
-          </div>
 
+<!-- SUPPLY -->
 
-          <div class="metric">
+<div class="zone-section">
 
-            <div class="metric-label">
-              ATR
-            </div>
+<div class="zone-title">
+15M SUPPLY
+</div>
 
-            <div
-              id="metricAtr"
-              class="metric-value"
-            >
-              —
-            </div>
+<div id="supplyZone">
+<div class="zone-box supply">
+No active Supply zone
+</div>
+</div>
 
-          </div>
+</div>
 
 
-          <div class="metric">
+<!-- DEMAND -->
 
-            <div class="metric-label">
-              15M
-            </div>
+<div class="zone-section">
 
-            <div
-              id="metric15"
-              class="metric-value"
-            >
-              WAIT
-            </div>
+<div class="zone-title">
+15M DEMAND
+</div>
 
-          </div>
+<div id="demandZone">
+<div class="zone-box demand">
+No active Demand zone
+</div>
+</div>
 
+</div>
 
-          <div class="metric">
 
-            <div class="metric-label">
-              5M
-            </div>
+<!-- MAGNET -->
 
-            <div
-              id="metric5"
-              class="metric-value"
-            >
-              WAIT
-            </div>
+<div class="zone-section">
 
-          </div>
+<div class="zone-title">
+SD MAGNET
+</div>
 
+<div id="magnetBox" class="magnet">
 
-          <div class="metric">
+<div class="magnet-direction">
+NONE
+</div>
 
-            <div class="metric-label">
-              SD Score
-            </div>
+<div class="magnet-details">
 
-            <div
-              id="metricScore"
-              class="metric-value"
-            >
-              —
-            </div>
+<div>Source: —</div>
+<div>Target: —</div>
+<div>Pull Score: —</div>
+<div>Probability: —</div>
 
-          </div>
+</div>
 
+</div>
 
-          <div class="metric">
+</div>
 
-            <div class="metric-label">
-              Retests
-            </div>
+</aside>
 
-            <div
-              id="metricRetests"
-              class="metric-value"
-            >
-              —
-            </div>
+</main>
 
-          </div>
 
-        </div>
+<!-- DIAGNOSTICS -->
 
-      </div>
+<section class="card diagnostics">
 
+<div class="card-header">
 
-      <!-- =================================================
-           TRADE PLAN
-           ================================================= -->
+<div class="card-title">
+Engine Diagnostics
+</div>
 
-      <div class="trade-plan">
+<div class="card-subtitle">
+Strong SD Magnet
+</div>
 
-        <div class="trade-plan-title">
-          TRADE PLAN
-        </div>
+</div>
 
+<div class="diag-grid">
 
-        <div class="price-row">
+<div class="diag">
+<div class="diag-title">15M Direction</div>
+<div id="diag15Direction" class="diag-value">WAIT</div>
+</div>
 
-          <span class="price-name">
-            Entry
-          </span>
+<div class="diag">
+<div class="diag-title">15M Score</div>
+<div id="diag15Score" class="diag-value">—</div>
+</div>
 
-          <span
-            id="tradeEntry"
-            class="price-value entry"
-          >
-            —
-          </span>
+<div class="diag">
+<div class="diag-title">15M Retests</div>
+<div id="diag15Retests" class="diag-value">—</div>
+</div>
 
-        </div>
+<div class="diag">
+<div class="diag-title">5M Direction</div>
+<div id="diag5Direction" class="diag-value">WAIT</div>
+</div>
 
+<div class="diag">
+<div class="diag-title">Magnet</div>
+<div id="diagMagnet" class="diag-value">NONE</div>
+</div>
 
-        <div class="price-row">
+<div class="diag">
+<div class="diag-title">Alignment</div>
+<div id="diagAlignment" class="diag-value">WAIT</div>
+</div>
 
-          <span class="price-name">
-            Stop Loss
-          </span>
+</div>
 
-          <span
-            id="tradeSL"
-            class="price-value sl"
-          >
-            —
-          </span>
+</section>
 
-        </div>
 
+<!-- =====================================================
+     SIGNAL HISTORY
+     ===================================================== -->
 
-        <div class="price-row">
+<section class="card history-card">
 
-          <span class="price-name">
-            TP1
-          </span>
+<div class="card-header">
 
-          <span
-            id="tradeTP1"
-            class="price-value tp"
-          >
-            —
-          </span>
+<div>
 
-        </div>
+<div class="card-title">
+Signal History
+</div>
 
+<div class="card-subtitle">
+Confirmed 15M + 5M signals • Automatic outcome tracking
+</div>
 
-        <div class="price-row">
+</div>
 
-          <span class="price-name">
-            TP2
-          </span>
+<div id="historyCount" class="card-subtitle">
+0 signals
+</div>
 
-          <span
-            id="tradeTP2"
-            class="price-value tp"
-          >
-            —
-          </span>
+</div>
 
-        </div>
 
+<!-- STATS -->
 
-        <div class="price-row">
+<div class="history-stats">
 
-          <span class="price-name">
-            TP3
-          </span>
+<div class="history-stat">
 
-          <span
-            id="tradeTP3"
-            class="price-value tp"
-          >
-            —
-          </span>
+<div class="history-stat-label">
+Total Signals
+</div>
 
-        </div>
+<div id="historyTotal" class="history-stat-value">
+0
+</div>
 
-      </div>
+</div>
 
 
-      <!-- =================================================
-           SUPPLY
-           ================================================= -->
+<div class="history-stat">
 
-      <div class="zone-section">
+<div class="history-stat-label">
+Wins
+</div>
 
-        <div class="zone-title">
-          15M SUPPLY
-        </div>
+<div id="historyWins" class="history-stat-value win">
+0
+</div>
 
-        <div id="supplyZone">
+</div>
 
-          <div class="zone-box supply">
-            No active Supply zone
-          </div>
 
-        </div>
+<div class="history-stat">
 
-      </div>
+<div class="history-stat-label">
+Losses
+</div>
 
+<div id="historyLosses" class="history-stat-value loss">
+0
+</div>
 
-      <!-- =================================================
-           DEMAND
-           ================================================= -->
+</div>
 
-      <div class="zone-section">
 
-        <div class="zone-title">
-          15M DEMAND
-        </div>
+<div class="history-stat">
 
-        <div id="demandZone">
+<div class="history-stat-label">
+Win Rate
+</div>
 
-          <div class="zone-box demand">
-            No active Demand zone
-          </div>
+<div id="historyWinRate" class="history-stat-value">
+—
+</div>
 
-        </div>
+</div>
 
-      </div>
+</div>
 
 
-      <!-- =================================================
-           MAGNET
-           ================================================= -->
+<!-- FILTER -->
 
-      <div class="zone-section">
+<div class="history-filter">
 
-        <div class="zone-title">
-          SD MAGNET
-        </div>
+<button class="active" data-history-filter="ALL">
+ALL
+</button>
 
-        <div
-          id="magnetBox"
-          class="magnet"
-        >
+<button data-history-filter="WIN">
+WIN
+</button>
 
-          <div class="magnet-direction">
-            NONE
-          </div>
+<button data-history-filter="LOSS">
+LOSS
+</button>
 
-          <div class="magnet-details">
+<button data-history-filter="OPEN">
+OPEN
+</button>
 
-            <div>
-              Source: —
-            </div>
+</div>
 
-            <div>
-              Target: —
-            </div>
 
-            <div>
-              Pull Score: —
-            </div>
+<!-- ACTIONS -->
 
-            <div>
-              Probability: —
-            </div>
+<div class="history-actions">
 
-          </div>
+<div id="historyOpenCount" class="history-count">
+Open: 0
+</div>
 
-        </div>
+<button id="clearHistory" class="clear-history">
+CLEAR HISTORY
+</button>
 
-      </div>
+</div>
 
-    </aside>
 
-  </main>
+<div id="historyList" class="history-list">
 
+<div class="history-empty">
+No confirmed signals yet.
+</div>
 
-  <!-- =====================================================
-       DIAGNOSTICS
-       ===================================================== -->
+</div>
 
-  <section class="card diagnostics">
+</section>
 
-    <div class="card-header">
 
-      <div class="card-title">
-        Engine Diagnostics
-      </div>
+<footer class="footer">
 
-      <div class="card-subtitle">
-        Strong SD Magnet
-      </div>
+Owajid & Bokul Trading Assistant •
+Personal use •
+Market data provided by Twelve Data •
+Charting by TradingView Lightweight Charts
 
-    </div>
-
-
-    <div class="diag-grid">
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          15M Direction
-        </div>
-
-        <div
-          id="diag15Direction"
-          class="diag-value"
-        >
-          WAIT
-        </div>
-
-      </div>
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          15M Score
-        </div>
-
-        <div
-          id="diag15Score"
-          class="diag-value"
-        >
-          —
-        </div>
-
-      </div>
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          15M Retests
-        </div>
-
-        <div
-          id="diag15Retests"
-          class="diag-value"
-        >
-          —
-        </div>
-
-      </div>
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          5M Direction
-        </div>
-
-        <div
-          id="diag5Direction"
-          class="diag-value"
-        >
-          WAIT
-        </div>
-
-      </div>
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          Magnet
-        </div>
-
-        <div
-          id="diagMagnet"
-          class="diag-value"
-        >
-          NONE
-        </div>
-
-      </div>
-
-
-      <div class="diag">
-
-        <div class="diag-title">
-          Alignment
-        </div>
-
-        <div
-          id="diagAlignment"
-          class="diag-value"
-        >
-          WAIT
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer class="footer">
-
-    Owajid & Bokul Trading Assistant •
-    Personal use •
-    Market data provided by Twelve Data •
-    Charting by TradingView Lightweight Charts
-
-  </footer>
+</footer>
 
 </div>
 
@@ -1805,255 +1450,1089 @@
    CONFIG
    ========================================================= */
 
-const API = "/api/market";
+const API="/api/market";
 
-let currentSymbol = "XAU/USD";
+const HISTORY_KEY=
+"owajid_bokul_signal_history_v1";
 
-let currentName =
-  "Gold / US Dollar";
+const MAX_HISTORY=1000;
 
-let currentTimeframe = "15min";
+let currentSymbol="XAU/USD";
 
-let selectedCategory = "all";
+let currentName="Gold / US Dollar";
 
-let market15 = null;
+let currentTimeframe="15min";
 
-let market5 = null;
+let selectedCategory="all";
 
-let chart = null;
+let historyFilter="ALL";
 
-let candleSeries = null;
+let market15=null;
 
-let markerPlugin = null;
+let market5=null;
 
-let priceLines = [];
+let chart=null;
 
-let refreshTimer = null;
+let candleSeries=null;
 
-let searchTimer = null;
+let markerPlugin=null;
 
-let overlayRefreshTimer = null;
+let priceLines=[];
+
+let refreshTimer=null;
+
+let searchTimer=null;
+
+let overlayRefreshTimer=null;
 
 
 /* =========================================================
-   DOM HELPER
+   DOM
    ========================================================= */
 
-const $ = id =>
-  document.getElementById(id);
+const $=id=>
+document.getElementById(id);
+
+
+/* =========================================================
+   HISTORY STORAGE
+   ========================================================= */
+
+function loadHistory(){
+
+try{
+
+const raw=
+localStorage.getItem(
+HISTORY_KEY
+);
+
+if(!raw){
+return [];
+}
+
+const data=
+JSON.parse(raw);
+
+if(!Array.isArray(data)){
+return [];
+}
+
+return data;
+
+}catch(error){
+
+console.error(
+"History load error:",
+error
+);
+
+return [];
+
+}
+
+}
+
+
+function saveHistory(history){
+
+try{
+
+localStorage.setItem(
+HISTORY_KEY,
+JSON.stringify(
+history.slice(
+0,
+MAX_HISTORY
+)
+)
+);
+
+}catch(error){
+
+console.error(
+"History save error:",
+error
+);
+
+}
+
+}
+
+
+/* =========================================================
+   HISTORY KEY
+   ========================================================= */
+
+function getFinalSignalKey(){
+
+const signal=
+getFinalSignal();
+
+if(!signal){
+return null;
+}
+
+const e15=
+market15?.engine||{};
+
+const signalTime=
+e15.signalTime||
+"";
+
+return [
+
+currentSymbol,
+
+"15M",
+
+signal.direction,
+
+signalTime,
+
+signal.entry?.low,
+
+signal.entry?.high,
+
+signal.stopLoss,
+
+signal.tp1,
+
+signal.tp2,
+
+signal.tp3
+
+].join("|");
+
+}
+
+
+/* =========================================================
+   CREATE HISTORY RECORD
+   ========================================================= */
+
+function createHistoryRecord(){
+
+const signal=
+getFinalSignal();
+
+if(!signal){
+return null;
+}
+
+const e15=
+market15?.engine||{};
+
+const e5=
+market5?.engine||{};
+
+const magnet=
+signal.magnet||
+e15.magnets?.[0]||
+null;
+
+const signalTime=
+e15.signalTime||
+new Date().toISOString();
+
+const signalKey=
+e15.signalKey||
+getFinalSignalKey();
+
+return{
+
+id:
+signalKey,
+
+symbol:
+currentSymbol,
+
+name:
+currentName,
+
+timeframe:
+"15M + 5M",
+
+direction:
+signal.direction,
+
+signalTime,
+
+entryLow:
+Number(signal.entry?.low),
+
+entryHigh:
+Number(signal.entry?.high),
+
+stopLoss:
+Number(signal.stopLoss),
+
+tp1:
+Number(signal.tp1),
+
+tp2:
+Number(signal.tp2),
+
+tp3:
+Number(signal.tp3),
+
+probability:
+Number(signal.probability||0),
+
+confidence:
+Number(signal.confidence||0),
+
+sourceScore:
+Number(signal.sourceScore||0),
+
+sourceTouches:
+Number(signal.sourceTouches||0),
+
+magnetDirection:
+magnet?.direction||
+(signal.direction==="BUY"?"UP":"DOWN"),
+
+pullScore:
+Number(magnet?.pullScore||0),
+
+status:
+"OPEN",
+
+result:
+"OPEN",
+
+hitTP1:false,
+
+hitTP2:false,
+
+hitTP3:false,
+
+hitSL:false,
+
+resultTime:null,
+
+resultPrice:null,
+
+createdAt:
+new Date().toISOString(),
+
+lastCheckedAt:
+new Date().toISOString()
+
+};
+
+}
+
+
+/* =========================================================
+   SAVE NEW CONFIRMED SIGNAL
+   ========================================================= */
+
+function recordConfirmedSignal(){
+
+const signal=
+getFinalSignal();
+
+if(!signal){
+return;
+}
+
+const record=
+createHistoryRecord();
+
+if(!record){
+return;
+}
+
+let history=
+loadHistory();
+
+const duplicate=
+history.some(
+item=>
+item.id===
+record.id
+);
+
+if(duplicate){
+return;
+}
+
+history.unshift(record);
+
+history=
+history.slice(
+0,
+MAX_HISTORY
+);
+
+saveHistory(history);
+
+renderHistory();
+
+}
+
+
+/* =========================================================
+   PRICE TOUCH
+   ========================================================= */
+
+function priceTouched(
+candle,
+price
+){
+
+return Number.isFinite(
+Number(price)
+)&&
+candle.high>=Number(price)&&
+candle.low<=Number(price);
+
+}
+
+
+/* =========================================================
+   CHECK OUTCOME
+   ========================================================= */
+
+function evaluateHistory(){
+
+let history=
+loadHistory();
+
+if(!history.length){
+return;
+}
+
+let changed=false;
+
+for(
+let index=0;
+index<history.length;
+index++
+){
+
+const item=
+history[index];
+
+if(
+item.status!=="OPEN"
+){
+continue;
+}
+
+if(
+item.symbol!==currentSymbol
+){
+continue;
+}
+
+
+/*
+ * We use 5M candles to evaluate
+ * future price movement.
+ */
+
+const data=
+market5;
+
+const candles=
+data?.candles||[];
+
+if(!Array.isArray(candles)||!candles.length){
+continue;
+}
+
+
+/*
+ * Only candles after signal time.
+ */
+
+const signalTimestamp=
+Date.parse(
+String(item.signalTime)
+.replace(" ","T")+"Z"
+);
+
+const futureCandles=
+candles.filter(
+c=>{
+const t=
+Date.parse(
+String(c.time)
+.replace(" ","T")+"Z"
+);
+
+return Number.isFinite(t)&&
+Number.isFinite(signalTimestamp)&&
+t>signalTimestamp;
+}
+);
+
+if(!futureCandles.length){
+continue;
+}
+
+
+/*
+ * BUY
+ */
+
+if(item.direction==="BUY"){
+
+for(
+const candle
+of futureCandles
+){
+
+/*
+ * SL first if same candle touches
+ * both levels. Conservative handling.
+ */
+
+if(
+priceTouched(
+candle,
+item.stopLoss
+)
+){
+
+item.status="LOSS";
+item.result="SL";
+item.hitSL=true;
+item.resultTime=candle.time;
+item.resultPrice=item.stopLoss;
+changed=true;
+
+break;
+
+}
+
+
+if(
+priceTouched(
+candle,
+item.tp3
+)
+){
+
+item.status="WIN";
+item.result="TP3";
+item.hitTP1=true;
+item.hitTP2=true;
+item.hitTP3=true;
+item.resultTime=candle.time;
+item.resultPrice=item.tp3;
+changed=true;
+
+break;
+
+}
+
+
+if(
+!item.hitTP2&&
+priceTouched(
+candle,
+item.tp2
+)
+){
+
+item.hitTP2=true;
+item.hitTP1=true;
+
+changed=true;
+
+}
+
+
+if(
+!item.hitTP1&&
+priceTouched(
+candle,
+item.tp1
+)
+){
+
+item.hitTP1=true;
+
+changed=true;
+
+}
+
+}
+
+}
+
+
+/*
+ * SELL
+ */
+
+if(item.direction==="SELL"){
+
+for(
+const candle
+of futureCandles
+){
+
+if(
+priceTouched(
+candle,
+item.stopLoss
+)
+){
+
+item.status="LOSS";
+item.result="SL";
+item.hitSL=true;
+item.resultTime=candle.time;
+item.resultPrice=item.stopLoss;
+changed=true;
+
+break;
+
+}
+
+
+if(
+priceTouched(
+candle,
+item.tp3
+)
+){
+
+item.status="WIN";
+item.result="TP3";
+item.hitTP1=true;
+item.hitTP2=true;
+item.hitTP3=true;
+item.resultTime=candle.time;
+item.resultPrice=item.tp3;
+changed=true;
+
+break;
+
+}
+
+
+if(
+!item.hitTP2&&
+priceTouched(
+candle,
+item.tp2
+)
+){
+
+item.hitTP2=true;
+item.hitTP1=true;
+
+changed=true;
+
+}
+
+
+if(
+!item.hitTP1&&
+priceTouched(
+candle,
+item.tp1
+)
+){
+
+item.hitTP1=true;
+
+changed=true;
+
+}
+
+}
+
+}
+
+
+item.lastCheckedAt=
+new Date().toISOString();
+
+}
+
+if(changed){
+saveHistory(history);
+}
+
+renderHistory();
+
+}
+
+
+/* =========================================================
+   HISTORY RESULT TEXT
+   ========================================================= */
+
+function getHistoryResult(
+item
+){
+
+if(item.status==="LOSS"){
+
+return{
+className:"loss",
+text:"❌ SL HIT • LOSS"
+};
+
+}
+
+if(item.status==="WIN"){
+
+return{
+className:"win",
+text:`✅ ${item.result} HIT • WIN`
+};
+
+}
+
+if(item.hitTP2){
+
+return{
+className:"open",
+text:"🟢 TP2 HIT • OPEN"
+};
+
+}
+
+if(item.hitTP1){
+
+return{
+className:"open",
+text:"🟢 TP1 HIT • OPEN"
+};
+
+}
+
+return{
+className:"open",
+text:"🟡 OPEN • WAITING FOR RESULT"
+};
+
+}
+
+
+/* =========================================================
+   HISTORY HTML
+   ========================================================= */
+
+function renderHistory(){
+
+const list=
+$("historyList");
+
+if(!list){
+return;
+}
+
+const history=
+loadHistory();
+
+const total=
+history.length;
+
+const wins=
+history.filter(
+x=>x.status==="WIN"
+).length;
+
+const losses=
+history.filter(
+x=>x.status==="LOSS"
+).length;
+
+const open=
+history.filter(
+x=>x.status==="OPEN"
+).length;
+
+const closed=
+wins+losses;
+
+const winRate=
+closed>0
+?((wins/closed)*100).toFixed(1)+"%"
+:"—";
+
+
+$("historyTotal").textContent=
+total;
+
+$("historyWins").textContent=
+wins;
+
+$("historyLosses").textContent=
+losses;
+
+$("historyWinRate").textContent=
+winRate;
+
+$("historyOpenCount").textContent=
+`Open: ${open}`;
+
+$("historyCount").textContent=
+`${total} signal${total===1?"":"s"}`;
+
+
+let filtered=
+history;
+
+if(historyFilter==="WIN"){
+
+filtered=
+history.filter(
+x=>x.status==="WIN"
+);
+
+}
+
+if(historyFilter==="LOSS"){
+
+filtered=
+history.filter(
+x=>x.status==="LOSS"
+);
+
+}
+
+if(historyFilter==="OPEN"){
+
+filtered=
+history.filter(
+x=>x.status==="OPEN"
+);
+
+}
+
+
+if(!filtered.length){
+
+list.innerHTML=
+`<div class="history-empty">
+No ${historyFilter==="ALL"?"":historyFilter.toLowerCase()+" "}signals found.
+</div>`;
+
+return;
+
+}
+
+
+list.innerHTML=
+filtered.map(
+item=>{
+
+const result=
+getHistoryResult(item);
+
+const direction=
+item.direction==="BUY"
+?"buy"
+:"sell";
+
+const time=
+formatHistoryTime(
+item.signalTime
+);
+
+const entry=
+`${formatPrice(item.entryLow)} – ${formatPrice(item.entryHigh)}`;
+
+const tpState=
+[
+item.hitTP1?"TP1 ✓":"",
+item.hitTP2?"TP2 ✓":"",
+item.hitTP3?"TP3 ✓":""
+]
+.filter(Boolean)
+.join(" • ");
+
+return`
+
+<div class="history-item ${direction}">
+
+<div class="history-head">
+
+<div class="history-symbol">
+${escapeHtml(item.symbol)}
+</div>
+
+<div class="history-direction ${direction}">
+${item.direction}
+</div>
+
+</div>
+
+<div class="history-time">
+${time} • ${escapeHtml(item.timeframe)}
+</div>
+
+
+<div class="history-grid">
+
+<div class="history-price">
+<div class="history-price-label">
+ENTRY
+</div>
+<div class="history-price-value">
+${entry}
+</div>
+</div>
+
+<div class="history-price">
+<div class="history-price-label">
+SL
+</div>
+<div class="history-price-value">
+${formatPrice(item.stopLoss)}
+</div>
+</div>
+
+<div class="history-price">
+<div class="history-price-label">
+TP1
+</div>
+<div class="history-price-value">
+${formatPrice(item.tp1)}
+</div>
+</div>
+
+<div class="history-price">
+<div class="history-price-label">
+TP2
+</div>
+<div class="history-price-value">
+${formatPrice(item.tp2)}
+</div>
+</div>
+
+<div class="history-price">
+<div class="history-price-label">
+TP3
+</div>
+<div class="history-price-value">
+${formatPrice(item.tp3)}
+</div>
+</div>
+
+<div class="history-price">
+<div class="history-price-label">
+PROBABILITY
+</div>
+<div class="history-price-value">
+${Number.isFinite(item.probability)?item.probability+"%":"—"}
+</div>
+</div>
+
+</div>
+
+
+<div class="history-result ${result.className}">
+${result.text}
+</div>
+
+
+<div class="history-meta">
+
+<span>
+SD ${item.sourceScore||"—"} •
+R${item.sourceTouches??0}
+</span>
+
+<span>
+${tpState||"No TP hit"}
+</span>
+
+</div>
+
+</div>
+
+`;
+
+}
+).join("");
+
+}
+
+
+/* =========================================================
+   HISTORY TIME
+   ========================================================= */
+
+function formatHistoryTime(
+value
+){
+
+if(!value){
+return"—";
+}
+
+const d=
+new Date(
+String(value)
+.replace(" ","T")+"Z"
+);
+
+if(
+!Number.isFinite(
+d.getTime()
+)
+){
+return String(value);
+}
+
+return d.toLocaleString(
+[],
+{
+day:"2-digit",
+month:"short",
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
+}
 
 
 /* =========================================================
    CREATE CHART
    ========================================================= */
 
-function createChart() {
+function createChart(){
+
+const container=
+$("chart");
+
+chart=
+LightweightCharts.createChart(
+container,
+{
+
+layout:{
+background:{
+type:"solid",
+color:"#071018"
+},
+textColor:"#8ea5b7"
+},
+
+grid:{
+vertLines:{color:"#0d1d27"},
+horzLines:{color:"#0d1d27"}
+},
+
+crosshair:{
+vertLine:{
+color:"#31566d",
+width:1,
+style:2,
+labelBackgroundColor:"#16354a"
+},
+horzLine:{
+color:"#31566d",
+width:1,
+style:2,
+labelBackgroundColor:"#16354a"
+}
+},
+
+rightPriceScale:{
+borderColor:"#173041",
+scaleMargins:{
+top:.06,
+bottom:.08
+}
+},
+
+timeScale:{
+borderColor:"#173041",
+timeVisible:true,
+secondsVisible:false,
+rightOffset:6,
+barSpacing:7
+},
+
+handleScroll:{
+mouseWheel:true,
+pressedMouseMove:true,
+horzTouchDrag:true,
+vertTouchDrag:true
+},
+
+handleScale:{
+mouseWheel:true,
+pinch:true,
+axisPressedMouseMove:true
+}
+
+}
+);
+
+
+candleSeries=
+chart.addSeries(
+LightweightCharts.CandlestickSeries,
+{
+
+upColor:"#16c995",
+downColor:"#f15b68",
+borderVisible:false,
+wickUpColor:"#16c995",
+wickDownColor:"#f15b68",
+priceLineVisible:true,
+lastValueVisible:true
+
+}
+);
+
+
+markerPlugin=
+LightweightCharts.createSeriesMarkers(
+candleSeries,
+[]
+);
+
+
+window.addEventListener(
+"resize",
+()=>{
+
+if(!chart)return;
+
+chart.resize(
+container.clientWidth,
+container.clientHeight
+);
 
-  const container =
-    $("chart");
+requestAnimationFrame(
+drawChartOverlay
+);
 
+}
+);
 
-  chart =
-    LightweightCharts.createChart(
-      container,
-      {
 
-        layout: {
+if(
+chart.timeScale()
+.subscribeVisibleLogicalRangeChange
+){
 
-          background: {
+chart.timeScale()
+.subscribeVisibleLogicalRangeChange(
+()=>{
 
-            type: "solid",
+requestAnimationFrame(
+drawChartOverlay
+);
 
-            color: "#071018"
+}
+);
 
-          },
-
-          textColor: "#8ea5b7"
-
-        },
-
-
-        grid: {
-
-          vertLines: {
-
-            color: "#0d1d27"
-
-          },
-
-          horzLines: {
-
-            color: "#0d1d27"
-
-          }
-
-        },
-
-
-        crosshair: {
-
-          vertLine: {
-
-            color: "#31566d",
-
-            width: 1,
-
-            style: 2,
-
-            labelBackgroundColor:
-              "#16354a"
-
-          },
-
-          horzLine: {
-
-            color: "#31566d",
-
-            width: 1,
-
-            style: 2,
-
-            labelBackgroundColor:
-              "#16354a"
-
-          }
-
-        },
-
-
-        rightPriceScale: {
-
-          borderColor: "#173041",
-
-          scaleMargins: {
-
-            top: 0.06,
-
-            bottom: 0.08
-
-          }
-
-        },
-
-
-        timeScale: {
-
-          borderColor: "#173041",
-
-          timeVisible: true,
-
-          secondsVisible: false,
-
-          rightOffset: 6,
-
-          barSpacing: 7
-
-        },
-
-
-        handleScroll: {
-
-          mouseWheel: true,
-
-          pressedMouseMove: true,
-
-          horzTouchDrag: true,
-
-          vertTouchDrag: true
-
-        },
-
-
-        handleScale: {
-
-          mouseWheel: true,
-
-          pinch: true,
-
-          axisPressedMouseMove: true
-
-        }
-
-      }
-
-    );
-
-
-  candleSeries =
-    chart.addSeries(
-      LightweightCharts.CandlestickSeries,
-      {
-
-        upColor: "#16c995",
-
-        downColor: "#f15b68",
-
-        borderVisible: false,
-
-        wickUpColor: "#16c995",
-
-        wickDownColor: "#f15b68",
-
-        priceLineVisible: true,
-
-        lastValueVisible: true
-
-      }
-    );
-
-
-  markerPlugin =
-    LightweightCharts.createSeriesMarkers(
-      candleSeries,
-      []
-    );
-
-
-  window.addEventListener(
-    "resize",
-    () => {
-
-      if (!chart) {
-        return;
-      }
-
-
-      chart.resize(
-        container.clientWidth,
-        container.clientHeight
-      );
-
-
-      requestAnimationFrame(
-        drawChartOverlay
-      );
-
-    }
-  );
-
-
-  /*
-   * Redraw SVG overlay after horizontal
-   * chart scrolling/zooming.
-   */
-
-  if (
-    chart.timeScale()
-      .subscribeVisibleLogicalRangeChange
-  ) {
-
-    chart.timeScale()
-      .subscribeVisibleLogicalRangeChange(
-        () => {
-
-          requestAnimationFrame(
-            drawChartOverlay
-          );
-
-        }
-      );
-
-  }
+}
 
 }
 
@@ -2062,413 +2541,317 @@ function createChart() {
    TIME
    ========================================================= */
 
-function toChartTime(value) {
+function toChartTime(value){
 
-  if (
-    typeof value === "number"
-  ) {
+if(typeof value==="number"){
+return value;
+}
 
-    return value;
+if(!value){
+return null;
+}
 
-  }
+const normalized=
+String(value)
+.trim()
+.replace(" ","T");
 
+const timestamp=
+Date.parse(
+normalized+"Z"
+);
 
-  if (!value) {
+if(!Number.isFinite(timestamp)){
+return null;
+}
 
-    return null;
-
-  }
-
-
-  const normalized =
-    String(value)
-      .trim()
-      .replace(" ", "T");
-
-
-  const timestamp =
-    Date.parse(
-      normalized + "Z"
-    );
-
-
-  if (
-    !Number.isFinite(timestamp)
-  ) {
-
-    return null;
-
-  }
-
-
-  return Math.floor(
-    timestamp / 1000
-  );
+return Math.floor(
+timestamp/1000
+);
 
 }
 
 
 /* =========================================================
-   NORMALIZE CANDLES
+   CANDLES
    ========================================================= */
 
 function normalizeCandles(
-  candles
-) {
+candles
+){
 
-  if (
-    !Array.isArray(candles)
-  ) {
+if(!Array.isArray(candles)){
+return[];
+}
 
-    return [];
+return candles
+.map(c=>({
 
-  }
+time:toChartTime(c.time),
 
+open:Number(c.open),
+high:Number(c.high),
+low:Number(c.low),
+close:Number(c.close)
 
-  return candles
-
-    .map(c => ({
-
-      time:
-        toChartTime(c.time),
-
-      open:
-        Number(c.open),
-
-      high:
-        Number(c.high),
-
-      low:
-        Number(c.low),
-
-      close:
-        Number(c.close)
-
-    }))
-
-    .filter(c =>
-
-      c.time &&
-
-      Number.isFinite(c.open) &&
-
-      Number.isFinite(c.high) &&
-
-      Number.isFinite(c.low) &&
-
-      Number.isFinite(c.close)
-
-    )
-
-    .sort(
-      (a, b) =>
-        a.time - b.time
-    );
+}))
+.filter(c=>
+c.time&&
+Number.isFinite(c.open)&&
+Number.isFinite(c.high)&&
+Number.isFinite(c.low)&&
+Number.isFinite(c.close)
+)
+.sort(
+(a,b)=>a.time-b.time
+);
 
 }
 
 
 /* =========================================================
-   CLEAR PRICE LINES
+   PRICE LINES
    ========================================================= */
 
-function clearPriceLines() {
+function clearPriceLines(){
 
-  if (!candleSeries) {
+if(!candleSeries)return;
 
-    return;
+for(
+const line of priceLines
+){
 
-  }
-
-
-  for (
-    const line
-    of priceLines
-  ) {
-
-    try {
-
-      candleSeries.removePriceLine(
-        line
-      );
-
-    } catch (_) {}
-
-  }
-
-
-  priceLines = [];
+try{
+candleSeries.removePriceLine(
+line
+);
+}catch(_){}
 
 }
 
+priceLines=[];
 
-/* =========================================================
-   ADD PRICE LINE
-   ========================================================= */
+}
+
 
 function addPriceLine(
-  price,
-  title,
-  color,
-  width = 1,
-  style = 2
-) {
+price,
+title,
+color,
+width=1,
+style=2
+){
 
-  if (
-    !Number.isFinite(
-      Number(price)
-    )
-  ) {
+if(
+!Number.isFinite(
+Number(price)
+)
+){
+return;
+}
 
-    return;
+const line=
+candleSeries.createPriceLine({
 
-  }
+price:Number(price),
+color,
+lineWidth:width,
+lineStyle:style,
+axisLabelVisible:true,
+title
 
+});
 
-  const line =
-    candleSeries.createPriceLine({
-
-      price:
-        Number(price),
-
-      color,
-
-      lineWidth:
-        width,
-
-      lineStyle:
-        style,
-
-      axisLabelVisible:
-        true,
-
-      title
-
-    });
-
-
-  priceLines.push(
-    line
-  );
+priceLines.push(line);
 
 }
 
 
 /* =========================================================
-   ZONE PRICE LINES
+   ZONES
    ========================================================= */
 
 function drawZones(
-  zones,
-  type
-) {
+zones,
+type
+){
 
-  if (
-    !Array.isArray(zones)
-  ) {
+if(!Array.isArray(zones)){
+return;
+}
 
-    return;
+const max=
+Math.min(
+zones.length,
+3
+);
 
-  }
+for(
+let i=0;
+i<max;
+i++
+){
 
+const zone=
+zones[i];
 
-  const max =
-    Math.min(
-      zones.length,
-      3
-    );
+const supply=
+type==="Supply";
 
+const color=
+supply
+?"#e84f5e"
+:"#16c995";
 
-  for (
-    let i = 0;
-    i < max;
-    i++
-  ) {
+const prefix=
+supply
+?"S"
+:"D";
 
-    const zone =
-      zones[i];
+addPriceLine(
+zone.top,
+`${prefix}${i+1} TOP`,
+color,
+1
+);
 
+addPriceLine(
+zone.bottom,
+`${prefix}${i+1} BOT`,
+color,
+1
+);
 
-    const supply =
-      type === "Supply";
-
-
-    const color =
-      supply
-        ? "#e84f5e"
-        : "#16c995";
-
-
-    const prefix =
-      supply
-        ? "S"
-        : "D";
-
-
-    addPriceLine(
-      zone.top,
-      `${prefix}${i + 1} TOP`,
-      color,
-      1
-    );
-
-
-    addPriceLine(
-      zone.bottom,
-      `${prefix}${i + 1} BOT`,
-      color,
-      1
-    );
-
-  }
+}
 
 }
 
 
 /* =========================================================
-   MAGNET PRICE LINES
+   MAGNET
    ========================================================= */
 
 function drawMagnet(
-  magnet
-) {
+magnet
+){
 
-  if (!magnet) {
+if(!magnet){
+return;
+}
 
-    return;
+if(magnet.source){
 
-  }
+addPriceLine(
 
+magnet.source.mid,
 
-  if (magnet.source) {
+magnet.direction==="UP"
+?"MAGNET BUY"
+:"MAGNET SELL",
 
-    addPriceLine(
+magnet.direction==="UP"
+?"#18d69e"
+:"#ff6370",
 
-      magnet.source.mid,
+2,
+3
 
-      magnet.direction === "UP"
-        ? "MAGNET BUY"
-        : "MAGNET SELL",
+);
 
-      magnet.direction === "UP"
-        ? "#18d69e"
-        : "#ff6370",
+}
 
-      2,
+if(magnet.target){
 
-      3
+addPriceLine(
+magnet.target.mid,
+"MAGNET TARGET",
+"#d0a85b",
+2,
+3
+);
 
-    );
-
-  }
-
-
-  if (magnet.target) {
-
-    addPriceLine(
-
-      magnet.target.mid,
-
-      "MAGNET TARGET",
-
-      "#d0a85b",
-
-      2,
-
-      3
-
-    );
-
-  }
+}
 
 }
 
 
 /* =========================================================
-   TRADE PLAN PRICE LINES
+   TRADE PLAN
    ========================================================= */
 
 function drawTradePlan(
-  signal
-) {
+signal
+){
 
-  if (!signal) {
+if(!signal){
+return;
+}
 
-    return;
+if(
+signal.entry&&
+Number.isFinite(
+Number(signal.entry.low)
+)
+){
 
-  }
+addPriceLine(
+signal.entry.low,
+"ENTRY LOW",
+"#4aa8ff",
+2,
+3
+);
 
+}
 
-  if (
-    signal.entry &&
-    Number.isFinite(
-      Number(signal.entry.low)
-    )
-  ) {
+if(
+signal.entry&&
+Number.isFinite(
+Number(signal.entry.high)
+)
+){
 
-    addPriceLine(
-      signal.entry.low,
-      "ENTRY LOW",
-      "#4aa8ff",
-      2,
-      3
-    );
+addPriceLine(
+signal.entry.high,
+"ENTRY HIGH",
+"#4aa8ff",
+2,
+3
+);
 
-  }
+}
 
+addPriceLine(
+signal.stopLoss,
+"SL",
+"#ff5968",
+2,
+3
+);
 
-  if (
-    signal.entry &&
-    Number.isFinite(
-      Number(signal.entry.high)
-    )
-  ) {
+addPriceLine(
+signal.tp1,
+"TP1",
+"#1edaa1",
+2,
+3
+);
 
-    addPriceLine(
-      signal.entry.high,
-      "ENTRY HIGH",
-      "#4aa8ff",
-      2,
-      3
-    );
+addPriceLine(
+signal.tp2,
+"TP2",
+"#1edaa1",
+2,
+3
+);
 
-  }
-
-
-  addPriceLine(
-    signal.stopLoss,
-    "SL",
-    "#ff5968",
-    2,
-    3
-  );
-
-
-  addPriceLine(
-    signal.tp1,
-    "TP1",
-    "#1edaa1",
-    2,
-    3
-  );
-
-
-  addPriceLine(
-    signal.tp2,
-    "TP2",
-    "#1edaa1",
-    2,
-    3
-  );
-
-
-  addPriceLine(
-    signal.tp3,
-    "TP3",
-    "#1edaa1",
-    2,
-    3
-  );
+addPriceLine(
+signal.tp3,
+"TP3",
+"#1edaa1",
+2,
+3
+);
 
 }
 
@@ -2478,1263 +2861,823 @@ function drawTradePlan(
    ========================================================= */
 
 function drawSignalMarker(
-  candles,
-  signal
-) {
+candles,
+signal
+){
 
-  if (!markerPlugin) {
+if(!markerPlugin){
+return;
+}
 
-    return;
+if(
+!signal||
+!candles.length
+){
 
-  }
+markerPlugin.setMarkers([]);
+return;
 
+}
 
-  if (
-    !signal ||
-    !candles.length
-  ) {
+const last=
+candles[candles.length-1];
 
-    markerPlugin.setMarkers([]);
+const buy=
+signal.direction==="BUY";
 
-    return;
+markerPlugin.setMarkers([{
 
-  }
+time:last.time,
 
+position:
+buy
+?"belowBar"
+:"aboveBar",
 
-  const last =
-    candles[
-      candles.length - 1
-    ];
+shape:
+buy
+?"arrowUp"
+:"arrowDown",
 
+color:
+buy
+?"#16d995"
+:"#ff5968",
 
-  const buy =
-    signal.direction === "BUY";
+text:
+buy
+?"BUY"
+:"SELL",
 
+size:2
 
-  markerPlugin.setMarkers([
-
-    {
-
-      time:
-        last.time,
-
-      position:
-        buy
-          ? "belowBar"
-          : "aboveBar",
-
-      shape:
-        buy
-          ? "arrowUp"
-          : "arrowDown",
-
-      color:
-        buy
-          ? "#16d995"
-          : "#ff5968",
-
-      text:
-        buy
-          ? "BUY"
-          : "SELL",
-
-      size: 2
-
-    }
-
-  ]);
+}]);
 
 }
 
 
 /* =========================================================
-   SVG HELPERS
+   SVG
    ========================================================= */
 
 function svgEl(
-  tag,
-  attrs = {}
-) {
+tag,
+attrs={}
+){
 
-  const NS =
-    "http://www.w3.org/2000/svg";
+const NS=
+"http://www.w3.org/2000/svg";
 
+const el=
+document.createElementNS(
+NS,
+tag
+);
 
-  const el =
-    document.createElementNS(
-      NS,
-      tag
-    );
+Object.keys(attrs)
+.forEach(
+key=>
+el.setAttribute(
+key,
+attrs[key]
+)
+);
 
-
-  Object.keys(attrs)
-    .forEach(
-      key =>
-        el.setAttribute(
-          key,
-          attrs[key]
-        )
-    );
-
-
-  return el;
+return el;
 
 }
 
-
-/* =========================================================
-   ADD SVG LABEL
-   ========================================================= */
 
 function addSvgLabel(
-  svg,
-  x,
-  y,
-  text,
-  bgClass,
-  width = 94
-) {
+svg,
+x,
+y,
+text,
+bgClass,
+width=110
+){
 
-  const height = 21;
+const group=
+svgEl(
+"g",
+{
+transform:
+`translate(${x},${y})`
+}
+);
 
+const rect=
+svgEl(
+"rect",
+{
+x:0,
+y:0,
+width,
+height:21,
+rx:5,
+class:bgClass
+}
+);
 
-  const group =
-    svgEl(
-      "g",
-      {
-        transform:
-          `translate(${x},${y})`
-      }
-    );
+const label=
+svgEl(
+"text",
+{
+x:width/2,
+y:14,
+"text-anchor":"middle",
+class:"trade-label-text"
+}
+);
 
+label.textContent=text;
 
-  const rect =
-    svgEl(
-      "rect",
-      {
+group.appendChild(rect);
+group.appendChild(label);
 
-        x: 0,
-
-        y: 0,
-
-        width,
-
-        height,
-
-        rx: 5,
-
-        class: bgClass
-
-      }
-    );
-
-
-  const label =
-    svgEl(
-      "text",
-      {
-
-        x:
-          width / 2,
-
-        y:
-          14,
-
-        "text-anchor":
-          "middle",
-
-        class:
-          "trade-label-text"
-
-      }
-    );
-
-
-  label.textContent =
-    text;
-
-
-  group.appendChild(
-    rect
-  );
-
-
-  group.appendChild(
-    label
-  );
-
-
-  svg.appendChild(
-    group
-  );
+svg.appendChild(group);
 
 }
 
 
 /* =========================================================
-   DRAW ZONE BOX
+   ZONE SVG
    ========================================================= */
 
 function drawZoneBoxSvg(
-  svg,
-  zone,
-  type,
-  index,
-  width,
-  height
-) {
+svg,
+zone,
+type,
+index,
+width,
+height
+){
+
+if(!zone){
+return;
+}
+
+const topPrice=
+Number(zone.top);
+
+const bottomPrice=
+Number(zone.bottom);
+
+if(
+!Number.isFinite(topPrice)||
+!Number.isFinite(bottomPrice)
+){
+return;
+}
+
+const yTop=
+candleSeries.priceToCoordinate(
+topPrice
+);
+
+const yBottom=
+candleSeries.priceToCoordinate(
+bottomPrice
+);
+
+if(
+yTop===null||
+yBottom===null||
+yTop===undefined||
+yBottom===undefined
+){
+return;
+}
+
+const y=
+Math.min(
+yTop,
+yBottom
+);
+
+const h=
+Math.max(
+2,
+Math.abs(
+yBottom-yTop
+)
+);
+
+if(
+y>height||
+y+h<0
+){
+return;
+}
+
+const supply=
+type==="Supply";
+
+const score=
+Number(zone.score);
+
+const strong=
+Number.isFinite(score)&&
+score>=7;
+
+const rect=
+svgEl(
+"rect",
+{
+
+x:0,
+y,
+width,
+height:h,
+
+class:
+supply
+?
+(
+strong
+?"zone-supply-strong"
+:"zone-supply"
+)
+:
+(
+strong
+?"zone-demand-strong"
+:"zone-demand"
+)
+
+}
+);
 
-  if (!zone) {
+svg.appendChild(rect);
 
-    return;
+const name=
+`${supply?"S":"D"}${index+1}`;
 
-  }
+const scoreText=
+Number.isFinite(score)
+?score.toFixed(1)
+:"—";
 
+const retests=
+zone.retests??
+zone.touches??
+0;
 
-  const topPrice =
-    Number(zone.top);
+addSvgLabel(
 
+svg,
 
-  const bottomPrice =
-    Number(zone.bottom);
+9,
 
+Math.max(
+4,
+Math.min(
+height-25,
+y+4
+)
+),
 
-  if (
-    !Number.isFinite(topPrice) ||
-    !Number.isFinite(bottomPrice)
-  ) {
+`${name} ★${scoreText} R${retests}`,
 
-    return;
+supply
+?"zone-label-bg-supply"
+:"zone-label-bg-demand",
 
-  }
+110
 
-
-  if (
-    !candleSeries.priceToCoordinate
-  ) {
-
-    return;
-
-  }
-
-
-  let yTop =
-    candleSeries.priceToCoordinate(
-      topPrice
-    );
-
-
-  let yBottom =
-    candleSeries.priceToCoordinate(
-      bottomPrice
-    );
-
-
-  if (
-    yTop === null ||
-    yBottom === null ||
-    yTop === undefined ||
-    yBottom === undefined
-  ) {
-
-    return;
-
-  }
-
-
-  const y =
-    Math.min(
-      yTop,
-      yBottom
-    );
-
-
-  const h =
-    Math.max(
-      2,
-      Math.abs(
-        yBottom - yTop
-      )
-    );
-
-
-  /*
-   * Keep the zone inside the visible chart.
-   */
-
-  if (
-    y > height ||
-    y + h < 0
-  ) {
-
-    return;
-
-  }
-
-
-  const supply =
-    type === "Supply";
-
-
-  const score =
-    Number(zone.score);
-
-
-  const strong =
-    Number.isFinite(score) &&
-    score >= 7;
-
-
-  const rect =
-    svgEl(
-      "rect",
-      {
-
-        x: 0,
-
-        y,
-
-        width,
-
-        height: h,
-
-        class:
-          supply
-
-            ? (
-                strong
-                  ? "zone-supply-strong"
-                  : "zone-supply"
-              )
-
-            : (
-                strong
-                  ? "zone-demand-strong"
-                  : "zone-demand"
-              )
-
-      }
-    );
-
-
-  svg.appendChild(
-    rect
-  );
-
-
-  const name =
-    `${supply ? "S" : "D"}${index + 1}`;
-
-
-  const scoreText =
-    Number.isFinite(score)
-      ? score.toFixed(1)
-      : "—";
-
-
-  const retests =
-    zone.retests ??
-    zone.touches ??
-    0;
-
-
-  const labelText =
-    `${name}  ★${scoreText}  R${retests}`;
-
-
-  addSvgLabel(
-
-    svg,
-
-    9,
-
-    Math.max(
-      4,
-      Math.min(
-        height - 25,
-        y + 4
-      )
-    ),
-
-    labelText,
-
-    supply
-      ? "zone-label-bg-supply"
-      : "zone-label-bg-demand",
-
-    110
-
-  );
+);
 
 }
 
 
 /* =========================================================
-   DRAW TRADE LEVEL
+   TRADE LEVEL SVG
    ========================================================= */
 
 function drawTradeLevel(
-  svg,
-  price,
-  label,
-  lineClass,
-  labelClass,
-  width,
-  height
-) {
+svg,
+price,
+label,
+lineClass,
+labelClass,
+width,
+height
+){
 
-  const n =
-    Number(price);
+const n=
+Number(price);
 
+if(!Number.isFinite(n)){
+return;
+}
 
-  if (
-    !Number.isFinite(n)
-  ) {
+const y=
+candleSeries.priceToCoordinate(n);
 
-    return;
+if(
+y===null||
+y===undefined||
+!Number.isFinite(y)
+){
+return;
+}
 
-  }
+if(
+y<-5||
+y>height+5
+){
+return;
+}
 
+svg.appendChild(
+svgEl(
+"line",
+{
+x1:0,
+y1:y,
+x2:width,
+y2:y,
+class:lineClass
+}
+)
+);
 
-  if (
-    !candleSeries.priceToCoordinate
-  ) {
+const group=
+svgEl(
+"g",
+{
+transform:
+`translate(${Math.max(8,width-150)},${Math.max(2,y-11)})`
+}
+);
 
-    return;
+const rect=
+svgEl(
+"rect",
+{
+x:0,
+y:0,
+width:144,
+height:22,
+rx:5,
+class:labelClass
+}
+);
 
-  }
+const text=
+svgEl(
+"text",
+{
+x:72,
+y:15,
+"text-anchor":"middle",
+class:"trade-label-text"
+}
+);
 
+text.textContent=
+`${label} ${formatPrice(n)}`;
 
-  const y =
-    candleSeries.priceToCoordinate(
-      n
-    );
+group.appendChild(rect);
+group.appendChild(text);
 
-
-  if (
-    y === null ||
-    y === undefined ||
-    !Number.isFinite(y)
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    y < -5 ||
-    y > height + 5
-  ) {
-
-    return;
-
-  }
-
-
-  const line =
-    svgEl(
-      "line",
-      {
-
-        x1: 0,
-
-        y1: y,
-
-        x2: width,
-
-        y2: y,
-
-        class:
-          lineClass
-
-      }
-    );
-
-
-  svg.appendChild(
-    line
-  );
-
-
-  let bg =
-    "#16354a";
-
-
-  if (
-    labelClass ===
-    "trade-label-sl"
-  ) {
-
-    bg =
-      "trade-label-sl";
-
-  }
-
-
-  const group =
-    svgEl(
-      "g",
-      {
-        transform:
-          `translate(${Math.max(8, width - 94)},${Math.max(2, y - 11)})`
-      }
-    );
-
-
-  const rect =
-    svgEl(
-      "rect",
-      {
-
-        x: 0,
-
-        y: 0,
-
-        width: 88,
-
-        height: 22,
-
-        rx: 5,
-
-        class:
-          labelClass
-
-      }
-    );
-
-
-  const text =
-    svgEl(
-      "text",
-      {
-
-        x: 44,
-
-        y: 15,
-
-        "text-anchor":
-          "middle",
-
-        class:
-          "trade-label-text"
-
-      }
-    );
-
-
-  text.textContent =
-    `${label} ${formatPrice(n)}`;
-
-
-  group.appendChild(
-    rect
-  );
-
-
-  group.appendChild(
-    text
-  );
-
-
-  svg.appendChild(
-    group
-  );
+svg.appendChild(group);
 
 }
 
 
 /* =========================================================
-   DRAW MAGNET CONNECTOR
+   MAGNET SVG
    ========================================================= */
 
 function drawMagnetSvg(
-  svg,
-  magnet,
-  width,
-  height
-) {
-
-  if (!magnet) {
-
-    return;
-
-  }
-
-
-  const source =
-    Number(
-      magnet.source?.mid
-    );
-
-
-  const target =
-    Number(
-      magnet.target?.mid
-    );
-
-
-  if (
-    !Number.isFinite(source) ||
-    !Number.isFinite(target)
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    !candleSeries.priceToCoordinate
-  ) {
-
-    return;
-
-  }
-
-
-  const y1 =
-    candleSeries.priceToCoordinate(
-      source
-    );
-
-
-  const y2 =
-    candleSeries.priceToCoordinate(
-      target
-    );
-
-
-  if (
-    y1 === null ||
-    y2 === null ||
-    !Number.isFinite(y1) ||
-    !Number.isFinite(y2)
-  ) {
-
-    return;
-
-  }
-
-
-  const x1 =
-    Math.max(
-      45,
-      width * 0.20
-    );
-
-
-  const x2 =
-    Math.max(
-      x1 + 80,
-      width * 0.76
-    );
-
-
-  const up =
-    magnet.direction === "UP";
-
-
-  const line =
-    svgEl(
-      "line",
-      {
-
-        x1,
-
-        y1,
-
-        x2,
-
-        y2,
-
-        class:
-          up
-            ? "magnet-line-up"
-            : "magnet-line-down"
-
-      }
-    );
-
-
-  svg.appendChild(
-    line
-  );
-
-
-  /*
-   * Arrow head
-   */
-
-  const angle =
-    Math.atan2(
-      y2 - y1,
-      x2 - x1
-    );
-
-
-  const size = 8;
-
-
-  const p1 = [
-
-    x2,
-
-    y2
-
-  ];
-
-
-  const p2 = [
-
-    x2 -
-      size *
-      Math.cos(
-        angle - Math.PI / 6
-      ),
-
-    y2 -
-      size *
-      Math.sin(
-        angle - Math.PI / 6
-      )
-
-  ];
-
-
-  const p3 = [
-
-    x2 -
-      size *
-      Math.cos(
-        angle + Math.PI / 6
-      ),
-
-    y2 -
-      size *
-      Math.sin(
-        angle + Math.PI / 6
-      )
-
-  ];
-
-
-  const arrow =
-    svgEl(
-      "polygon",
-      {
-
-        points:
-          `${p1[0]},${p1[1]} ` +
-          `${p2[0]},${p2[1]} ` +
-          `${p3[0]},${p3[1]}`,
-
-        fill:
-          up
-            ? "#18d69e"
-            : "#ff6370"
-
-      }
-    );
-
-
-  svg.appendChild(
-    arrow
-  );
-
-
-  const sourceCircle =
-    svgEl(
-      "circle",
-      {
-
-        cx: x1,
-
-        cy: y1,
-
-        r: 5,
-
-        class:
-          "magnet-source"
-
-      }
-    );
-
-
-  const targetCircle =
-    svgEl(
-      "circle",
-      {
-
-        cx: x2,
-
-        cy: y2,
-
-        r: 5,
-
-        class:
-          "magnet-target"
-
-      }
-    );
-
-
-  svg.appendChild(
-    sourceCircle
-  );
-
-
-  svg.appendChild(
-    targetCircle
-  );
-
-
-  const pull =
-    magnet.pullScore ??
-    "—";
-
-
-  const probability =
-    magnet.probability ??
-    "—";
-
-
-  const text =
-    `${up ? "↑" : "↓"} MAGNET ${pull} • ${probability}%`;
-
-
-  addSvgLabel(
-
-    svg,
-
-    Math.max(
-      10,
-      Math.min(
-        width - 145,
-        (x1 + x2) / 2 - 62
-      )
-    ),
-
-    Math.max(
-      5,
-      Math.min(
-        height - 25,
-        (y1 + y2) / 2 - 11
-      )
-    ),
-
-    text,
-
-    up
-      ? "zone-label-bg-demand"
-      : "zone-label-bg-supply",
-
-    130
-
-  );
+svg,
+magnet,
+width,
+height
+){
+
+if(!magnet){
+return;
+}
+
+const source=
+Number(
+magnet.source?.mid
+);
+
+const target=
+Number(
+magnet.target?.mid
+);
+
+if(
+!Number.isFinite(source)||
+!Number.isFinite(target)
+){
+return;
+}
+
+const y1=
+candleSeries.priceToCoordinate(
+source
+);
+
+const y2=
+candleSeries.priceToCoordinate(
+target
+);
+
+if(
+y1===null||
+y2===null||
+!Number.isFinite(y1)||
+!Number.isFinite(y2)
+){
+return;
+}
+
+const x1=
+Math.max(
+45,
+width*.20
+);
+
+const x2=
+Math.max(
+x1+80,
+width*.76
+);
+
+const up=
+magnet.direction==="UP";
+
+svg.appendChild(
+svgEl(
+"line",
+{
+
+x1,
+y1,
+x2,
+y2,
+
+class:
+up
+?"magnet-line-up"
+:"magnet-line-down"
+
+}
+)
+);
+
+const angle=
+Math.atan2(
+y2-y1,
+x2-x1
+);
+
+const size=8;
+
+const p1=[x2,y2];
+
+const p2=[
+x2-size*Math.cos(
+angle-Math.PI/6
+),
+y2-size*Math.sin(
+angle-Math.PI/6
+)
+];
+
+const p3=[
+x2-size*Math.cos(
+angle+Math.PI/6
+),
+y2-size*Math.sin(
+angle+Math.PI/6
+)
+];
+
+svg.appendChild(
+svgEl(
+"polygon",
+{
+
+points:
+`${p1[0]},${p1[1]} `+
+`${p2[0]},${p2[1]} `+
+`${p3[0]},${p3[1]}`,
+
+fill:
+up
+?"#18d69e"
+:"#ff6370"
+
+}
+)
+);
+
+svg.appendChild(
+svgEl(
+"circle",
+{
+cx:x1,
+cy:y1,
+r:5,
+class:"magnet-source"
+}
+)
+);
+
+svg.appendChild(
+svgEl(
+"circle",
+{
+cx:x2,
+cy:y2,
+r:5,
+class:"magnet-target"
+}
+)
+);
+
+addSvgLabel(
+
+svg,
+
+Math.max(
+10,
+Math.min(
+width-145,
+(x1+x2)/2-62
+)
+),
+
+Math.max(
+5,
+Math.min(
+height-25,
+(y1+y2)/2-11
+)
+),
+
+`${up?"↑":"↓"} MAGNET ${magnet.pullScore??"—"} • ${magnet.probability??"—"}%`,
+
+up
+?"zone-label-bg-demand"
+:"zone-label-bg-supply",
+
+140
+
+);
 
 }
 
 
 /* =========================================================
-   DRAW TRADE PLAN ON SVG
+   TRADE PLAN SVG
    ========================================================= */
 
 function drawTradePlanSvg(
-  svg,
-  signal,
-  width,
-  height
-) {
-
-  if (!signal) {
-
-    return;
-
-  }
-
-
-  /*
-   * Entry range:
-   * draw middle + range boundaries.
-   */
-
-  const entryLow =
-    Number(
-      signal.entry?.low
-    );
-
-
-  const entryHigh =
-    Number(
-      signal.entry?.high
-    );
-
-
-  if (
-    Number.isFinite(entryLow) &&
-    Number.isFinite(entryHigh)
-  ) {
-
-    const yLow =
-      candleSeries.priceToCoordinate(
-        entryLow
-      );
-
-
-    const yHigh =
-      candleSeries.priceToCoordinate(
-        entryHigh
-      );
-
-
-    if (
-      Number.isFinite(yLow) &&
-      Number.isFinite(yHigh)
-    ) {
-
-      const y =
-        Math.min(
-          yLow,
-          yHigh
-        );
-
-
-      const h =
-        Math.max(
-          2,
-          Math.abs(
-            yLow - yHigh
-          )
-        );
-
-
-      const entryBox =
-        svgEl(
-          "rect",
-          {
-
-            x: 0,
-
-            y,
-
-            width,
-
-            height: h,
-
-            fill:
-              "rgba(74,168,255,.10)",
-
-            stroke:
-              "rgba(74,168,255,.55)",
-
-            "stroke-dasharray":
-              "5 4"
-
-          }
-        );
-
-
-      svg.appendChild(
-        entryBox
-      );
-
-    }
-
-
-    drawTradeLevel(
-
-      svg,
-
-      entryLow,
-
-      "ENTRY",
-
-      "trade-entry-line",
-
-      "trade-label-entry",
-
-      width,
-
-      height
-
-    );
-
-  }
-
-
-  /*
-   * SL
-   */
-
-  drawTradeLevel(
-
-    svg,
-
-    signal.stopLoss,
-
-    "SL",
-
-    "trade-sl-line",
-
-    "trade-label-sl",
-
-    width,
-
-    height
-
-  );
-
-
-  /*
-   * TP1
-   */
-
-  drawTradeLevel(
-
-    svg,
-
-    signal.tp1,
-
-    "TP1",
-
-    "trade-tp-line",
-
-    "trade-label-tp",
-
-    width,
-
-    height
-
-  );
-
-
-  /*
-   * TP2
-   */
-
-  drawTradeLevel(
-
-    svg,
-
-    signal.tp2,
-
-    "TP2",
-
-    "trade-tp-line",
-
-    "trade-label-tp",
-
-    width,
-
-    height
-
-  );
-
-
-  /*
-   * TP3
-   */
-
-  drawTradeLevel(
-
-    svg,
-
-    signal.tp3,
-
-    "TP3",
-
-    "trade-tp-line",
-
-    "trade-label-tp",
-
-    width,
-
-    height
-
-  );
+svg,
+signal,
+width,
+height
+){
+
+if(!signal){
+return;
+}
+
+const entryLow=
+Number(
+signal.entry?.low
+);
+
+const entryHigh=
+Number(
+signal.entry?.high
+);
+
+if(
+Number.isFinite(entryLow) &&
+Number.isFinite(entryHigh)
+){
+
+const yLow=
+candleSeries.priceToCoordinate(
+entryLow
+);
+
+const yHigh=
+candleSeries.priceToCoordinate(
+entryHigh
+);
+
+if(
+Number.isFinite(yLow)&&
+Number.isFinite(yHigh)
+){
+
+svg.appendChild(
+svgEl(
+"rect",
+{
+
+x:0,
+
+y:Math.min(
+yLow,
+yHigh
+),
+
+width,
+
+height:Math.max(
+2,
+Math.abs(
+yLow-yHigh
+)
+),
+
+fill:"rgba(74,168,255,.10)",
+
+stroke:"rgba(74,168,255,.55)",
+
+"stroke-dasharray":"5 4"
+
+}
+)
+);
+
+}
+
+drawTradeLevel(
+svg,
+entryLow,
+"ENTRY",
+"trade-entry-line",
+"trade-label-entry",
+width,
+height
+);
+
+}
+
+drawTradeLevel(
+svg,
+signal.stopLoss,
+"SL",
+"trade-sl-line",
+"trade-label-sl",
+width,
+height
+);
+
+drawTradeLevel(
+svg,
+signal.tp1,
+"TP1",
+"trade-tp-line",
+"trade-label-tp",
+width,
+height
+);
+
+drawTradeLevel(
+svg,
+signal.tp2,
+"TP2",
+"trade-tp-line",
+"trade-label-tp",
+width,
+height
+);
+
+drawTradeLevel(
+svg,
+signal.tp3,
+"TP3",
+"trade-tp-line",
+"trade-label-tp",
+width,
+height
+);
 
 }
 
 
 /* =========================================================
-   DRAW COMPLETE CHART OVERLAY
+   COMPLETE OVERLAY
    ========================================================= */
 
-function drawChartOverlay() {
-
-  const svg =
-    $("chartOverlay");
-
-
-  if (
-    !svg ||
-    !chart ||
-    !candleSeries
-  ) {
-
-    return;
-
-  }
-
-
-  const wrap =
-    document.querySelector(
-      ".chart-wrap"
-    );
-
-
-  if (!wrap) {
-
-    return;
-
-  }
-
-
-  const width =
-    wrap.clientWidth;
-
-
-  const height =
-    wrap.clientHeight;
-
-
-  if (
-    width <= 0 ||
-    height <= 0
-  ) {
-
-    return;
-
-  }
-
-
-  svg.setAttribute(
-    "viewBox",
-    `0 0 ${width} ${height}`
-  );
-
-
-  svg.innerHTML = "";
-
-
-  const data =
-    currentTimeframe === "15min"
-      ? market15
-      : market5;
-
-
-  const engine =
-    data?.engine || {};
-
-
-  /*
-   * Draw all visible zones.
-   */
-
-  const supply =
-    Array.isArray(engine.supply)
-      ? engine.supply
-      : [];
-
-
-  const demand =
-    Array.isArray(engine.demand)
-      ? engine.demand
-      : [];
-
-
-  supply
-    .slice(0, 3)
-    .forEach(
-      (zone, index) => {
-
-        drawZoneBoxSvg(
-
-          svg,
-
-          zone,
-
-          "Supply",
-
-          index,
-
-          width,
-
-          height
-
-        );
-
-      }
-    );
-
-
-  demand
-    .slice(0, 3)
-    .forEach(
-      (zone, index) => {
-
-        drawZoneBoxSvg(
-
-          svg,
-
-          zone,
-
-          "Demand",
-
-          index,
-
-          width,
-
-          height
-
-        );
-
-      }
-    );
-
-
-  /*
-   * Magnet.
-   */
-
-  const magnet =
-    Array.isArray(
-      engine.magnets
-    )
-      ? engine.magnets[0]
-      : null;
-
-
-  drawMagnetSvg(
-
-    svg,
-
-    magnet,
-
-    width,
-
-    height
-
-  );
-
-
-  /*
-   * Only draw trade plan when this
-   * timeframe has an actual signal.
-   */
-
-  drawTradePlanSvg(
-
-    svg,
-
-    engine.signal,
-
-    width,
-
-    height
-
-  );
+function drawChartOverlay(){
+
+const svg=
+$("chartOverlay");
+
+if(
+!svg||
+!chart||
+!candleSeries
+){
+return;
+}
+
+const wrap=
+document.querySelector(
+".chart-wrap"
+);
+
+if(!wrap){
+return;
+}
+
+const width=
+wrap.clientWidth;
+
+const height=
+wrap.clientHeight;
+
+if(
+width<=0||
+height<=0
+){
+return;
+}
+
+svg.setAttribute(
+"viewBox",
+`0 0 ${width} ${height}`
+);
+
+svg.innerHTML="";
+
+const data=
+currentTimeframe==="15min"
+?market15
+:market5;
+
+const engine=
+data?.engine||{};
+
+const supply=
+Array.isArray(engine.supply)
+?engine.supply
+:[];
+
+const demand=
+Array.isArray(engine.demand)
+?engine.demand
+:[];
+
+supply
+.slice(0,3)
+.forEach(
+(zone,index)=>
+drawZoneBoxSvg(
+svg,
+zone,
+"Supply",
+index,
+width,
+height
+)
+);
+
+demand
+.slice(0,3)
+.forEach(
+(zone,index)=>
+drawZoneBoxSvg(
+svg,
+zone,
+"Demand",
+index,
+width,
+height
+)
+);
+
+const magnet=
+Array.isArray(engine.magnets)
+?engine.magnets[0]
+:null;
+
+drawMagnetSvg(
+svg,
+magnet,
+width,
+height
+);
+
+drawTradePlanSvg(
+svg,
+engine.signal,
+width,
+height
+);
 
 }
 
@@ -3744,131 +3687,96 @@ function drawChartOverlay() {
    ========================================================= */
 
 function renderChart(
-  data,
-  timeframe
-) {
+data,
+timeframe
+){
 
-  if (
-    !chart ||
-    !candleSeries
-  ) {
+if(
+!chart||
+!candleSeries
+){
+return;
+}
 
-    return;
+const candles=
+normalizeCandles(
+data?.candles
+);
 
-  }
+if(!candles.length){
 
+showChartError(
+"No valid candle data received."
+);
 
-  const candles =
-    normalizeCandles(
-      data?.candles
-    );
+return;
 
+}
 
-  if (!candles.length) {
+hideChartError();
 
-    showChartError(
-      "No valid candle data received."
-    );
+candleSeries.setData(
+candles
+);
 
-    return;
+clearPriceLines();
 
-  }
+const engine=
+data.engine||{};
 
+drawZones(
+engine.supply,
+"Supply"
+);
 
-  hideChartError();
+drawZones(
+engine.demand,
+"Demand"
+);
 
+const magnet=
+Array.isArray(engine.magnets)
+?engine.magnets[0]
+:null;
 
-  candleSeries.setData(
-    candles
-  );
+drawMagnet(
+magnet
+);
 
+drawTradePlan(
+engine.signal
+);
 
-  clearPriceLines();
+drawSignalMarker(
+candles,
+engine.signal
+);
 
+chart.timeScale()
+.fitContent();
 
-  const engine =
-    data.engine || {};
+const latest=
+candles[
+candles.length-1
+];
 
+$("lastPrice").textContent=
+formatPrice(
+latest.close
+);
 
-  /*
-   * Keep price lines as a backup reference.
-   */
+$("chartSubtitle").textContent=
+timeframe==="15min"
+?"15M STRUCTURE • Strong SD Magnet"
+:"5M ENTRY • Strong SD Magnet";
 
-  drawZones(
-    engine.supply,
-    "Supply"
-  );
-
-
-  drawZones(
-    engine.demand,
-    "Demand"
-  );
-
-
-  const magnet =
-    Array.isArray(
-      engine.magnets
-    )
-      ? engine.magnets[0]
-      : null;
-
-
-  drawMagnet(
-    magnet
-  );
-
-
-  drawTradePlan(
-    engine.signal
-  );
-
-
-  drawSignalMarker(
-    candles,
-    engine.signal
-  );
-
-
-  chart.timeScale()
-    .fitContent();
-
-
-  const latest =
-    candles[
-      candles.length - 1
-    ];
-
-
-  $("lastPrice").textContent =
-    formatPrice(
-      latest.close
-    );
-
-
-  $("chartSubtitle").textContent =
-
-    timeframe === "15min"
-
-      ? "15M STRUCTURE • Strong SD Magnet"
-
-      : "5M ENTRY • Strong SD Magnet";
-
-
-  /*
-   * SVG needs the chart to finish its
-   * internal coordinate calculation.
-   */
-
-  requestAnimationFrame(
-    () => {
-
-      requestAnimationFrame(
-        drawChartOverlay
-      );
-
-    }
-  );
+requestAnimationFrame(
+()=>{
+requestAnimationFrame(
+drawChartOverlay
+);
+}
+);
 
 }
 
@@ -3878,87 +3786,69 @@ function renderChart(
    ========================================================= */
 
 function formatPrice(
-  value
-) {
+value
+){
 
-  if (
-    !Number.isFinite(
-      Number(value)
-    )
-  ) {
+if(
+!Number.isFinite(
+Number(value)
+)
+){
+return"—";
+}
 
-    return "—";
+const n=
+Number(value);
 
-  }
+if(Math.abs(n)>=100){
+return n.toFixed(2);
+}
 
+if(Math.abs(n)>=1){
+return n.toFixed(4);
+}
 
-  const n =
-    Number(value);
-
-
-  if (
-    Math.abs(n) >= 100
-  ) {
-
-    return n.toFixed(2);
-
-  }
-
-
-  if (
-    Math.abs(n) >= 1
-  ) {
-
-    return n.toFixed(4);
-
-  }
-
-
-  return n.toFixed(6);
+return n.toFixed(6);
 
 }
 
 
 /* =========================================================
-   FETCH MARKET
+   FETCH
    ========================================================= */
 
 async function fetchMarket(
-  symbol,
-  interval
-) {
+symbol,
+interval
+){
 
-  const url =
-    `${API}?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}&outputsize=200`;
+const url=
+`${API}?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}&outputsize=200`;
 
+const response=
+await fetch(
+url,
+{
+cache:"no-store"
+}
+);
 
-  const response =
-    await fetch(
-      url,
-      {
-        cache: "no-store"
-      }
-    );
+const data=
+await response.json();
 
+if(
+!response.ok||
+!data.success
+){
 
-  const data =
-    await response.json();
+throw new Error(
+data.error||
+"Market API error"
+);
 
+}
 
-  if (
-    !response.ok ||
-    !data.success
-  ) {
-
-    throw new Error(
-      data.error ||
-      "Market API error"
-    );
-
-  }
-
-
-  return data;
+return data;
 
 }
 
@@ -3968,95 +3858,93 @@ async function fetchMarket(
    ========================================================= */
 
 async function loadMarket(
-  options = {}
-) {
+options={}
+){
 
-  if (!options.silent) {
+if(!options.silent){
 
-    showChartLoading();
+showChartLoading();
 
-  }
+}
 
+hideChartError();
 
-  hideChartError();
+try{
 
+const[
+data15,
+data5
+]=
+await Promise.all([
 
-  try {
+fetchMarket(
+currentSymbol,
+"15min"
+),
 
-    const [
-      data15,
-      data5
-    ] =
-      await Promise.all([
+fetchMarket(
+currentSymbol,
+"5min"
+)
 
-        fetchMarket(
-          currentSymbol,
-          "15min"
-        ),
+]);
 
-        fetchMarket(
-          currentSymbol,
-          "5min"
-        )
+market15=data15;
+market5=data5;
 
-      ]);
+setConnection(true);
 
+const current=
+currentTimeframe==="15min"
+?market15
+:market5;
 
-    market15 =
-      data15;
+renderChart(
+current,
+currentTimeframe
+);
 
+updateAssetHeader(
+current
+);
 
-    market5 =
-      data5;
+updateSignalPanel();
 
+updateDiagnostics();
 
-    setConnection(true);
-
-
-    const current =
-      currentTimeframe === "15min"
-        ? market15
-        : market5;
-
-
-    renderChart(
-      current,
-      currentTimeframe
-    );
-
-
-    updateAssetHeader(
-      current
-    );
+updateEngineTime();
 
 
-    updateSignalPanel();
+/*
+ * First save newly confirmed signal.
+ */
+
+recordConfirmedSignal();
 
 
-    updateDiagnostics();
+/*
+ * Then evaluate older signals.
+ */
+
+evaluateHistory();
 
 
-    updateEngineTime();
+}catch(error){
 
+console.error(error);
 
-  } catch (error) {
+setConnection(false);
 
-    console.error(error);
+showChartError(
+error.message||
+"Unable to load market data."
+);
 
+}finally{
 
-    setConnection(false);
+hideChartLoading();
 
-
-    showChartError(
-      error.message ||
-      "Unable to load market data."
-    );
-
-  } finally {
-
-    hideChartLoading();
-
-  }
+}
 
 }
 
@@ -4066,28 +3954,24 @@ async function loadMarket(
    ========================================================= */
 
 function updateAssetHeader(
-  data
-) {
+data
+){
 
-  $("assetSymbol").textContent =
-    currentSymbol;
+$("assetSymbol").textContent=
+currentSymbol;
 
+$("assetName").textContent=
+currentName||
+currentSymbol;
 
-  $("assetName").textContent =
-    currentName ||
-    currentSymbol;
+if(data?.engine?.price){
 
+$("lastPrice").textContent=
+formatPrice(
+data.engine.price
+);
 
-  if (
-    data?.engine?.price
-  ) {
-
-    $("lastPrice").textContent =
-      formatPrice(
-        data.engine.price
-      );
-
-  }
+}
 
 }
 
@@ -4096,39 +3980,34 @@ function updateAssetHeader(
    FINAL SIGNAL
    ========================================================= */
 
-function getFinalSignal() {
+function getFinalSignal(){
 
-  const e15 =
-    market15?.engine || {};
+const e15=
+market15?.engine||{};
 
+const e5=
+market5?.engine||{};
 
-  const e5 =
-    market5?.engine || {};
+const s15=
+e15.signal;
 
+const s5=
+e5.signal;
 
-  const s15 =
-    e15.signal;
+if(
+s15&&
+s5&&
+s15.direction&&
+s5.direction&&
+s15.direction===
+s5.direction
+){
 
+return s15;
 
-  const s5 =
-    e5.signal;
+}
 
-
-  if (
-    s15 &&
-    s5 &&
-    s15.direction &&
-    s5.direction &&
-    s15.direction ===
-    s5.direction
-  ) {
-
-    return s15;
-
-  }
-
-
-  return null;
+return null;
 
 }
 
@@ -4137,222 +4016,148 @@ function getFinalSignal() {
    SIGNAL PANEL
    ========================================================= */
 
-function updateSignalPanel() {
-
-  const e15 =
-    market15?.engine || {};
-
-
-  const e5 =
-    market5?.engine || {};
-
-
-  const s15 =
-    e15.signal;
-
-
-  const s5 =
-    e5.signal;
-
-
-  const finalSignal =
-    getFinalSignal();
-
-
-  const status =
-    finalSignal
-      ? finalSignal.direction
-      : "WAIT";
-
-
-  const signalValue =
-    $("signalValue");
-
-
-  signalValue.textContent =
-    status;
-
-
-  signalValue.className =
-    "signal-value " +
-
-    (
-      status === "BUY"
-
-        ? "buy"
-
-        : status === "SELL"
-
-          ? "sell"
-
-          : "wait"
-
-    );
-
-
-  if (finalSignal) {
-
-    $("signalProbability").textContent =
-      `CONFIRMED 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
-
-  } else {
-
-    $("signalProbability").textContent =
-      "No confirmed 15M + 5M alignment";
-
-  }
-
-
-  const primary =
-    currentTimeframe === "15min"
-      ? e15
-      : e5;
-
-
-  $("metricPrice").textContent =
-    formatPrice(
-      primary.price
-    );
-
-
-  $("metricAtr").textContent =
-    formatPrice(
-      primary.atr
-    );
-
-
-  $("metric15").textContent =
-    e15.status ||
-    "WAIT";
-
-
-  $("metric5").textContent =
-    e5.status ||
-    "WAIT";
-
-
-  $("metricScore").textContent =
-
-    primary.signal
-
-      ? (
-          primary.signal.sourceScore ??
-          primary.signal.confidence ??
-          "—"
-        )
-
-      : "—";
-
-
-  $("metricRetests").textContent =
-
-    primary.signal
-
-      ? (
-          primary.signal.sourceTouches ??
-          primary.signal.retests ??
-          "—"
-        )
-
-      : "—";
-
-
-  /*
-   * Trade plan only appears when both
-   * timeframes confirm the same direction.
-   */
-
-  if (finalSignal) {
-
-    $("tradeEntry").textContent =
-
-      finalSignal.entry
-
-        ? `${formatPrice(finalSignal.entry.low)} – ${formatPrice(finalSignal.entry.high)}`
-
-        : "—";
-
-
-    $("tradeSL").textContent =
-      formatPrice(
-        finalSignal.stopLoss
-      );
-
-
-    $("tradeTP1").textContent =
-      formatPrice(
-        finalSignal.tp1
-      );
-
-
-    $("tradeTP2").textContent =
-      formatPrice(
-        finalSignal.tp2
-      );
-
-
-    $("tradeTP3").textContent =
-      formatPrice(
-        finalSignal.tp3
-      );
-
-  } else {
-
-    $("tradeEntry").textContent =
-      "—";
-
-    $("tradeSL").textContent =
-      "—";
-
-    $("tradeTP1").textContent =
-      "—";
-
-    $("tradeTP2").textContent =
-      "—";
-
-    $("tradeTP3").textContent =
-      "—";
-
-  }
-
-
-  renderZone(
-
-    $("supplyZone"),
-
-    e15.supply?.[0],
-
-    "Supply"
-
-  );
-
-
-  renderZone(
-
-    $("demandZone"),
-
-    e15.demand?.[0],
-
-    "Demand"
-
-  );
-
-
-  renderMagnet(
-
-    e15.magnets?.[0]
-
-  );
-
-
-  /*
-   * Update SVG because final signal
-   * can change without candle data changing.
-   */
-
-  requestAnimationFrame(
-    drawChartOverlay
-  );
+function updateSignalPanel(){
+
+const e15=
+market15?.engine||{};
+
+const e5=
+market5?.engine||{};
+
+const finalSignal=
+getFinalSignal();
+
+const status=
+finalSignal
+?finalSignal.direction
+:"WAIT";
+
+const signalValue=
+$("signalValue");
+
+signalValue.textContent=
+status;
+
+signalValue.className=
+"signal-value "+
+(
+status==="BUY"
+?"buy"
+:
+status==="SELL"
+?"sell"
+:"wait"
+);
+
+if(finalSignal){
+
+$("signalProbability").textContent=
+`CONFIRMED 15M + 5M • Probability ${finalSignal.probability??"—"}%`;
+
+}else{
+
+$("signalProbability").textContent=
+"No confirmed 15M + 5M alignment";
+
+}
+
+const primary=
+currentTimeframe==="15min"
+?e15
+:e5;
+
+$("metricPrice").textContent=
+formatPrice(
+primary.price
+);
+
+$("metricAtr").textContent=
+formatPrice(
+primary.atr
+);
+
+$("metric15").textContent=
+e15.status||
+"WAIT";
+
+$("metric5").textContent=
+e5.status||
+"WAIT";
+
+$("metricScore").textContent=
+primary.signal
+?(
+primary.signal.sourceScore??
+primary.signal.confidence??
+"—"
+)
+:"—";
+
+$("metricRetests").textContent=
+primary.signal
+?(
+primary.signal.sourceTouches??
+"—"
+)
+:"—";
+
+
+if(finalSignal){
+
+$("tradeEntry").textContent=
+finalSignal.entry
+?`${formatPrice(finalSignal.entry.low)} – ${formatPrice(finalSignal.entry.high)}`
+:"—";
+
+$("tradeSL").textContent=
+formatPrice(
+finalSignal.stopLoss
+);
+
+$("tradeTP1").textContent=
+formatPrice(
+finalSignal.tp1
+);
+
+$("tradeTP2").textContent=
+formatPrice(
+finalSignal.tp2
+);
+
+$("tradeTP3").textContent=
+formatPrice(
+finalSignal.tp3
+);
+
+}else{
+
+$("tradeEntry").textContent="—";
+$("tradeSL").textContent="—";
+$("tradeTP1").textContent="—";
+$("tradeTP2").textContent="—";
+$("tradeTP3").textContent="—";
+
+}
+
+renderZone(
+$("supplyZone"),
+e15.supply?.[0],
+"Supply"
+);
+
+renderZone(
+$("demandZone"),
+e15.demand?.[0],
+"Demand"
+);
+
+renderMagnet(
+e15.magnets?.[0]
+);
+
+requestAnimationFrame(
+drawChartOverlay
+);
 
 }
 
@@ -4362,83 +4167,68 @@ function updateSignalPanel() {
    ========================================================= */
 
 function renderZone(
-  container,
-  zone,
-  type
-) {
+container,
+zone,
+type
+){
 
-  if (!zone) {
+if(!zone){
 
-    container.innerHTML =
+container.innerHTML=
+`<div class="zone-box ${
+type==="Supply"
+?"supply"
+:"demand"
+}">
+No active ${type} zone
+</div>`;
 
-      `<div class="zone-box ${
-        type === "Supply"
-          ? "supply"
-          : "demand"
-      }">
+return;
 
-        No active ${type} zone
+}
 
-      </div>`;
+container.innerHTML=
 
-    return;
+`<div class="zone-box ${
+type==="Supply"
+?"supply"
+:"demand"
+}">
 
-  }
+<div class="zone-top">
 
+<span class="zone-name">
+${type}
+</span>
 
-  container.innerHTML =
+<span class="zone-score">
+Score ${zone.score??"—"}/10
+</span>
 
-    `
+</div>
 
-    <div class="zone-box ${
-      type === "Supply"
-        ? "supply"
-        : "demand"
-    }">
+<div class="zone-data">
 
-      <div class="zone-top">
+<span>
+Top: ${formatPrice(zone.top)}
+</span>
 
-        <span class="zone-name">
-          ${type}
-        </span>
+<span>
+Bottom: ${formatPrice(zone.bottom)}
+</span>
 
-        <span class="zone-score">
-          Score ${zone.score ?? "—"}/10
-        </span>
+<span>
+Retests:
+${zone.retests??zone.touches??0}
+</span>
 
-      </div>
+<span>
+${zone.status||"ACTIVE"}
+</span>
 
+</div>
 
-      <div class="zone-data">
-
-        <span>
-          Top:
-          ${formatPrice(zone.top)}
-        </span>
-
-        <span>
-          Bottom:
-          ${formatPrice(zone.bottom)}
-        </span>
-
-        <span>
-          Retests:
-          ${
-            zone.retests ??
-            zone.touches ??
-            0
-          }
-        </span>
-
-        <span>
-          ${zone.status || "ACTIVE"}
-        </span>
-
-      </div>
-
-    </div>
-
-    `;
+</div>`;
 
 }
 
@@ -4448,98 +4238,74 @@ function renderZone(
    ========================================================= */
 
 function renderMagnet(
-  magnet
-) {
+magnet
+){
 
-  const box =
-    $("magnetBox");
+const box=
+$("magnetBox");
 
+if(!magnet){
 
-  if (!magnet) {
+box.innerHTML=
 
-    box.innerHTML =
+`<div class="magnet-direction">
+NONE
+</div>
 
-      `
+<div class="magnet-details">
 
-      <div class="magnet-direction">
-        NONE
-      </div>
+<div>Source: —</div>
+<div>Target: —</div>
+<div>Pull Score: —</div>
+<div>Probability: —</div>
 
-      <div class="magnet-details">
+</div>`;
 
-        <div>
-          Source: —
-        </div>
+return;
 
-        <div>
-          Target: —
-        </div>
+}
 
-        <div>
-          Pull Score: —
-        </div>
+const up=
+magnet.direction==="UP";
 
-        <div>
-          Probability: —
-        </div>
+box.innerHTML=
 
-      </div>
+`<div class="magnet-direction ${
+up
+?"magnet-up"
+:"magnet-down"
+}">
 
-      `;
+${up
+?"↑ UP MAGNET"
+:"↓ DOWN MAGNET"
+}
 
-    return;
+</div>
 
-  }
+<div class="magnet-details">
 
+<div>
+Source:
+${magnet.source?.type||"—"}
+</div>
 
-  const up =
-    magnet.direction === "UP";
+<div>
+Target:
+${magnet.target?.type||"—"}
+</div>
 
+<div>
+Pull Score:
+${magnet.pullScore??"—"}
+</div>
 
-  box.innerHTML =
+<div>
+Probability:
+${magnet.probability??"—"}%
+</div>
 
-    `
-
-    <div class="magnet-direction ${
-      up
-        ? "magnet-up"
-        : "magnet-down"
-    }">
-
-      ${
-        up
-          ? "↑ UP MAGNET"
-          : "↓ DOWN MAGNET"
-      }
-
-    </div>
-
-
-    <div class="magnet-details">
-
-      <div>
-        Source:
-        ${magnet.source?.type || "—"}
-      </div>
-
-      <div>
-        Target:
-        ${magnet.target?.type || "—"}
-      </div>
-
-      <div>
-        Pull Score:
-        ${magnet.pullScore ?? "—"}
-      </div>
-
-      <div>
-        Probability:
-        ${magnet.probability ?? "—"}%
-      </div>
-
-    </div>
-
-    `;
+</div>`;
 
 }
 
@@ -4548,86 +4314,60 @@ function renderMagnet(
    DIAGNOSTICS
    ========================================================= */
 
-function updateDiagnostics() {
+function updateDiagnostics(){
 
-  const e15 =
-    market15?.engine || {};
+const e15=
+market15?.engine||{};
 
+const e5=
+market5?.engine||{};
 
-  const e5 =
-    market5?.engine || {};
+const s15=
+e15.signal;
 
+const s5=
+e5.signal;
 
-  const s15 =
-    e15.signal;
+$("diag15Direction").textContent=
+e15.status||"WAIT";
 
+$("diag15Score").textContent=
+s15
+?(
+s15.sourceScore??
+s15.confidence??
+"—"
+)
+:"—";
 
-  const s5 =
-    e5.signal;
+$("diag15Retests").textContent=
+s15
+?(
+s15.sourceTouches??
+"—"
+)
+:"—";
 
+$("diag5Direction").textContent=
+e5.status||"WAIT";
 
-  $("diag15Direction").textContent =
-    e15.status ||
-    "WAIT";
+$("diagMagnet").textContent=
+e15.magnets?.[0]
+?e15.magnets[0].direction
+:"NONE";
 
+const aligned=
+s15&&
+s5&&
+s15.direction&&
+s5.direction&&
+s15.direction===
+s5.direction;
 
-  $("diag15Score").textContent =
-
-    s15
-
-      ? (
-          s15.sourceScore ??
-          s15.confidence ??
-          "—"
-        )
-
-      : "—";
-
-
-  $("diag15Retests").textContent =
-
-    s15
-
-      ? (
-          s15.sourceTouches ??
-          s15.retests ??
-          "—"
-        )
-
-      : "—";
-
-
-  $("diag5Direction").textContent =
-    e5.status ||
-    "WAIT";
-
-
-  $("diagMagnet").textContent =
-
-    e15.magnets?.[0]
-
-      ? e15.magnets[0].direction
-
-      : "NONE";
-
-
-  const aligned =
-
-    s15 &&
-    s5 &&
-    s15.direction &&
-    s5.direction &&
-    s15.direction ===
-    s5.direction;
-
-
-  $("diagAlignment").textContent =
-
-    aligned
-
-      ? s15.direction
-
-      : "WAIT";
+$("diagAlignment").textContent=
+aligned
+?s15.direction
+:"WAIT";
 
 }
 
@@ -4636,19 +4376,18 @@ function updateDiagnostics() {
    ENGINE TIME
    ========================================================= */
 
-function updateEngineTime() {
+function updateEngineTime(){
 
-  $("engineTime").textContent =
-
-    new Date()
-      .toLocaleTimeString(
-        [],
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }
-      );
+$("engineTime").textContent=
+new Date()
+.toLocaleTimeString(
+[],
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
 
 }
 
@@ -4658,36 +4397,32 @@ function updateEngineTime() {
    ========================================================= */
 
 function setConnection(
-  online
-) {
+online
+){
 
-  const dot =
-    $("connectionDot");
+const dot=
+$("connectionDot");
 
+const text=
+$("connectionText");
 
-  const text =
-    $("connectionText");
+if(online){
 
+dot.className=
+"dot online";
 
-  if (online) {
+text.textContent=
+"Market data connected";
 
-    dot.className =
-      "dot online";
+}else{
 
+dot.className=
+"dot error";
 
-    text.textContent =
-      "Market data connected";
+text.textContent=
+"Market data error";
 
-  } else {
-
-    dot.className =
-      "dot error";
-
-
-    text.textContent =
-      "Market data error";
-
-  }
+}
 
 }
 
@@ -4696,20 +4431,19 @@ function setConnection(
    LOADING
    ========================================================= */
 
-function showChartLoading() {
+function showChartLoading(){
 
-  $("chartLoading")
-    .classList
-    .remove("hidden");
+$("chartLoading")
+.classList
+.remove("hidden");
 
 }
 
+function hideChartLoading(){
 
-function hideChartLoading() {
-
-  $("chartLoading")
-    .classList
-    .add("hidden");
+$("chartLoading")
+.classList
+.add("hidden");
 
 }
 
@@ -4719,29 +4453,26 @@ function hideChartLoading() {
    ========================================================= */
 
 function showChartError(
-  message
-) {
+message
+){
 
-  const box =
-    $("chartError");
+const box=
+$("chartError");
 
+box.textContent=
+message;
 
-  box.textContent =
-    message;
-
-
-  box.classList.add(
-    "show"
-  );
+box.classList.add(
+"show"
+);
 
 }
 
+function hideChartError(){
 
-function hideChartError() {
-
-  $("chartError")
-    .classList
-    .remove("show");
+$("chartError")
+.classList
+.remove("show");
 
 }
 
@@ -4751,228 +4482,142 @@ function hideChartError() {
    ========================================================= */
 
 async function searchSymbols(
-  query
-) {
+query
+){
 
-  const q =
-    String(query || "")
-      .trim();
+const q=
+String(query||"")
+.trim();
 
+if(!q){
 
-  if (!q) {
+hideSearchResults();
 
-    hideSearchResults();
+return;
 
-    return;
+}
 
-  }
+const box=
+$("searchResults");
 
+box.innerHTML=
+`<div style="
+padding:10px;
+color:#71899b;
+font-size:10px;
+">
+Searching...
+</div>`;
 
-  const box =
-    $("searchResults");
+box.classList.add("show");
 
+try{
 
-  box.innerHTML =
+const response=
+await fetch(
+`${API}?action=search&q=${encodeURIComponent(q)}`,
+{
+cache:"no-store"
+}
+);
 
-    `<div style="
-      padding:10px;
-      color:#71899b;
-      font-size:10px;
-    ">
-      Searching...
-    </div>`;
+const data=
+await response.json();
 
+if(
+!response.ok||
+!data.success
+){
 
-  box.classList.add(
-    "show"
-  );
+throw new Error(
+data.error||
+"Search failed"
+);
 
+}
 
-  try {
+let results=
+Array.isArray(data.results)
+?data.results
+:[];
 
-    const response =
-      await fetch(
+results=
+filterResultsByCategory(
+results
+);
 
-        `${API}?action=search&q=${encodeURIComponent(q)}`,
+results.sort(
+(a,b)=>
+resultPriority(b)-
+resultPriority(a)
+);
 
-        {
-          cache: "no-store"
-        }
+renderSearchResults(
+results.slice(
+0,
+20
+)
+);
 
-      );
+}catch(error){
 
+box.innerHTML=
+`<div style="
+padding:10px;
+color:#ff7b86;
+font-size:10px;
+">
+${escapeHtml(error.message)}
+</div>`;
 
-    const data =
-      await response.json();
-
-
-    if (
-      !response.ok ||
-      !data.success
-    ) {
-
-      throw new Error(
-        data.error ||
-        "Search failed"
-      );
-
-    }
-
-
-    let results =
-      Array.isArray(
-        data.results
-      )
-        ? data.results
-        : [];
-
-
-    results =
-      filterResultsByCategory(
-        results
-      );
-
-
-    results.sort(
-      (a, b) =>
-        resultPriority(b) -
-        resultPriority(a)
-    );
-
-
-    renderSearchResults(
-      results.slice(
-        0,
-        20
-      )
-    );
-
-
-  } catch (error) {
-
-    box.innerHTML =
-
-      `<div style="
-        padding:10px;
-        color:#ff7b86;
-        font-size:10px;
-      ">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>`;
-
-  }
+}
 
 }
 
 
 /* =========================================================
-   FILTER
+   CATEGORY
    ========================================================= */
 
 function filterResultsByCategory(
-  results
-) {
+results
+){
 
-  if (
-    selectedCategory ===
-    "all"
-  ) {
+if(selectedCategory==="all"){
+return results;
+}
 
-    return results;
-
-  }
-
-
-  return results.filter(
-    item =>
-      classifyInstrument(item) ===
-      selectedCategory
-  );
+return results.filter(
+item=>
+classifyInstrument(item)===
+selectedCategory
+);
 
 }
 
 
-/* =========================================================
-   PRIORITY
-   ========================================================= */
-
 function resultPriority(
-  item
-) {
+item
+){
 
-  const category =
-    classifyInstrument(
-      item
-    );
+const category=
+classifyInstrument(item);
 
+if(
+category===
+selectedCategory
+){
+return 100;
+}
 
-  if (
-    category ===
-    selectedCategory
-  ) {
+if(category==="crypto")return 90;
+if(category==="forex")return 80;
+if(category==="metals")return 70;
+if(category==="energy")return 60;
+if(category==="stocks")return 50;
+if(category==="etf")return 40;
 
-    return 100;
-
-  }
-
-
-  if (
-    category === "crypto"
-  ) {
-
-    return 90;
-
-  }
-
-
-  if (
-    category === "forex"
-  ) {
-
-    return 80;
-
-  }
-
-
-  if (
-    category === "metals"
-  ) {
-
-    return 70;
-
-  }
-
-
-  if (
-    category === "energy"
-  ) {
-
-    return 60;
-
-  }
-
-
-  if (
-    category === "stocks"
-  ) {
-
-    return 50;
-
-  }
-
-
-  if (
-    category === "etf"
-  ) {
-
-    return 40;
-
-  }
-
-
-  return 10;
+return 10;
 
 }
 
@@ -4982,314 +4627,202 @@ function resultPriority(
    ========================================================= */
 
 function classifyInstrument(
-  item
-) {
-
-  const type =
-    String(
-      item?.instrument_type ||
-      item?.type ||
-      ""
-    )
-      .toLowerCase();
-
-
-  const symbol =
-    String(
-      item?.symbol ||
-      ""
-    )
-      .toUpperCase();
-
-
-  const name =
-    String(
-      item?.instrument_name ||
-      item?.name ||
-      ""
-    )
-      .toLowerCase();
-
-
-  /*
-   * CRYPTO
-   */
-
-  if (
-
-    type.includes("crypto") ||
-
-    type.includes("digital") ||
-
-    type.includes(
-      "cryptocurrency"
-    ) ||
-
-    name.includes("bitcoin") ||
-
-    name.includes("ethereum") ||
-
-    name.includes("solana") ||
-
-    name.includes("dogecoin") ||
-
-    name.includes("crypto")
-
-  ) {
-
-    return "crypto";
-
-  }
-
-
-  /*
-   * ETF
-   */
-
-  if (
-    type.includes("etf")
-  ) {
-
-    return "etf";
-
-  }
-
-
-  /*
-   * FOREX
-   */
-
-  if (
-
-    type.includes("forex") ||
-
-    /^[A-Z]{3}\/[A-Z]{3}$/
-      .test(symbol)
-
-  ) {
-
-    return "forex";
-
-  }
-
-
-  /*
-   * METALS
-   */
-
-  if (
-
-    symbol.startsWith("XAU/") ||
-
-    symbol.startsWith("XAG/") ||
-
-    symbol.startsWith("XPT/") ||
-
-    symbol.startsWith("XPD/") ||
-
-    name.includes("gold") ||
-
-    name.includes("silver") ||
-
-    name.includes("platinum") ||
-
-    name.includes("palladium")
-
-  ) {
-
-    return "metals";
-
-  }
-
-
-  /*
-   * ENERGY
-   */
-
-  if (
-
-    name.includes("oil") ||
-
-    name.includes("crude") ||
-
-    name.includes("brent") ||
-
-    name.includes("wti")
-
-  ) {
-
-    return "energy";
-
-  }
-
-
-  /*
-   * STOCKS
-   */
-
-  if (
-
-    type.includes("stock") ||
-
-    type.includes("common")
-
-  ) {
-
-    return "stocks";
-
-  }
-
-
-  return "stocks";
+item
+){
+
+const type=
+String(
+item?.instrument_type||
+item?.type||
+""
+).toLowerCase();
+
+const symbol=
+String(
+item?.symbol||
+""
+).toUpperCase();
+
+const name=
+String(
+item?.instrument_name||
+item?.name||
+""
+).toLowerCase();
+
+if(
+type.includes("crypto")||
+type.includes("digital")||
+type.includes("cryptocurrency")||
+name.includes("bitcoin")||
+name.includes("ethereum")||
+name.includes("solana")||
+name.includes("dogecoin")||
+name.includes("crypto")
+){
+return"crypto";
+}
+
+if(
+type.includes("etf")
+){
+return"etf";
+}
+
+if(
+type.includes("forex")||
+/^[A-Z]{3}\/[A-Z]{3}$/.test(symbol)
+){
+return"forex";
+}
+
+if(
+symbol.startsWith("XAU/")||
+symbol.startsWith("XAG/")||
+symbol.startsWith("XPT/")||
+symbol.startsWith("XPD/")||
+name.includes("gold")||
+name.includes("silver")||
+name.includes("platinum")||
+name.includes("palladium")
+){
+return"metals";
+}
+
+if(
+name.includes("oil")||
+name.includes("crude")||
+name.includes("brent")||
+name.includes("wti")
+){
+return"energy";
+}
+
+if(
+type.includes("stock")||
+type.includes("common")
+){
+return"stocks";
+}
+
+return"stocks";
 
 }
 
 
 /* =========================================================
-   SEARCH RESULTS UI
+   SEARCH RESULTS
    ========================================================= */
 
 function renderSearchResults(
-  results
-) {
+results
+){
 
-  const box =
-    $("searchResults");
+const box=
+$("searchResults");
 
+if(!results.length){
 
-  if (!results.length) {
+box.innerHTML=
+`<div style="
+padding:10px;
+color:#71899b;
+font-size:10px;
+">
+No matching instruments found.
+</div>`;
 
-    box.innerHTML =
+box.classList.add("show");
 
-      `<div style="
-        padding:10px;
-        color:#71899b;
-        font-size:10px;
-      ">
-        No matching instruments found.
-      </div>`;
+return;
 
+}
 
-    box.classList.add(
-      "show"
-    );
+box.innerHTML=
+results
+.map(
+(item,index)=>{
 
+const category=
+classifyInstrument(item);
 
-    return;
+return`
 
-  }
+<button
+class="result-item"
+data-index="${index}"
+>
 
+<div class="result-main">
 
-  box.innerHTML =
-    results
+<span class="result-symbol">
+${escapeHtml(
+item.symbol||""
+)}
+</span>
 
-      .map(
-        (
-          item,
-          index
-        ) => {
+<span class="result-type">
+${escapeHtml(
+category.toUpperCase()
+)}
+</span>
 
-          const category =
-            classifyInstrument(
-              item
-            );
+</div>
 
+<div class="result-name">
+${escapeHtml(
+item.instrument_name||
+item.name||
+""
+)}
+</div>
 
-          return `
+<div class="result-meta">
 
-          <button
-            class="result-item"
-            data-index="${index}"
-          >
+${escapeHtml(
+item.exchange||""
+)}
 
-            <div class="result-main">
+${
+item.currency
+?" • "+escapeHtml(item.currency)
+:""
+}
 
-              <span class="result-symbol">
+</div>
 
-                ${escapeHtml(
-                  item.symbol || ""
-                )}
+</button>
 
-              </span>
+`;
 
-              <span class="result-type">
+}
+)
+.join("");
 
-                ${escapeHtml(
-                  category.toUpperCase()
-                )}
+box
+.querySelectorAll(
+".result-item"
+)
+.forEach(
+(button,index)=>{
 
-              </span>
+button.addEventListener(
+"click",
+()=>{
 
-            </div>
+selectAsset(
+results[index]
+);
 
+}
+);
 
-            <div class="result-name">
+}
+);
 
-              ${escapeHtml(
-                item.instrument_name ||
-                item.name ||
-                ""
-              )}
-
-            </div>
-
-
-            <div class="result-meta">
-
-              ${escapeHtml(
-                item.exchange || ""
-              )}
-
-              ${
-                item.currency
-
-                  ? " • " +
-                    escapeHtml(
-                      item.currency
-                    )
-
-                  : ""
-              }
-
-            </div>
-
-          </button>
-
-          `;
-
-        }
-      )
-      .join("");
-
-
-  box
-    .querySelectorAll(
-      ".result-item"
-    )
-    .forEach(
-      (
-        button,
-        index
-      ) => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            selectAsset(
-              results[index]
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  box.classList.add(
-    "show"
-  );
+box.classList.add(
+"show"
+);
 
 }
 
@@ -5299,39 +4832,32 @@ function renderSearchResults(
    ========================================================= */
 
 function selectAsset(
-  item
-) {
+item
+){
 
-  if (!item) {
+if(!item){
+return;
+}
 
-    return;
+currentSymbol=
+String(
+item.symbol||
+currentSymbol
+);
 
-  }
+currentName=
+String(
+item.instrument_name||
+item.name||
+currentSymbol
+);
 
+$("searchInput").value=
+currentSymbol;
 
-  currentSymbol =
-    String(
-      item.symbol ||
-      currentSymbol
-    );
+hideSearchResults();
 
-
-  currentName =
-    String(
-      item.instrument_name ||
-      item.name ||
-      currentSymbol
-    );
-
-
-  $("searchInput").value =
-    currentSymbol;
-
-
-  hideSearchResults();
-
-
-  loadMarket();
+loadMarket();
 
 }
 
@@ -5340,11 +4866,11 @@ function selectAsset(
    HIDE SEARCH
    ========================================================= */
 
-function hideSearchResults() {
+function hideSearchResults(){
 
-  $("searchResults")
-    .classList
-    .remove("show");
+$("searchResults")
+.classList
+.remove("show");
 
 }
 
@@ -5354,37 +4880,17 @@ function hideSearchResults() {
    ========================================================= */
 
 function escapeHtml(
-  value
-) {
+value
+){
 
-  return String(
-    value ?? ""
-  )
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+return String(
+value??""
+)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
@@ -5394,56 +4900,50 @@ function escapeHtml(
    ========================================================= */
 
 document
-  .querySelectorAll(
-    ".category-btn"
-  )
-  .forEach(
-    button => {
+.querySelectorAll(
+".category-btn"
+)
+.forEach(
+button=>{
 
-      button.addEventListener(
-        "click",
-        () => {
+button.addEventListener(
+"click",
+()=>{
 
-          document
-            .querySelectorAll(
-              ".category-btn"
-            )
-            .forEach(
-              b =>
-                b.classList.remove(
-                  "active"
-                )
-            );
+document
+.querySelectorAll(
+".category-btn"
+)
+.forEach(
+b=>
+b.classList.remove(
+"active"
+)
+);
 
+button.classList.add(
+"active"
+);
 
-          button.classList.add(
-            "active"
-          );
+selectedCategory=
+button.dataset.category;
 
+const q=
+$("searchInput")
+.value
+.trim();
 
-          selectedCategory =
-            button.dataset.category;
+if(q){
 
+searchSymbols(q);
 
-          const q =
-            $("searchInput")
-              .value
-              .trim();
+}
 
+}
+);
 
-          if (q) {
-
-            searchSymbols(
-              q
-            );
-
-          }
-
-        }
-      );
-
-    }
-  );
+}
+);
 
 
 /* =========================================================
@@ -5451,66 +4951,132 @@ document
    ========================================================= */
 
 document
-  .querySelectorAll(
-    ".tf-btn"
-  )
-  .forEach(
-    button => {
+.querySelectorAll(
+".tf-btn"
+)
+.forEach(
+button=>{
 
-      button.addEventListener(
-        "click",
-        () => {
+button.addEventListener(
+"click",
+()=>{
 
-          document
-            .querySelectorAll(
-              ".tf-btn"
-            )
-            .forEach(
-              b =>
-                b.classList.remove(
-                  "active"
-                )
-            );
+document
+.querySelectorAll(
+".tf-btn"
+)
+.forEach(
+b=>
+b.classList.remove(
+"active"
+)
+);
 
+button.classList.add(
+"active"
+);
 
-          button.classList.add(
-            "active"
-          );
+currentTimeframe=
+button.dataset.timeframe;
 
+const data=
+currentTimeframe==="15min"
+?market15
+:market5;
 
-          currentTimeframe =
-            button.dataset.timeframe;
+if(data){
 
+renderChart(
+data,
+currentTimeframe
+);
 
-          const data =
-            currentTimeframe ===
-            "15min"
+}
 
-              ? market15
+updateSignalPanel();
 
-              : market5;
+}
+);
 
-
-          if (data) {
-
-            renderChart(
-
-              data,
-
-              currentTimeframe
-
-            );
-
-          }
+}
+);
 
 
-          updateSignalPanel();
+/* =========================================================
+   HISTORY FILTER EVENTS
+   ========================================================= */
 
-        }
-      );
+document
+.querySelectorAll(
+"[data-history-filter]"
+)
+.forEach(
+button=>{
 
-    }
-  );
+button.addEventListener(
+"click",
+()=>{
+
+document
+.querySelectorAll(
+"[data-history-filter]"
+)
+.forEach(
+b=>
+b.classList.remove(
+"active"
+)
+);
+
+button.classList.add(
+"active"
+);
+
+historyFilter=
+button.dataset.historyFilter;
+
+renderHistory();
+
+}
+);
+
+}
+);
+
+
+/* =========================================================
+   CLEAR HISTORY
+   ========================================================= */
+
+$("clearHistory")
+.addEventListener(
+"click",
+()=>{
+
+const history=
+loadHistory();
+
+if(!history.length){
+return;
+}
+
+const confirmed=
+confirm(
+"Clear all Signal History?"
+);
+
+if(!confirmed){
+return;
+}
+
+localStorage.removeItem(
+HISTORY_KEY
+);
+
+renderHistory();
+
+}
+);
 
 
 /* =========================================================
@@ -5518,16 +5084,16 @@ document
    ========================================================= */
 
 $("searchBtn")
-  .addEventListener(
-    "click",
-    () => {
+.addEventListener(
+"click",
+()=>{
 
-      searchSymbols(
-        $("searchInput").value
-      );
+searchSymbols(
+$("searchInput").value
+);
 
-    }
-  );
+}
+);
 
 
 /* =========================================================
@@ -5535,23 +5101,22 @@ $("searchBtn")
    ========================================================= */
 
 $("searchInput")
-  .addEventListener(
-    "keydown",
-    event => {
+.addEventListener(
+"keydown",
+event=>{
 
-      if (
-        event.key ===
-        "Enter"
-      ) {
+if(
+event.key==="Enter"
+){
 
-        searchSymbols(
-          event.target.value
-        );
+searchSymbols(
+event.target.value
+);
 
-      }
+}
 
-    }
-  );
+}
+);
 
 
 /* =========================================================
@@ -5559,40 +5124,35 @@ $("searchInput")
    ========================================================= */
 
 $("searchInput")
-  .addEventListener(
-    "input",
-    event => {
+.addEventListener(
+"input",
+event=>{
 
-      clearTimeout(
-        searchTimer
-      );
+clearTimeout(
+searchTimer
+);
 
+const value=
+event.target.value
+.trim();
 
-      const value =
-        event.target.value
-          .trim();
+if(!value){
 
+hideSearchResults();
 
-      if (!value) {
+return;
 
-        hideSearchResults();
+}
 
-        return;
+searchTimer=
+setTimeout(
+()=>
+searchSymbols(value),
+500
+);
 
-      }
-
-
-      searchTimer =
-        setTimeout(
-          () =>
-            searchSymbols(
-              value
-            ),
-          500
-        );
-
-    }
-  );
+}
+);
 
 
 /* =========================================================
@@ -5600,27 +5160,26 @@ $("searchInput")
    ========================================================= */
 
 document.addEventListener(
-  "click",
-  event => {
+"click",
+event=>{
 
-    const panel =
-      document.querySelector(
-        ".search-panel"
-      );
+const panel=
+document.querySelector(
+".search-panel"
+);
 
+if(
+panel&&
+!panel.contains(
+event.target
+)
+){
 
-    if (
-      panel &&
-      !panel.contains(
-        event.target
-      )
-    ) {
+hideSearchResults();
 
-      hideSearchResults();
+}
 
-    }
-
-  }
+}
 );
 
 
@@ -5628,30 +5187,27 @@ document.addEventListener(
    AUTO REFRESH
    ========================================================= */
 
-function startAutoRefresh() {
+function startAutoRefresh(){
 
-  if (refreshTimer) {
+if(refreshTimer){
 
-    clearInterval(
-      refreshTimer
-    );
+clearInterval(
+refreshTimer
+);
 
-  }
+}
 
+refreshTimer=
+setInterval(
+()=>{
 
-  refreshTimer =
-    setInterval(
-      () => {
+loadMarket({
+silent:true
+});
 
-        loadMarket({
-
-          silent: true
-
-        });
-
-      },
-      60000
-    );
+},
+60000
+);
 
 }
 
@@ -5660,54 +5216,48 @@ function startAutoRefresh() {
    OVERLAY REFRESH
    ========================================================= */
 
-function startOverlayRefresh() {
+function startOverlayRefresh(){
 
-  if (overlayRefreshTimer) {
+if(overlayRefreshTimer){
 
-    clearInterval(
-      overlayRefreshTimer
-    );
+clearInterval(
+overlayRefreshTimer
+);
 
-  }
+}
 
+overlayRefreshTimer=
+setInterval(
+()=>{
 
-  /*
-   * Lightweight Charts changes vertical
-   * coordinates during scale/interaction.
-   * A lightweight periodic redraw keeps
-   * the zone boxes aligned.
-   */
+drawChartOverlay();
 
-  overlayRefreshTimer =
-    setInterval(
-      () => {
-
-        drawChartOverlay();
-
-      },
-      300
-    );
+},
+300
+);
 
 }
 
 
 /* =========================================================
-   START APP
+   START
    ========================================================= */
 
 document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+"DOMContentLoaded",
+()=>{
 
-    createChart();
+createChart();
 
-    loadMarket();
+renderHistory();
 
-    startAutoRefresh();
+loadMarket();
 
-    startOverlayRefresh();
+startAutoRefresh();
 
-  }
+startOverlayRefresh();
+
+}
 );
 
 </script>
