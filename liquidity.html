@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Owajid & Bokul — Swing Liquidity</title>
 
@@ -43,7 +43,7 @@ button{
 .topbar{
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:30;
   background:#0a151f;
   border-bottom:1px solid #1c2b38;
   padding:14px 18px;
@@ -153,7 +153,7 @@ button{
   border:1px solid #263b49;
   border-radius:10px;
   overflow:hidden;
-  z-index:50;
+  z-index:100;
   display:none;
 }
 
@@ -203,7 +203,7 @@ button{
 }
 
 /* =========================================================
-   TIMEFRAMES
+   TIMEFRAME
 ========================================================= */
 
 .timeframes{
@@ -227,7 +227,7 @@ button{
 }
 
 /* =========================================================
-   GRID
+   MAIN GRID
 ========================================================= */
 
 .grid{
@@ -244,7 +244,7 @@ button{
 }
 
 /* =========================================================
-   CARD HEADER
+   HEADER
 ========================================================= */
 
 .cardHeader{
@@ -296,7 +296,7 @@ button{
 }
 
 /* =========================================================
-   SIGNAL
+   SIGNAL CARD
 ========================================================= */
 
 .signalCard{
@@ -419,7 +419,7 @@ button{
 }
 
 /* =========================================================
-   ENGINE INFO
+   ENGINE
 ========================================================= */
 
 .section{
@@ -498,10 +498,15 @@ button{
    ERROR
 ========================================================= */
 
-.error{
-  padding:20px;
-  color:#ff8791;
-  text-align:center;
+.errorBox{
+  margin:12px 0;
+  padding:12px;
+  border:1px solid #6c3038;
+  background:#261116;
+  color:#ff8992;
+  border-radius:10px;
+  font-size:12px;
+  display:none;
 }
 
 /* =========================================================
@@ -516,7 +521,7 @@ button{
 }
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
 
 @media(max-width:1050px){
@@ -541,16 +546,16 @@ button{
     font-size:15px;
   }
 
+  .brand p{
+    font-size:11px;
+  }
+
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- =======================================================
-     TOP BAR
-======================================================= -->
 
 <header class="topbar">
 
@@ -581,7 +586,10 @@ button{
       🧲 Strong SD Magnet
     </a>
 
-    <a href="/liquidity.html" class="active">
+    <a
+      href="/liquidity.html"
+      class="active"
+    >
       💧 Swing Liquidity
     </a>
 
@@ -590,14 +598,12 @@ button{
 </header>
 
 
-<!-- =======================================================
-     MAIN
-======================================================= -->
-
 <main class="wrap">
 
 
-  <!-- CONTROLS -->
+  <!-- =====================================================
+       CONTROLS
+  ====================================================== -->
 
   <div class="controls">
 
@@ -673,7 +679,9 @@ button{
   </div>
 
 
-  <!-- TIMEFRAME -->
+  <!-- =====================================================
+       TIMEFRAME
+  ====================================================== -->
 
   <div class="timeframes">
 
@@ -694,7 +702,15 @@ button{
   </div>
 
 
-  <!-- MAIN GRID -->
+  <div
+    id="errorBox"
+    class="errorBox"
+  ></div>
+
+
+  <!-- =====================================================
+       GRID
+  ====================================================== -->
 
   <div class="grid">
 
@@ -714,7 +730,7 @@ button{
           </h2>
 
           <small id="assetSubtitle">
-            Swing Liquidity Analysis
+            15M Swing Liquidity Structure
           </small>
 
         </div>
@@ -749,13 +765,12 @@ button{
     <aside>
 
 
-      <!-- SIGNAL CARD -->
-
       <section class="card signalCard">
 
 
-        <div class="signalStatus">
+        <!-- SIGNAL -->
 
+        <div class="signalStatus">
 
           <div class="statusTop">
 
@@ -773,6 +788,7 @@ button{
               </div>
 
             </div>
+
 
             <div
               id="signalProbability"
@@ -798,7 +814,7 @@ button{
             <div class="metric">
 
               <span>
-                15M Swing
+                15M Structure
               </span>
 
               <strong id="m15Direction">
@@ -854,7 +870,7 @@ button{
               </span>
 
               <strong id="liquidityState">
-                —
+                NONE
               </strong>
 
             </div>
@@ -867,11 +883,10 @@ button{
               </span>
 
               <strong id="volumeState">
-                —
+                N/A
               </strong>
 
             </div>
-
 
           </div>
 
@@ -992,7 +1007,7 @@ button{
           <div class="infoRow">
 
             <span>
-              Liquidity Level
+              Active Liquidity
             </span>
 
             <strong id="liquidityLevel">
@@ -1027,16 +1042,12 @@ button{
 
           </div>
 
-
         </div>
-
 
       </section>
 
 
-      <!-- =================================================
-           HISTORY
-      ================================================== -->
+      <!-- HISTORY -->
 
       <section class="card history">
 
@@ -1069,7 +1080,6 @@ button{
 
     </aside>
 
-
   </div>
 
 
@@ -1080,7 +1090,6 @@ button{
 
   </div>
 
-
 </main>
 
 
@@ -1090,18 +1099,18 @@ button{
    OWajid & Bokul
    STRATEGY 02 — SWING LIQUIDITY
 
+   DATA FLOW:
+
+   Twelve Data
+       ↓
+   /api/liquidity
+       ↓
+   Swing Liquidity Engine
+       ↓
+   This page
+
    IMPORTANT:
-
-   This page uses:
-
-       /api/liquidity
-
-   for the actual Swing Liquidity engine.
-
-   It does NOT duplicate the Swing Liquidity calculations
-   from liquidity.js.
-
-   Page 1 /api/market remains untouched.
+   No Strong SD Magnet logic is used here.
 ========================================================= */
 
 
@@ -1130,7 +1139,7 @@ const state = {
     null,
 
   chartTimeframe:
-    "5min",
+    "15min",
 
   lastSignalKey:
     null,
@@ -1149,30 +1158,40 @@ const $ =
   id =>
     document.getElementById(id);
 
+
 const chartEl =
   $("chart");
+
 
 const loadingEl =
   $("loading");
 
 
+const errorBox =
+  $("errorBox");
+
+
 /* =========================================================
-   CHART VARIABLES
+   CHART
 ========================================================= */
 
 let chart =
   null;
 
+
 let candleSeries =
   null;
+
 
 let volumeSeries =
   null;
 
+
 let priceLines =
   [];
 
-let swingMarkers =
+
+let markersSeries =
   null;
 
 
@@ -1188,12 +1207,14 @@ function createChart(){
       {
 
         layout:{
+
           background:{
             type:"solid",
             color:"#071018"
           },
 
           textColor:"#9eb0bd"
+
         },
 
 
@@ -1213,7 +1234,12 @@ function createChart(){
         rightPriceScale:{
 
           borderColor:
-            "#203441"
+            "#203441",
+
+          scaleMargins:{
+            top:0.08,
+            bottom:0.20
+          }
 
         },
 
@@ -1285,7 +1311,7 @@ function createChart(){
         scaleMargins:{
 
           top:
-            0.85,
+            0.88,
 
           bottom:
             0
@@ -1304,11 +1330,16 @@ function createChart(){
 }
 
 
+/* =========================================================
+   RESIZE
+========================================================= */
+
 function resizeChart(){
 
   if(!chart){
     return;
   }
+
 
   chart.applyOptions({
 
@@ -1362,6 +1393,7 @@ async function fetchLiquidity(
 
   let json;
 
+
   try{
 
     json =
@@ -1408,10 +1440,12 @@ async function fetchLiquidity(
 
 
 /* =========================================================
-   FORMAT PRICE
+   PRICE FORMAT
 ========================================================= */
 
-function formatPrice(value){
+function formatPrice(
+  value
+){
 
   if(
     value === null ||
@@ -1451,10 +1485,12 @@ function formatPrice(value){
 
 
 /* =========================================================
-   FORMAT TIME
+   TIME FORMAT
 ========================================================= */
 
-function formatTime(ts){
+function formatTime(
+  ts
+){
 
   if(!ts){
     return "—";
@@ -1486,87 +1522,21 @@ function formatTime(ts){
 
 
 /* =========================================================
-   GET LATEST SWING
+   BACKEND SIGNAL
 ========================================================= */
 
-function latestSwing(
-  data,
-  type
-){
-
-  if(
-    !data?.swings
-  ){
-
-    return null;
-
-  }
-
-
-  const list =
-    type === "HIGH"
-      ? data.swings.highs
-      : data.swings.lows;
-
-
-  if(
-    !Array.isArray(list) ||
-    !list.length
-  ){
-
-    return null;
-
-  }
-
-
-  return list[list.length - 1];
-
-}
-
-
-/* =========================================================
-   GET LATEST SWEEP
-========================================================= */
-
-function latestSweep(
+function getSignal(
   data
 ){
 
-  if(
-    !Array.isArray(
-      data?.liquidity?.sweeps
-    )
-  ){
-
-    return null;
-
-  }
+  const signal =
+    data?.signal;
 
 
-  const list =
-    data.liquidity.sweeps;
-
-
-  return list.length
-    ? list[list.length - 1]
-    : null;
-
-}
-
-
-/* =========================================================
-   GET BACKEND SIGNAL
-========================================================= */
-
-function getBackendSignal(
-  data
-){
-
-  if(
-    !data?.signal
-  ){
+  if(!signal){
 
     return {
+
       direction:
         "WAIT",
 
@@ -1574,48 +1544,56 @@ function getBackendSignal(
         0,
 
       score:
-        0
+        0,
+
+      price:
+        null,
+
+      time:
+        null,
+
+      sweep:
+        null,
+
+      confirmation:
+        null
 
     };
 
   }
 
 
-  const s =
-    data.signal;
-
-
   return {
 
     direction:
-      s.direction ||
-      s.value ||
+      signal.direction ||
+      signal.value ||
       "WAIT",
 
     probability:
       Number(
-        s.probability || 0
+        signal.probability || 0
       ),
 
     score:
       Number(
-        s.score || 0
+        signal.score || 0
       ),
 
     price:
-      s.price ||
+      signal.price ??
       null,
 
     time:
-      s.time ||
+      signal.time ??
       null,
 
     sweep:
-      s.sweep ||
+      signal.sweep ??
       null,
 
     confirmation:
-      s.confirmation ||
+      signal.confirmation ??
       null
 
   };
@@ -1624,14 +1602,7 @@ function getBackendSignal(
 
 
 /* =========================================================
-   BUILD FINAL SIGNAL
-
-   Backend already performs Swing Liquidity analysis.
-
-   15M = Structure
-   5M  = Entry
-
-   Both must agree.
+   FINAL MULTI-TIMEFRAME SIGNAL
 ========================================================= */
 
 function buildFinalSignal(){
@@ -1661,19 +1632,19 @@ function buildFinalSignal(){
 
 
   const s15 =
-    getBackendSignal(
+    getSignal(
       state.data15
     );
 
 
   const s5 =
-    getBackendSignal(
+    getSignal(
       state.data5
     );
 
 
   /* -------------------------------------------------------
-     If either timeframe is WAIT
+     Either timeframe has no confirmed setup
   ------------------------------------------------------- */
 
   if(
@@ -1687,11 +1658,9 @@ function buildFinalSignal(){
         "WAIT",
 
       probability:
-        Math.round(
-          Math.max(
-            s15.probability,
-            s5.probability
-          )
+        Math.max(
+          s15.probability,
+          s5.probability
         ),
 
       score:
@@ -1706,14 +1675,8 @@ function buildFinalSignal(){
       a5:
         s5,
 
-      data15:
-        state.data15,
-
-      data5:
-        state.data5,
-
       reason:
-        "WAITING FOR 15M + 5M CONFIRMATION"
+        "WAITING FOR CONFIRMATION"
 
     };
 
@@ -1721,7 +1684,7 @@ function buildFinalSignal(){
 
 
   /* -------------------------------------------------------
-     Timeframe mismatch
+     Direction mismatch
   ------------------------------------------------------- */
 
   if(
@@ -1746,38 +1709,28 @@ function buildFinalSignal(){
       a5:
         s5,
 
-      data15:
-        state.data15,
-
-      data5:
-        state.data5,
-
       reason:
-        "TIMEFRAME MISALIGNMENT"
+        "15M / 5M MISALIGNMENT"
 
     };
 
   }
 
 
-  /* -------------------------------------------------------
-     Both agree
-  ------------------------------------------------------- */
-
   const direction =
     s15.direction;
+
+
+  const tradePlan =
+    state.data5?.tradePlan ||
+    state.data15?.tradePlan ||
+    null;
 
 
   const price =
     state.data5?.market?.price ||
     s5.price ||
     state.data5?.candles?.at(-1)?.close ||
-    null;
-
-
-  const tradePlan =
-    state.data5?.tradePlan ||
-    state.data15?.tradePlan ||
     null;
 
 
@@ -1833,12 +1786,6 @@ function buildFinalSignal(){
     a5:
       s5,
 
-    data15:
-      state.data15,
-
-    data5:
-      state.data5,
-
     signalTime:
       s5.time ||
       state.data5?.market?.lastCandleTime ||
@@ -1848,6 +1795,63 @@ function buildFinalSignal(){
       "15M + 5M ALIGNED"
 
   };
+
+}
+
+
+/* =========================================================
+   LATEST SWING
+========================================================= */
+
+function latestSwing(
+  data,
+  type
+){
+
+  const list =
+    type === "HIGH"
+      ? data?.swings?.highs
+      : data?.swings?.lows;
+
+
+  if(
+    !Array.isArray(list) ||
+    !list.length
+  ){
+
+    return null;
+
+  }
+
+
+  return list[list.length - 1];
+
+}
+
+
+/* =========================================================
+   LATEST SWEEP
+========================================================= */
+
+function latestSweep(
+  data
+){
+
+  const list =
+    data?.liquidity?.sweeps;
+
+
+  if(
+    !Array.isArray(list) ||
+    !list.length
+  ){
+
+    return null;
+
+  }
+
+
+  return list[list.length - 1];
 
 }
 
@@ -1907,14 +1911,23 @@ function updateUI(
 
 
   $("signalProbability").textContent =
-    `${signal?.probability || 0}%`;
+    `${Math.round(
+      signal?.probability || 0
+    )}%`;
 
 
   $("currentPrice").textContent =
     formatPrice(
+
       signal?.price ||
+
       state.data5?.market?.price ||
-      state.data5?.candles?.at(-1)?.close
+
+      state.data5
+        ?.candles
+        ?.at(-1)
+        ?.close
+
     );
 
 
@@ -1928,13 +1941,6 @@ function updateUI(
     "WAIT";
 
 
-  const high15 =
-    latestSwing(
-      state.data15,
-      "HIGH"
-    );
-
-
   const high5 =
     latestSwing(
       state.data5,
@@ -1942,16 +1948,23 @@ function updateUI(
     );
 
 
-  const low15 =
+  const high15 =
     latestSwing(
       state.data15,
-      "LOW"
+      "HIGH"
     );
 
 
   const low5 =
     latestSwing(
       state.data5,
+      "LOW"
+    );
+
+
+  const low15 =
+    latestSwing(
+      state.data15,
       "LOW"
     );
 
@@ -2000,21 +2013,14 @@ function updateUI(
       ?.volumeConfirmed;
 
 
-  if(
+  $("volumeState").textContent =
     volumeAvailable
-  ){
-
-    $("volumeState").textContent =
-      volumeConfirmed
-        ? "CONFIRMED"
-        : "NORMAL";
-
-  }else{
-
-    $("volumeState").textContent =
-      "N/A";
-
-  }
+      ? (
+          volumeConfirmed
+            ? "CONFIRMED"
+            : "NORMAL"
+        )
+      : "N/A";
 
 
   $("sweep15").textContent =
@@ -2023,13 +2029,21 @@ function updateUI(
 
 
   $("confirm5").textContent =
-    signal?.a5?.direction !== "WAIT" &&
     signal?.a5?.confirmation
-      ? signal.a5.confirmation.direction
-      : "NONE";
+      ? (
+          signal.a5.confirmation
+            .confirmed
+            ? signal.a5.confirmation.direction
+            : "NONE"
+        )
+      : (
+          signal?.a5?.direction !== "WAIT"
+            ? signal.a5.direction
+            : "NONE"
+        );
 
 
-  const liquidityLevel =
+  const activeLevel =
     signal?.a5?.sweep?.level?.price ||
     signal?.a15?.sweep?.level?.price ||
     null;
@@ -2037,7 +2051,7 @@ function updateUI(
 
   $("liquidityLevel").textContent =
     formatPrice(
-      liquidityLevel
+      activeLevel
     );
 
 
@@ -2049,12 +2063,15 @@ function updateUI(
 
   $("atr").textContent =
     formatPrice(
+
       state.data5
         ?.diagnostics
         ?.atr ||
+
       state.data15
         ?.diagnostics
         ?.atr
+
     );
 
 
@@ -2133,8 +2150,7 @@ function addPriceLine(
   price,
   title,
   color,
-  style =
-    LightweightCharts.LineStyle.Dotted
+  lineStyle
 ){
 
   if(
@@ -2160,7 +2176,10 @@ function addPriceLine(
         1,
 
       lineStyle:
-        style,
+        lineStyle ??
+        LightweightCharts
+          .LineStyle
+          .Dotted,
 
       axisLabelVisible:
         true,
@@ -2178,7 +2197,47 @@ function addPriceLine(
 
 
 /* =========================================================
-   DRAW LIQUIDITY LEVELS
+   ROUNDING HELPER
+========================================================= */
+
+function priceKey(
+  value
+){
+
+  if(
+    !Number.isFinite(
+      Number(value)
+    )
+  ){
+
+    return null;
+
+  }
+
+
+  const n =
+    Number(value);
+
+
+  /*
+    Enough precision to distinguish
+    meaningful liquidity levels without
+    creating duplicate visual lines.
+  */
+
+  return n.toFixed(
+    n >= 1000
+      ? 2
+      : n >= 100
+        ? 3
+        : 5
+  );
+
+}
+
+
+/* =========================================================
+   DRAW CLEAN LIQUIDITY LEVELS
 ========================================================= */
 
 function drawLiquidityLevels(
@@ -2210,70 +2269,112 @@ function drawLiquidityLevels(
       : [];
 
 
-  /* Last 8 swing highs */
+  const used =
+    new Set();
 
-  highs
-    .slice(-8)
-    .forEach(
-      level => {
 
-        addPriceLine(
-          level.price,
-          "LIQ HIGH",
-          "#b65a64"
-        );
+  /*
+    Only the most recent levels are displayed.
+    This prevents the chart from becoming crowded.
+  */
 
-      }
+  const recentHighs =
+    highs.slice(-4);
+
+
+  const recentLows =
+    lows.slice(-4);
+
+
+  for(
+    const level of recentHighs
+  ){
+
+    const key =
+      "H|" +
+      priceKey(level.price);
+
+
+    if(
+      used.has(key)
+    ){
+
+      continue;
+
+    }
+
+
+    used.add(key);
+
+
+    addPriceLine(
+      level.price,
+      "LIQ HIGH",
+      "#a9535e",
+      LightweightCharts
+        .LineStyle
+        .Dotted
     );
 
+  }
 
-  /* Last 8 swing lows */
 
-  lows
-    .slice(-8)
-    .forEach(
-      level => {
+  for(
+    const level of recentLows
+  ){
 
-        addPriceLine(
-          level.price,
-          "LIQ LOW",
-          "#63a96c"
-        );
+    const key =
+      "L|" +
+      priceKey(level.price);
 
-      }
+
+    if(
+      used.has(key)
+    ){
+
+      continue;
+
+    }
+
+
+    used.add(key);
+
+
+    addPriceLine(
+      level.price,
+      "LIQ LOW",
+      "#5ba367",
+      LightweightCharts
+        .LineStyle
+        .Dotted
     );
+
+  }
 
 }
 
 
 /* =========================================================
-   DRAW SWEEP LEVELS
+   DRAW ACTIVE SWEEP
 ========================================================= */
 
-function drawSweep(
+function drawActiveSweep(
   data
 ){
 
-  const sweeps =
-    data?.liquidity?.sweeps;
+  const sweep =
+    latestSweep(
+      data
+    );
 
 
-  if(
-    !Array.isArray(sweeps) ||
-    !sweeps.length
-  ){
-
+  if(!sweep){
     return;
-
   }
 
 
-  const latest =
-    sweeps[sweeps.length - 1];
-
-
   const price =
-    latest?.level?.price;
+    sweep?.level?.price;
 
 
   if(
@@ -2288,15 +2389,17 @@ function drawSweep(
 
 
   if(
-    latest.type ===
+    sweep.type ===
     "BULLISH"
   ){
 
     addPriceLine(
       price,
-      "BULL SWEEP",
-      "#69c979",
-      LightweightCharts.LineStyle.Dashed
+      "SWEEP LOW",
+      "#79dc8a",
+      LightweightCharts
+        .LineStyle
+        .Dashed
     );
 
   }
@@ -2304,9 +2407,11 @@ function drawSweep(
 
     addPriceLine(
       price,
-      "BEAR SWEEP",
-      "#ef6874",
-      LightweightCharts.LineStyle.Dashed
+      "SWEEP HIGH",
+      "#ff7884",
+      LightweightCharts
+        .LineStyle
+        .Dashed
     );
 
   }
@@ -2333,11 +2438,24 @@ function drawTradePlan(
   }
 
 
+  if(
+    !Number.isFinite(
+      Number(signal.entry)
+    )
+  ){
+
+    return;
+
+  }
+
+
   addPriceLine(
     signal.entry,
     "ENTRY",
-    "#d8d8d8",
-    LightweightCharts.LineStyle.Solid
+    "#d9d9d9",
+    LightweightCharts
+      .LineStyle
+      .Solid
   );
 
 
@@ -2345,7 +2463,9 @@ function drawTradePlan(
     signal.sl,
     "SL",
     "#ef6874",
-    LightweightCharts.LineStyle.Dashed
+    LightweightCharts
+      .LineStyle
+      .Dashed
   );
 
 
@@ -2353,7 +2473,9 @@ function drawTradePlan(
     signal.tp1,
     "TP1",
     "#69c979",
-    LightweightCharts.LineStyle.Dotted
+    LightweightCharts
+      .LineStyle
+      .Dotted
   );
 
 
@@ -2361,7 +2483,9 @@ function drawTradePlan(
     signal.tp2,
     "TP2",
     "#69c979",
-    LightweightCharts.LineStyle.Dotted
+    LightweightCharts
+      .LineStyle
+      .Dotted
   );
 
 
@@ -2369,14 +2493,263 @@ function drawTradePlan(
     signal.tp3,
     "TP3",
     "#69c979",
-    LightweightCharts.LineStyle.Dotted
+    LightweightCharts
+      .LineStyle
+      .Dotted
   );
 
 }
 
 
 /* =========================================================
-   DRAW CHART
+   DRAW MARKERS
+========================================================= */
+
+function drawMarkers(){
+
+  if(
+    !candleSeries
+  ){
+
+    return;
+
+  }
+
+
+  const data =
+    state.chartTimeframe ===
+    "15min"
+      ? state.data15
+      : state.data5;
+
+
+  if(
+    !data?.candles?.length
+  ){
+
+    return;
+
+  }
+
+
+  const markers=[];
+
+
+  /* -------------------------------------------------------
+     Swing highs
+  ------------------------------------------------------- */
+
+  const highs =
+    Array.isArray(
+      data?.swings?.highs
+    )
+      ? data.swings.highs
+      : [];
+
+
+  highs
+    .slice(-6)
+    .forEach(
+      swing => {
+
+        markers.push({
+
+          time:
+            swing.time,
+
+          position:
+            "aboveBar",
+
+          color:
+            "#a9535e",
+
+          shape:
+            "circle",
+
+          text:
+            "H"
+
+        });
+
+      }
+    );
+
+
+  /* -------------------------------------------------------
+     Swing lows
+  ------------------------------------------------------- */
+
+  const lows =
+    Array.isArray(
+      data?.swings?.lows
+    )
+      ? data.swings.lows
+      : [];
+
+
+  lows
+    .slice(-6)
+    .forEach(
+      swing => {
+
+        markers.push({
+
+          time:
+            swing.time,
+
+          position:
+            "belowBar",
+
+          color:
+            "#5ba367",
+
+          shape:
+            "circle",
+
+          text:
+            "L"
+
+        });
+
+      }
+    );
+
+
+  /* -------------------------------------------------------
+     Only latest few sweeps
+  ------------------------------------------------------- */
+
+  const sweeps =
+    Array.isArray(
+      data?.liquidity?.sweeps
+    )
+      ? data.liquidity.sweeps
+      : [];
+
+
+  sweeps
+    .slice(-3)
+    .forEach(
+      sweep => {
+
+        const bullish =
+          sweep.type ===
+          "BULLISH";
+
+
+        markers.push({
+
+          time:
+            sweep.time,
+
+          position:
+            bullish
+              ? "belowBar"
+              : "aboveBar",
+
+          color:
+            bullish
+              ? "#79dc8a"
+              : "#ff7884",
+
+          shape:
+            bullish
+              ? "arrowUp"
+              : "arrowDown",
+
+          text:
+            bullish
+              ? "SWEEP"
+              : "SWEEP"
+
+        });
+
+      }
+    );
+
+
+  markers.sort(
+    (a,b) =>
+      Number(a.time) -
+      Number(b.time)
+  );
+
+
+  /*
+    Remove exact duplicates.
+  */
+
+  const unique=[];
+
+  const seen=
+    new Set();
+
+
+  for(
+    const marker of markers
+  ){
+
+    const key =
+      [
+        marker.time,
+        marker.position,
+        marker.text
+      ].join("|");
+
+
+    if(
+      seen.has(key)
+    ){
+
+      continue;
+
+    }
+
+
+    seen.add(key);
+
+    unique.push(
+      marker
+    );
+
+  }
+
+
+  try{
+
+    if(
+      !markersSeries
+    ){
+
+      markersSeries =
+        LightweightCharts
+          .createSeriesMarkers(
+            candleSeries,
+            unique
+          );
+
+    }else{
+
+      markersSeries.setMarkers(
+        unique
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Marker error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER CHART
 ========================================================= */
 
 function renderChart(){
@@ -2451,8 +2824,8 @@ function renderChart(){
 
         color:
           candle.close >= candle.open
-            ? "rgba(105,201,121,.35)"
-            : "rgba(239,104,116,.35)"
+            ? "rgba(105,201,121,.25)"
+            : "rgba(239,104,116,.25)"
 
       })
     )
@@ -2468,267 +2841,22 @@ function renderChart(){
   );
 
 
-  drawSweep(
+  drawActiveSweep(
     data
   );
 
-
-  /*
-    Trade plan uses final aligned signal.
-  */
 
   drawTradePlan(
     state.currentSignal
   );
 
 
+  drawMarkers();
+
+
   chart
     .timeScale()
     .fitContent();
-
-}
-
-
-/* =========================================================
-   CHART MARKERS
-========================================================= */
-
-function drawMarkers(){
-
-  if(
-    !candleSeries
-  ){
-
-    return;
-
-  }
-
-
-  const data =
-    state.chartTimeframe ===
-    "15min"
-      ? state.data15
-      : state.data5;
-
-
-  if(
-    !data?.candles?.length
-  ){
-
-    return;
-
-  }
-
-
-  const markers=[];
-
-
-  /* -----------------------------------------------
-     Swing High markers
-  ------------------------------------------------ */
-
-  if(
-    Array.isArray(
-      data?.swings?.highs
-    )
-  ){
-
-    data.swings.highs
-      .slice(-12)
-      .forEach(
-        swing => {
-
-          markers.push({
-
-            time:
-              swing.time,
-
-            position:
-              "aboveBar",
-
-            color:
-              "#b65a64",
-
-            shape:
-              "arrowDown",
-
-            text:
-              "SH"
-
-          });
-
-        }
-      );
-
-  }
-
-
-  /* -----------------------------------------------
-     Swing Low markers
-  ------------------------------------------------ */
-
-  if(
-    Array.isArray(
-      data?.swings?.lows
-    )
-  ){
-
-    data.swings.lows
-      .slice(-12)
-      .forEach(
-        swing => {
-
-          markers.push({
-
-            time:
-              swing.time,
-
-            position:
-              "belowBar",
-
-            color:
-              "#63a96c",
-
-            shape:
-              "arrowUp",
-
-            text:
-              "SL"
-
-          });
-
-        }
-      );
-
-  }
-
-
-  /* -----------------------------------------------
-     Liquidity sweep markers
-  ------------------------------------------------ */
-
-  if(
-    Array.isArray(
-      data?.liquidity?.sweeps
-    )
-  ){
-
-    data.liquidity.sweeps
-      .slice(-10)
-      .forEach(
-        sweep => {
-
-          const bullish =
-            sweep.type ===
-            "BULLISH";
-
-
-          markers.push({
-
-            time:
-              sweep.time,
-
-            position:
-              bullish
-                ? "belowBar"
-                : "aboveBar",
-
-            color:
-              bullish
-                ? "#69c979"
-                : "#ef6874",
-
-            shape:
-              bullish
-                ? "arrowUp"
-                : "arrowDown",
-
-            text:
-              bullish
-                ? "SWEEP BUY"
-                : "SWEEP SELL"
-
-          });
-
-        }
-      );
-
-  }
-
-
-  markers.sort(
-    (a,b) =>
-      Number(a.time) -
-      Number(b.time)
-  );
-
-
-  /*
-    Lightweight Charts markers require
-    unique/sorted timestamps.
-  */
-
-  const unique=[];
-
-  const seen=
-    new Set();
-
-
-  for(
-    const marker of markers
-  ){
-
-    const key =
-      `${marker.time}|${marker.position}|${marker.text}`;
-
-
-    if(
-      seen.has(key)
-    ){
-
-      continue;
-
-    }
-
-
-    seen.add(key);
-
-    unique.push(
-      marker
-    );
-
-  }
-
-
-  try{
-
-    if(
-      !swingMarkers
-    ){
-
-      swingMarkers =
-        LightweightCharts
-          .createSeriesMarkers(
-            candleSeries,
-            unique
-          );
-
-    }else{
-
-      swingMarkers.setMarkers(
-        unique
-      );
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Marker rendering error:",
-      error
-    );
-
-  }
 
 }
 
@@ -2756,7 +2884,9 @@ function loadHistory(){
       JSON.parse(raw);
 
 
-    return Array.isArray(parsed)
+    return Array.isArray(
+      parsed
+    )
       ? parsed
       : [];
 
@@ -2778,12 +2908,16 @@ function saveHistory(){
   try{
 
     localStorage.setItem(
+
       "ob_swing_liquidity_history",
 
       JSON.stringify(
-        state.history
-          .slice(0,100)
+        state.history.slice(
+          0,
+          100
+        )
       )
+
     );
 
   }catch(error){}
@@ -2836,7 +2970,9 @@ function recordSignal(
 
 
   if(
-    !signal.entry
+    !Number.isFinite(
+      Number(signal.entry)
+    )
   ){
 
     return;
@@ -2860,14 +2996,15 @@ function recordSignal(
   }
 
 
-  const already =
+  const exists =
     state.history.some(
       item =>
-        item.key === key
+        item.key ===
+        key
     );
 
 
-  if(already){
+  if(exists){
 
     state.lastSignalKey =
       key;
@@ -2938,7 +3075,7 @@ function recordSignal(
 
 
 /* =========================================================
-   UPDATE HISTORY OUTCOMES
+   UPDATE HISTORY
 ========================================================= */
 
 function updateHistoryOutcomes(){
@@ -3002,20 +3139,12 @@ function updateHistoryOutcomes(){
         candles[i];
 
 
-      /* ---------------------------------------------
-         BUY
-      --------------------------------------------- */
+      /* BUY */
 
       if(
         item.direction ===
         "BUY"
       ){
-
-        /*
-          Conservative:
-          SL gets priority if same candle
-          touches SL and TP.
-        */
 
         if(
           Number(candle.low) <=
@@ -3107,9 +3236,7 @@ function updateHistoryOutcomes(){
       }
 
 
-      /* ---------------------------------------------
-         SELL
-      --------------------------------------------- */
+      /* SELL */
 
       if(
         item.direction ===
@@ -3222,7 +3349,7 @@ function updateHistoryOutcomes(){
 
 
 /* =========================================================
-   HISTORY UI
+   RENDER HISTORY
 ========================================================= */
 
 function renderHistory(){
@@ -3336,12 +3463,14 @@ function renderHistory(){
                   item.time
                 )}
 
-                • Probability
+                •
+                Probability
                 ${escapeHtml(
-                  item.probability
+                  item.probability || 0
                 )}%
 
-                • Score
+                •
+                Score
                 ${escapeHtml(
                   item.score || 0
                 )}
@@ -3402,6 +3531,7 @@ function renderHistory(){
                       )
 
                     : "Waiting for outcome..."
+
                 }
 
               </div>
@@ -3458,6 +3588,39 @@ function escapeHtml(
 
 
 /* =========================================================
+   SHOW ERROR
+========================================================= */
+
+function showError(
+  message
+){
+
+  errorBox.textContent =
+    message;
+
+
+  errorBox.style.display =
+    "block";
+
+}
+
+
+/* =========================================================
+   HIDE ERROR
+========================================================= */
+
+function hideError(){
+
+  errorBox.textContent =
+    "";
+
+  errorBox.style.display =
+    "none";
+
+}
+
+
+/* =========================================================
    LOAD MARKET
 ========================================================= */
 
@@ -3474,14 +3637,15 @@ async function loadMarket(){
     "Updating...";
 
 
+  hideError();
+
+
   try{
 
-    /*
-      IMPORTANT:
-      Page 2 now uses /api/liquidity
-    */
-
-    const results =
+    const [
+      data15,
+      data5
+    ] =
       await Promise.all([
 
         fetchLiquidity(
@@ -3498,11 +3662,11 @@ async function loadMarket(){
 
 
     state.data15 =
-      results[0];
+      data15;
 
 
     state.data5 =
-      results[1];
+      data5;
 
 
     state.currentSignal =
@@ -3515,9 +3679,6 @@ async function loadMarket(){
 
 
     renderChart();
-
-
-    drawMarkers();
 
 
     recordSignal(
@@ -3533,7 +3694,13 @@ async function loadMarket(){
 
 
     $("assetSubtitle").textContent =
-      `${state.symbol} • Swing Liquidity`;
+
+      state.chartTimeframe ===
+      "15min"
+
+        ? `${state.symbol} • 15M Swing Liquidity Structure`
+
+        : `${state.symbol} • 5M Swing Liquidity Entry`;
 
 
     $("refreshText").textContent =
@@ -3545,7 +3712,7 @@ async function loadMarket(){
   }catch(error){
 
     console.error(
-      "Swing Liquidity page error:",
+      "Swing Liquidity error:",
       error
     );
 
@@ -3562,18 +3729,10 @@ async function loadMarket(){
       "direction sell";
 
 
-    $("signalProbability").textContent =
-      "—";
-
-
-    $("currentPrice").textContent =
-      "—";
-
-
-    /*
-      Show useful error in console
-      without exposing secret/API key.
-    */
+    showError(
+      error?.message ||
+      "Unable to load Swing Liquidity data."
+    );
 
   }finally{
 
@@ -3617,7 +3776,7 @@ $("searchInput")
 
         $("searchResults")
           .style.display =
-            "none";
+          "none";
 
         return;
 
@@ -3646,11 +3805,10 @@ async function searchAssets(
   try{
 
     /*
-      Search itself can continue
-      using the existing market.js
-      search endpoint.
+      Search uses the existing
+      symbol-search endpoint only.
 
-      This does NOT perform Strategy 02 analysis.
+      It does NOT run Strategy 02.
     */
 
     const response =
@@ -3704,7 +3862,7 @@ async function searchAssets(
 
       $("searchResults")
         .style.display =
-          "block";
+        "block";
 
 
       return;
@@ -3715,85 +3873,82 @@ async function searchAssets(
     $("searchResults")
       .innerHTML =
 
-        results
-          .slice(0,10)
-          .map(
-            item => {
+      results
+        .slice(0,10)
+        .map(
+          item => {
 
-              const symbol =
-                item.symbol ||
-                item.ticker ||
-                item.value ||
-                "";
-
-
-              const name =
-                item.name ||
-                symbol;
+            const symbol =
+              item.symbol ||
+              item.ticker ||
+              item.value ||
+              "";
 
 
-              const category =
-                item.category ||
-                item.type ||
-                "";
+            const name =
+              item.name ||
+              symbol;
 
 
-              return `
+            const category =
+              item.category ||
+              item.type ||
+              "";
 
-                <div
-                  class="searchItem"
 
-                  data-symbol="${escapeHtml(
+            return `
+
+              <div
+                class="searchItem"
+
+                data-symbol="${escapeHtml(
+                  symbol
+                )}"
+
+                data-name="${escapeHtml(
+                  name
+                )}"
+
+                data-category="${escapeHtml(
+                  category
+                )}"
+              >
+
+                <strong>
+                  ${escapeHtml(
                     symbol
-                  )}"
+                  )}
+                </strong>
 
-                  data-name="${escapeHtml(
+                <span>
+
+                  ${escapeHtml(
                     name
-                  )}"
+                  )}
 
-                  data-category="${escapeHtml(
+                  ${
                     category
-                  )}"
-                >
+                      ? " • " +
+                        escapeHtml(
+                          category
+                        )
+                      : ""
+                  }
 
-                  <strong>
+                </span>
 
-                    ${escapeHtml(
-                      symbol
-                    )}
+              </div>
 
-                  </strong>
+            `;
 
-
-                  <span>
-
-                    ${escapeHtml(
-                      name
-                    )}
-
-                    ${
-                      category
-                        ? " • " +
-                          escapeHtml(
-                            category
-                          )
-                        : ""
-                    }
-
-                  </span>
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("");
+          }
+        )
+        .join("");
 
 
     $("searchResults")
       .style.display =
-        "block";
+      "block";
 
 
     document
@@ -3826,31 +3981,12 @@ async function searchAssets(
 
               $("searchInput")
                 .value =
-                  state.symbol;
+                state.symbol;
 
 
               $("searchResults")
                 .style.display =
-                  "none";
-
-
-              /*
-                Reset to 15M structure
-                when changing asset.
-              */
-
-              state.chartTimeframe =
-                "15min";
-
-
-              $("tf15")
-                .classList
-                .add("active");
-
-
-              $("tf5")
-                .classList
-                .remove("active");
+                "none";
 
 
               loadMarket();
@@ -3865,22 +4001,23 @@ async function searchAssets(
   }catch(error){
 
     console.error(
+      "Search error:",
       error
     );
 
 
     $("searchResults")
       .innerHTML =
-        `
-        <div class="empty">
-          Search error
-        </div>
-        `;
+      `
+      <div class="empty">
+        Search error
+      </div>
+      `;
 
 
     $("searchResults")
       .style.display =
-        "block";
+      "block";
 
   }
 
@@ -3903,7 +4040,7 @@ document.addEventListener(
 
       $("searchResults")
         .style.display =
-          "none";
+        "none";
 
     }
 
@@ -3952,7 +4089,7 @@ document
 
 
 /* =========================================================
-   15M BUTTON
+   15M STRUCTURE
 ========================================================= */
 
 $("tf15")
@@ -3981,14 +4118,15 @@ $("tf15")
       renderChart();
 
 
-      drawMarkers();
+      $("assetSubtitle").textContent =
+        `${state.symbol} • 15M Swing Liquidity Structure`;
 
     }
   );
 
 
 /* =========================================================
-   5M BUTTON
+   5M ENTRY
 ========================================================= */
 
 $("tf5")
@@ -4017,7 +4155,8 @@ $("tf5")
       renderChart();
 
 
-      drawMarkers();
+      $("assetSubtitle").textContent =
+        `${state.symbol} • 5M Swing Liquidity Entry`;
 
     }
   );
@@ -4050,4 +4189,4 @@ loadMarket();
 </script>
 
 </body>
-  </html>
+              </html>
