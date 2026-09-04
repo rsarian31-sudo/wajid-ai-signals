@@ -17,9 +17,6 @@ export default async function handler(req, res) {
      * =====================================================
      * SYMBOL SEARCH
      * =====================================================
-     *
-     * Example:
-     * /api/market?action=search&q=bitcoin
      */
 
     if (action === "search") {
@@ -161,6 +158,12 @@ export default async function handler(req, res) {
         .reverse();
 
 
+    /*
+     * =====================================================
+     * NOT ENOUGH DATA
+     * =====================================================
+     */
+
     if (candles.length < 50) {
       return res.status(200).json({
         success: true,
@@ -174,7 +177,9 @@ export default async function handler(req, res) {
           supply: [],
           demand: [],
           magnets: [],
-          signal: null
+          signal: null,
+          signalTime: null,
+          signalKey: null
         }
       });
     }
@@ -245,7 +250,11 @@ function calculateSDMagnet(candles) {
 
       magnets: [],
 
-      signal: null
+      signal: null,
+
+      signalTime: null,
+
+      signalKey: null
 
     };
 
@@ -283,7 +292,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
-   * Confirmed pivots
+   * =====================================================
+   * CONFIRMED PIVOTS
+   * =====================================================
    */
 
   for (
@@ -312,7 +323,9 @@ function calculateSDMagnet(candles) {
         candles[i + j].high >
           pivot.high
       ) {
+
         isHigh = false;
+
       }
 
 
@@ -322,7 +335,9 @@ function calculateSDMagnet(candles) {
         candles[i + j].low <
           pivot.low
       ) {
+
         isLow = false;
+
       }
 
     }
@@ -342,12 +357,16 @@ function calculateSDMagnet(candles) {
         pivot.low <
       pivotATR * 0.3
     ) {
+
       continue;
+
     }
 
 
     /*
+     * ===================================================
      * SUPPLY
+     * ===================================================
      */
 
     if (isHigh) {
@@ -385,7 +404,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
+     * ===================================================
      * DEMAND
+     * ===================================================
      */
 
     if (isLow) {
@@ -425,7 +446,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
-   * Remove excessive overlapping zones
+   * =====================================================
+   * REMOVE EXCESSIVE OVERLAPPING ZONES
+   * =====================================================
    */
 
   const filteredZones = [];
@@ -490,7 +513,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
-   * Process zones
+   * =====================================================
+   * PROCESS ZONES
+   * =====================================================
    */
 
   for (
@@ -536,6 +561,10 @@ function calculateSDMagnet(candles) {
         inZone;
 
 
+      /*
+       * SUPPLY INVALIDATION
+       */
+
       if (
         zone.kind ===
         "Supply"
@@ -553,7 +582,14 @@ function calculateSDMagnet(candles) {
 
         }
 
-      } else {
+      }
+
+
+      /*
+       * DEMAND INVALIDATION
+       */
+
+      else {
 
         if (
           c.close <
@@ -573,7 +609,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Departure impulse
+     * ===================================================
+     * DEPARTURE IMPULSE
+     * ===================================================
      */
 
     const departureIndex =
@@ -636,7 +674,10 @@ function calculateSDMagnet(candles) {
           1
         );
 
-    } else {
+    }
+
+
+    else {
 
       const slice =
         candles.slice(
@@ -681,7 +722,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Volume
+     * ===================================================
+     * VOLUME
+     * ===================================================
      */
 
     const volStart =
@@ -724,7 +767,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Rejection wick
+     * ===================================================
+     * REJECTION WICK
+     * ===================================================
      */
 
     const range =
@@ -759,7 +804,10 @@ function calculateSDMagnet(candles) {
           1
         );
 
-    } else {
+    }
+
+
+    else {
 
       wickFactor =
         Math.min(
@@ -781,7 +829,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Freshness
+     * ===================================================
+     * FRESHNESS
+     * ===================================================
      */
 
     const freshFactor =
@@ -794,7 +844,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Idle decay
+     * ===================================================
+     * IDLE DECAY
+     * ===================================================
      */
 
     const idle =
@@ -823,7 +875,9 @@ function calculateSDMagnet(candles) {
 
 
     /*
-     * Final score
+     * ===================================================
+     * FINAL SCORE
+     * ===================================================
      */
 
     const raw =
@@ -848,7 +902,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
-   * Active zones
+   * =====================================================
+   * ACTIVE ZONES
+   * =====================================================
    */
 
   const activeZones =
@@ -912,7 +968,9 @@ function calculateSDMagnet(candles) {
         magnetSourceThreshold ||
       source.touches < 1
     ) {
+
       continue;
+
     }
 
 
@@ -931,7 +989,9 @@ function calculateSDMagnet(candles) {
         candidate ===
         source
       ) {
+
         continue;
+
       }
 
 
@@ -939,12 +999,14 @@ function calculateSDMagnet(candles) {
         candidate.score <
         magnetTargetThreshold
       ) {
+
         continue;
+
       }
 
 
       /*
-       * Supply -> Demand
+       * SUPPLY -> DEMAND
        */
 
       if (
@@ -980,7 +1042,7 @@ function calculateSDMagnet(candles) {
 
 
       /*
-       * Demand -> Supply
+       * DEMAND -> SUPPLY
        */
 
       if (
@@ -1137,6 +1199,12 @@ function calculateSDMagnet(candles) {
     ].close;
 
 
+  const signalTime =
+    candles[
+      candles.length - 1
+    ].time;
+
+
   let signal = null;
 
 
@@ -1161,7 +1229,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
+   * =====================================================
    * BUY
+   * =====================================================
    */
 
   if (
@@ -1262,7 +1332,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
+   * =====================================================
    * SELL
+   * =====================================================
    */
 
   else if (
@@ -1363,7 +1435,9 @@ function calculateSDMagnet(candles) {
 
 
   /*
-   * Conflicting directions
+   * =====================================================
+   * CONFLICTING DIRECTIONS
+   * =====================================================
    */
 
   if (
@@ -1389,6 +1463,38 @@ function calculateSDMagnet(candles) {
   }
 
 
+  /*
+   * =====================================================
+   * UNIQUE SIGNAL KEY
+   * =====================================================
+   *
+   * Used by frontend History system to prevent
+   * duplicate records during auto-refresh.
+   */
+
+  const signalKey =
+    signal
+      ? [
+          symbol,
+          interval,
+          signal.direction,
+          signalTime,
+          round(
+            signal.entry.low
+          ),
+          round(
+            signal.entry.high
+          )
+        ].join("|")
+      : null;
+
+
+  /*
+   * =====================================================
+   * FINAL ENGINE RESPONSE
+   * =====================================================
+   */
+
   return {
 
     status:
@@ -1402,32 +1508,69 @@ function calculateSDMagnet(candles) {
     atr:
       round(currentATR),
 
+    /*
+     * Signal timestamp
+     */
+
+    signalTime,
+
+    /*
+     * Unique identifier for History
+     */
+
+    signalKey,
+
+    /*
+     * Supply zones
+     */
+
     supply:
       supply.map(
         formatZone
       ),
+
+    /*
+     * Demand zones
+     */
 
     demand:
       demand.map(
         formatZone
       ),
 
+    /*
+     * Magnet structures
+     */
+
     magnets:
       magnets.slice(0, 5),
 
+    /*
+     * Current signal
+     */
+
     signal,
+
+    /*
+     * Engine rules
+     */
 
     rules: {
 
-      strongZone: 7.0,
+      strongZone:
+        7.0,
 
-      magnetSource: 6.5,
+      magnetSource:
+        6.5,
 
-      magnetTarget: 5.0,
+      magnetTarget:
+        5.0,
 
-      minimumRetests: 1,
+      minimumRetests:
+        1,
 
-      maxReachATR: 25
+      maxReachATR:
+        25
 
     }
 
@@ -1606,4 +1749,4 @@ function formatZone(z) {
 
   };
 
-          }
+        }
