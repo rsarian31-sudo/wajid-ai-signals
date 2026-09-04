@@ -14,6 +14,7 @@
   <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -54,7 +55,9 @@
       padding: 14px;
     }
 
-    /* ================= HEADER ================= */
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
     .header {
       display: flex;
@@ -140,7 +143,9 @@
       background: #ff5d6c;
     }
 
-    /* ================= SEARCH ================= */
+    /* =====================================================
+       SEARCH
+       ===================================================== */
 
     .search-panel {
       background: #0b1721;
@@ -305,7 +310,9 @@
       font-size: 9px;
     }
 
-    /* ================= ASSET ================= */
+    /* =====================================================
+       ASSET
+       ===================================================== */
 
     .asset-bar {
       display: flex;
@@ -375,7 +382,9 @@
       border-color: #277dc4;
     }
 
-    /* ================= GRID ================= */
+    /* =====================================================
+       GRID
+       ===================================================== */
 
     .main-grid {
       display: grid;
@@ -425,21 +434,49 @@
       font-size: 9px;
     }
 
-    /* ================= CHART ================= */
+    /* =====================================================
+       CHART
+       ===================================================== */
 
     .chart-wrap {
       position: relative;
 
       width: 100%;
 
-      height: 520px;
+      height: 560px;
 
       background: #071018;
+
+      overflow: hidden;
     }
 
     #chart {
+      position: absolute;
+
+      inset: 0;
+
       width: 100%;
       height: 100%;
+
+      z-index: 1;
+    }
+
+    /*
+      SVG overlay is used for real Supply/Demand
+      shaded boxes and Magnet connectors.
+    */
+
+    #chartOverlay {
+      position: absolute;
+
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      z-index: 3;
+
+      pointer-events: none;
     }
 
     .chart-loading {
@@ -462,7 +499,7 @@
 
       pointer-events: none;
 
-      z-index: 5;
+      z-index: 8;
     }
 
     .chart-loading.hidden {
@@ -476,7 +513,7 @@
       right: 12px;
       top: 12px;
 
-      z-index: 6;
+      z-index: 10;
 
       padding: 10px;
 
@@ -498,7 +535,151 @@
       display: block;
     }
 
-    /* ================= SIGNAL ================= */
+    /* =====================================================
+       SVG ZONE STYLE
+       ===================================================== */
+
+    .zone-supply {
+      fill: rgba(239, 83, 96, .16);
+
+      stroke: rgba(239, 83, 96, .85);
+
+      stroke-width: 1;
+    }
+
+    .zone-demand {
+      fill: rgba(25, 209, 154, .15);
+
+      stroke: rgba(25, 209, 154, .85);
+
+      stroke-width: 1;
+    }
+
+    .zone-supply-strong {
+      fill: rgba(239, 83, 96, .23);
+
+      stroke: #ff5968;
+
+      stroke-width: 1.5;
+    }
+
+    .zone-demand-strong {
+      fill: rgba(25, 209, 154, .22);
+
+      stroke: #19d19a;
+
+      stroke-width: 1.5;
+    }
+
+    .zone-label-bg-supply {
+      fill: rgba(117, 25, 35, .92);
+    }
+
+    .zone-label-bg-demand {
+      fill: rgba(8, 103, 75, .92);
+    }
+
+    .zone-label-text {
+      fill: white;
+
+      font-size: 10px;
+
+      font-weight: 900;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+    }
+
+    .trade-entry-line {
+      stroke: #4aa8ff;
+
+      stroke-width: 2;
+
+      stroke-dasharray: 7 5;
+    }
+
+    .trade-sl-line {
+      stroke: #ff5968;
+
+      stroke-width: 2;
+
+      stroke-dasharray: 6 4;
+    }
+
+    .trade-tp-line {
+      stroke: #1edaa1;
+
+      stroke-width: 1.7;
+
+      stroke-dasharray: 6 4;
+    }
+
+    .trade-label-entry {
+      fill: #1769a8;
+    }
+
+    .trade-label-sl {
+      fill: #a72d3b;
+    }
+
+    .trade-label-tp {
+      fill: #087453;
+    }
+
+    .trade-label-text {
+      fill: white;
+
+      font-size: 10px;
+
+      font-weight: 1000;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+    }
+
+    .magnet-line-up {
+      stroke: #18d69e;
+
+      stroke-width: 2;
+
+      opacity: .9;
+
+      stroke-dasharray: 8 5;
+    }
+
+    .magnet-line-down {
+      stroke: #ff6370;
+
+      stroke-width: 2;
+
+      opacity: .9;
+
+      stroke-dasharray: 8 5;
+    }
+
+    .magnet-source {
+      fill: #d0a85b;
+
+      stroke: #fff0bb;
+
+      stroke-width: 1;
+    }
+
+    .magnet-target {
+      fill: #d0a85b;
+
+      stroke: #fff0bb;
+
+      stroke-width: 1;
+    }
+
+    /* =====================================================
+       SIGNAL
+       ===================================================== */
 
     .signal-card {
       padding: 13px;
@@ -593,7 +774,9 @@
       font-weight: 800;
     }
 
-    /* ================= TRADE PLAN ================= */
+    /* =====================================================
+       TRADE PLAN
+       ===================================================== */
 
     .trade-plan {
       padding: 12px;
@@ -647,7 +830,9 @@
       color: #1edaa1;
     }
 
-    /* ================= ZONES ================= */
+    /* =====================================================
+       ZONES PANEL
+       ===================================================== */
 
     .zone-section {
       padding: 12px;
@@ -719,7 +904,9 @@
       font-size: 9px;
     }
 
-    /* ================= MAGNET ================= */
+    /* =====================================================
+       MAGNET
+       ===================================================== */
 
     .magnet {
       padding: 11px;
@@ -760,7 +947,9 @@
       font-size: 9px;
     }
 
-    /* ================= DIAGNOSTICS ================= */
+    /* =====================================================
+       DIAGNOSTICS
+       ===================================================== */
 
     .diagnostics {
       margin-top: 12px;
@@ -803,7 +992,9 @@
       font-weight: 900;
     }
 
-    /* ================= FOOTER ================= */
+    /* =====================================================
+       FOOTER
+       ===================================================== */
 
     .footer {
       padding: 15px 3px 5px;
@@ -815,7 +1006,9 @@
       text-align: center;
     }
 
-    /* ================= MOBILE ================= */
+    /* =====================================================
+       MOBILE
+       ===================================================== */
 
     @media (max-width: 1050px) {
 
@@ -867,7 +1060,7 @@
       }
 
       .chart-wrap {
-        height: 430px;
+        height: 470px;
       }
 
       .diag-grid {
@@ -876,14 +1069,18 @@
       }
 
     }
+
   </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
-  <!-- ================= HEADER ================= -->
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
 
   <header class="header">
 
@@ -907,6 +1104,7 @@
 
     </div>
 
+
     <div class="connection">
 
       <span
@@ -923,7 +1121,9 @@
   </header>
 
 
-  <!-- ================= SEARCH ================= -->
+  <!-- =====================================================
+       SEARCH
+       ===================================================== -->
 
   <section class="search-panel">
 
@@ -1012,7 +1212,9 @@
   </section>
 
 
-  <!-- ================= ASSET ================= -->
+  <!-- =====================================================
+       ASSET
+       ===================================================== -->
 
   <section class="asset-bar">
 
@@ -1056,12 +1258,16 @@
   </section>
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
 
   <main class="main-grid">
 
 
-    <!-- CHART -->
+    <!-- ===================================================
+         CHART
+         =================================================== -->
 
     <section class="card">
 
@@ -1082,6 +1288,7 @@
 
         </div>
 
+
         <div
           id="lastPrice"
           class="card-title"
@@ -1096,12 +1303,21 @@
 
         <div id="chart"></div>
 
+        <!-- SVG visualization layer -->
+
+        <svg
+          id="chartOverlay"
+          preserveAspectRatio="none"
+        ></svg>
+
+
         <div
           id="chartLoading"
           class="chart-loading"
         >
           Loading market data...
         </div>
+
 
         <div
           id="chartError"
@@ -1113,7 +1329,9 @@
     </section>
 
 
-    <!-- SIGNAL PANEL -->
+    <!-- ===================================================
+         SIGNAL PANEL
+         =================================================== -->
 
     <aside class="card">
 
@@ -1135,9 +1353,7 @@
 
       <div class="signal-card">
 
-        <div
-          class="signal-status"
-        >
+        <div class="signal-status">
 
           <div class="signal-label">
             CURRENT SIGNAL
@@ -1262,7 +1478,9 @@
       </div>
 
 
-      <!-- TRADE PLAN -->
+      <!-- =================================================
+           TRADE PLAN
+           ================================================= -->
 
       <div class="trade-plan">
 
@@ -1270,7 +1488,9 @@
           TRADE PLAN
         </div>
 
+
         <div class="price-row">
+
           <span class="price-name">
             Entry
           </span>
@@ -1281,9 +1501,12 @@
           >
             —
           </span>
+
         </div>
 
+
         <div class="price-row">
+
           <span class="price-name">
             Stop Loss
           </span>
@@ -1294,9 +1517,12 @@
           >
             —
           </span>
+
         </div>
 
+
         <div class="price-row">
+
           <span class="price-name">
             TP1
           </span>
@@ -1307,9 +1533,12 @@
           >
             —
           </span>
+
         </div>
 
+
         <div class="price-row">
+
           <span class="price-name">
             TP2
           </span>
@@ -1320,9 +1549,12 @@
           >
             —
           </span>
+
         </div>
 
+
         <div class="price-row">
+
           <span class="price-name">
             TP3
           </span>
@@ -1333,12 +1565,15 @@
           >
             —
           </span>
+
         </div>
 
       </div>
 
 
-      <!-- SUPPLY -->
+      <!-- =================================================
+           SUPPLY
+           ================================================= -->
 
       <div class="zone-section">
 
@@ -1357,7 +1592,9 @@
       </div>
 
 
-      <!-- DEMAND -->
+      <!-- =================================================
+           DEMAND
+           ================================================= -->
 
       <div class="zone-section">
 
@@ -1376,7 +1613,9 @@
       </div>
 
 
-      <!-- MAGNET -->
+      <!-- =================================================
+           MAGNET
+           ================================================= -->
 
       <div class="zone-section">
 
@@ -1422,7 +1661,9 @@
   </main>
 
 
-  <!-- ================= DIAGNOSTICS ================= -->
+  <!-- =====================================================
+       DIAGNOSTICS
+       ===================================================== -->
 
   <section class="card diagnostics">
 
@@ -1440,6 +1681,7 @@
 
 
     <div class="diag-grid">
+
 
       <div class="diag">
 
@@ -1541,13 +1783,16 @@
   </section>
 
 
-  <!-- ================= FOOTER ================= -->
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
 
   <footer class="footer">
 
     Owajid & Bokul Trading Assistant •
     Personal use •
-    Market data provided by Twelve Data
+    Market data provided by Twelve Data •
+    Charting by TradingView Lightweight Charts
 
   </footer>
 
@@ -1587,9 +1832,11 @@ let refreshTimer = null;
 
 let searchTimer = null;
 
+let overlayRefreshTimer = null;
+
 
 /* =========================================================
-   SHORT DOM HELPER
+   DOM HELPER
    ========================================================= */
 
 const $ = id =>
@@ -1614,8 +1861,11 @@ function createChart() {
         layout: {
 
           background: {
+
             type: "solid",
+
             color: "#071018"
+
           },
 
           textColor: "#8ea5b7"
@@ -1626,11 +1876,15 @@ function createChart() {
         grid: {
 
           vertLines: {
+
             color: "#0d1d27"
+
           },
 
           horzLines: {
+
             color: "#0d1d27"
+
           }
 
         },
@@ -1639,19 +1893,29 @@ function createChart() {
         crosshair: {
 
           vertLine: {
+
             color: "#31566d",
+
             width: 1,
+
             style: 2,
+
             labelBackgroundColor:
               "#16354a"
+
           },
 
           horzLine: {
+
             color: "#31566d",
+
             width: 1,
+
             style: 2,
+
             labelBackgroundColor:
               "#16354a"
+
           }
 
         },
@@ -1662,8 +1926,11 @@ function createChart() {
           borderColor: "#173041",
 
           scaleMargins: {
-            top: 0.08,
+
+            top: 0.06,
+
             bottom: 0.08
+
           }
 
         },
@@ -1677,7 +1944,7 @@ function createChart() {
 
           secondsVisible: false,
 
-          rightOffset: 5,
+          rightOffset: 6,
 
           barSpacing: 7
 
@@ -1708,6 +1975,7 @@ function createChart() {
         }
 
       }
+
     );
 
 
@@ -1745,13 +2013,47 @@ function createChart() {
     "resize",
     () => {
 
+      if (!chart) {
+        return;
+      }
+
+
       chart.resize(
         container.clientWidth,
         container.clientHeight
       );
 
+
+      requestAnimationFrame(
+        drawChartOverlay
+      );
+
     }
   );
+
+
+  /*
+   * Redraw SVG overlay after horizontal
+   * chart scrolling/zooming.
+   */
+
+  if (
+    chart.timeScale()
+      .subscribeVisibleLogicalRangeChange
+  ) {
+
+    chart.timeScale()
+      .subscribeVisibleLogicalRangeChange(
+        () => {
+
+          requestAnimationFrame(
+            drawChartOverlay
+          );
+
+        }
+      );
+
+  }
 
 }
 
@@ -1765,12 +2067,16 @@ function toChartTime(value) {
   if (
     typeof value === "number"
   ) {
+
     return value;
+
   }
 
 
   if (!value) {
+
     return null;
+
   }
 
 
@@ -1789,7 +2095,9 @@ function toChartTime(value) {
   if (
     !Number.isFinite(timestamp)
   ) {
+
     return null;
+
   }
 
 
@@ -1811,7 +2119,9 @@ function normalizeCandles(
   if (
     !Array.isArray(candles)
   ) {
+
     return [];
+
   }
 
 
@@ -1865,7 +2175,9 @@ function normalizeCandles(
 function clearPriceLines() {
 
   if (!candleSeries) {
+
     return;
+
   }
 
 
@@ -1891,14 +2203,15 @@ function clearPriceLines() {
 
 
 /* =========================================================
-   PRICE LINE
+   ADD PRICE LINE
    ========================================================= */
 
 function addPriceLine(
   price,
   title,
   color,
-  width = 1
+  width = 1,
+  style = 2
 ) {
 
   if (
@@ -1906,7 +2219,9 @@ function addPriceLine(
       Number(price)
     )
   ) {
+
     return;
+
   }
 
 
@@ -1921,9 +2236,11 @@ function addPriceLine(
       lineWidth:
         width,
 
-      lineStyle: 2,
+      lineStyle:
+        style,
 
-      axisLabelVisible: true,
+      axisLabelVisible:
+        true,
 
       title
 
@@ -1938,7 +2255,7 @@ function addPriceLine(
 
 
 /* =========================================================
-   ZONES
+   ZONE PRICE LINES
    ========================================================= */
 
 function drawZones(
@@ -1949,7 +2266,9 @@ function drawZones(
   if (
     !Array.isArray(zones)
   ) {
+
     return;
+
   }
 
 
@@ -1989,14 +2308,16 @@ function drawZones(
     addPriceLine(
       zone.top,
       `${prefix}${i + 1} TOP`,
-      color
+      color,
+      1
     );
 
 
     addPriceLine(
       zone.bottom,
       `${prefix}${i + 1} BOT`,
-      color
+      color,
+      1
     );
 
   }
@@ -2005,7 +2326,7 @@ function drawZones(
 
 
 /* =========================================================
-   MAGNET
+   MAGNET PRICE LINES
    ========================================================= */
 
 function drawMagnet(
@@ -2013,7 +2334,9 @@ function drawMagnet(
 ) {
 
   if (!magnet) {
+
     return;
+
   }
 
 
@@ -2031,7 +2354,9 @@ function drawMagnet(
         ? "#18d69e"
         : "#ff6370",
 
-      2
+      2,
+
+      3
 
     );
 
@@ -2046,7 +2371,11 @@ function drawMagnet(
 
       "MAGNET TARGET",
 
-      "#d0a85b"
+      "#d0a85b",
+
+      2,
+
+      3
 
     );
 
@@ -2056,7 +2385,7 @@ function drawMagnet(
 
 
 /* =========================================================
-   TRADE PLAN
+   TRADE PLAN PRICE LINES
    ========================================================= */
 
 function drawTradePlan(
@@ -2064,23 +2393,43 @@ function drawTradePlan(
 ) {
 
   if (!signal) {
+
     return;
+
   }
 
 
-  if (signal.entry) {
+  if (
+    signal.entry &&
+    Number.isFinite(
+      Number(signal.entry.low)
+    )
+  ) {
 
     addPriceLine(
       signal.entry.low,
       "ENTRY LOW",
-      "#4aa8ff"
+      "#4aa8ff",
+      2,
+      3
     );
 
+  }
+
+
+  if (
+    signal.entry &&
+    Number.isFinite(
+      Number(signal.entry.high)
+    )
+  ) {
 
     addPriceLine(
       signal.entry.high,
       "ENTRY HIGH",
-      "#4aa8ff"
+      "#4aa8ff",
+      2,
+      3
     );
 
   }
@@ -2089,28 +2438,36 @@ function drawTradePlan(
   addPriceLine(
     signal.stopLoss,
     "SL",
-    "#ff5968"
+    "#ff5968",
+    2,
+    3
   );
 
 
   addPriceLine(
     signal.tp1,
     "TP1",
-    "#1edaa1"
+    "#1edaa1",
+    2,
+    3
   );
 
 
   addPriceLine(
     signal.tp2,
     "TP2",
-    "#1edaa1"
+    "#1edaa1",
+    2,
+    3
   );
 
 
   addPriceLine(
     signal.tp3,
     "TP3",
-    "#1edaa1"
+    "#1edaa1",
+    2,
+    3
   );
 
 }
@@ -2126,7 +2483,9 @@ function drawSignalMarker(
 ) {
 
   if (!markerPlugin) {
+
     return;
+
   }
 
 
@@ -2189,6 +2548,1198 @@ function drawSignalMarker(
 
 
 /* =========================================================
+   SVG HELPERS
+   ========================================================= */
+
+function svgEl(
+  tag,
+  attrs = {}
+) {
+
+  const NS =
+    "http://www.w3.org/2000/svg";
+
+
+  const el =
+    document.createElementNS(
+      NS,
+      tag
+    );
+
+
+  Object.keys(attrs)
+    .forEach(
+      key =>
+        el.setAttribute(
+          key,
+          attrs[key]
+        )
+    );
+
+
+  return el;
+
+}
+
+
+/* =========================================================
+   ADD SVG LABEL
+   ========================================================= */
+
+function addSvgLabel(
+  svg,
+  x,
+  y,
+  text,
+  bgClass,
+  width = 94
+) {
+
+  const height = 21;
+
+
+  const group =
+    svgEl(
+      "g",
+      {
+        transform:
+          `translate(${x},${y})`
+      }
+    );
+
+
+  const rect =
+    svgEl(
+      "rect",
+      {
+
+        x: 0,
+
+        y: 0,
+
+        width,
+
+        height,
+
+        rx: 5,
+
+        class: bgClass
+
+      }
+    );
+
+
+  const label =
+    svgEl(
+      "text",
+      {
+
+        x:
+          width / 2,
+
+        y:
+          14,
+
+        "text-anchor":
+          "middle",
+
+        class:
+          "trade-label-text"
+
+      }
+    );
+
+
+  label.textContent =
+    text;
+
+
+  group.appendChild(
+    rect
+  );
+
+
+  group.appendChild(
+    label
+  );
+
+
+  svg.appendChild(
+    group
+  );
+
+}
+
+
+/* =========================================================
+   DRAW ZONE BOX
+   ========================================================= */
+
+function drawZoneBoxSvg(
+  svg,
+  zone,
+  type,
+  index,
+  width,
+  height
+) {
+
+  if (!zone) {
+
+    return;
+
+  }
+
+
+  const topPrice =
+    Number(zone.top);
+
+
+  const bottomPrice =
+    Number(zone.bottom);
+
+
+  if (
+    !Number.isFinite(topPrice) ||
+    !Number.isFinite(bottomPrice)
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !candleSeries.priceToCoordinate
+  ) {
+
+    return;
+
+  }
+
+
+  let yTop =
+    candleSeries.priceToCoordinate(
+      topPrice
+    );
+
+
+  let yBottom =
+    candleSeries.priceToCoordinate(
+      bottomPrice
+    );
+
+
+  if (
+    yTop === null ||
+    yBottom === null ||
+    yTop === undefined ||
+    yBottom === undefined
+  ) {
+
+    return;
+
+  }
+
+
+  const y =
+    Math.min(
+      yTop,
+      yBottom
+    );
+
+
+  const h =
+    Math.max(
+      2,
+      Math.abs(
+        yBottom - yTop
+      )
+    );
+
+
+  /*
+   * Keep the zone inside the visible chart.
+   */
+
+  if (
+    y > height ||
+    y + h < 0
+  ) {
+
+    return;
+
+  }
+
+
+  const supply =
+    type === "Supply";
+
+
+  const score =
+    Number(zone.score);
+
+
+  const strong =
+    Number.isFinite(score) &&
+    score >= 7;
+
+
+  const rect =
+    svgEl(
+      "rect",
+      {
+
+        x: 0,
+
+        y,
+
+        width,
+
+        height: h,
+
+        class:
+          supply
+
+            ? (
+                strong
+                  ? "zone-supply-strong"
+                  : "zone-supply"
+              )
+
+            : (
+                strong
+                  ? "zone-demand-strong"
+                  : "zone-demand"
+              )
+
+      }
+    );
+
+
+  svg.appendChild(
+    rect
+  );
+
+
+  const name =
+    `${supply ? "S" : "D"}${index + 1}`;
+
+
+  const scoreText =
+    Number.isFinite(score)
+      ? score.toFixed(1)
+      : "—";
+
+
+  const retests =
+    zone.retests ??
+    zone.touches ??
+    0;
+
+
+  const labelText =
+    `${name}  ★${scoreText}  R${retests}`;
+
+
+  addSvgLabel(
+
+    svg,
+
+    9,
+
+    Math.max(
+      4,
+      Math.min(
+        height - 25,
+        y + 4
+      )
+    ),
+
+    labelText,
+
+    supply
+      ? "zone-label-bg-supply"
+      : "zone-label-bg-demand",
+
+    110
+
+  );
+
+}
+
+
+/* =========================================================
+   DRAW TRADE LEVEL
+   ========================================================= */
+
+function drawTradeLevel(
+  svg,
+  price,
+  label,
+  lineClass,
+  labelClass,
+  width,
+  height
+) {
+
+  const n =
+    Number(price);
+
+
+  if (
+    !Number.isFinite(n)
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !candleSeries.priceToCoordinate
+  ) {
+
+    return;
+
+  }
+
+
+  const y =
+    candleSeries.priceToCoordinate(
+      n
+    );
+
+
+  if (
+    y === null ||
+    y === undefined ||
+    !Number.isFinite(y)
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    y < -5 ||
+    y > height + 5
+  ) {
+
+    return;
+
+  }
+
+
+  const line =
+    svgEl(
+      "line",
+      {
+
+        x1: 0,
+
+        y1: y,
+
+        x2: width,
+
+        y2: y,
+
+        class:
+          lineClass
+
+      }
+    );
+
+
+  svg.appendChild(
+    line
+  );
+
+
+  let bg =
+    "#16354a";
+
+
+  if (
+    labelClass ===
+    "trade-label-sl"
+  ) {
+
+    bg =
+      "trade-label-sl";
+
+  }
+
+
+  const group =
+    svgEl(
+      "g",
+      {
+        transform:
+          `translate(${Math.max(8, width - 94)},${Math.max(2, y - 11)})`
+      }
+    );
+
+
+  const rect =
+    svgEl(
+      "rect",
+      {
+
+        x: 0,
+
+        y: 0,
+
+        width: 88,
+
+        height: 22,
+
+        rx: 5,
+
+        class:
+          labelClass
+
+      }
+    );
+
+
+  const text =
+    svgEl(
+      "text",
+      {
+
+        x: 44,
+
+        y: 15,
+
+        "text-anchor":
+          "middle",
+
+        class:
+          "trade-label-text"
+
+      }
+    );
+
+
+  text.textContent =
+    `${label} ${formatPrice(n)}`;
+
+
+  group.appendChild(
+    rect
+  );
+
+
+  group.appendChild(
+    text
+  );
+
+
+  svg.appendChild(
+    group
+  );
+
+}
+
+
+/* =========================================================
+   DRAW MAGNET CONNECTOR
+   ========================================================= */
+
+function drawMagnetSvg(
+  svg,
+  magnet,
+  width,
+  height
+) {
+
+  if (!magnet) {
+
+    return;
+
+  }
+
+
+  const source =
+    Number(
+      magnet.source?.mid
+    );
+
+
+  const target =
+    Number(
+      magnet.target?.mid
+    );
+
+
+  if (
+    !Number.isFinite(source) ||
+    !Number.isFinite(target)
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !candleSeries.priceToCoordinate
+  ) {
+
+    return;
+
+  }
+
+
+  const y1 =
+    candleSeries.priceToCoordinate(
+      source
+    );
+
+
+  const y2 =
+    candleSeries.priceToCoordinate(
+      target
+    );
+
+
+  if (
+    y1 === null ||
+    y2 === null ||
+    !Number.isFinite(y1) ||
+    !Number.isFinite(y2)
+  ) {
+
+    return;
+
+  }
+
+
+  const x1 =
+    Math.max(
+      45,
+      width * 0.20
+    );
+
+
+  const x2 =
+    Math.max(
+      x1 + 80,
+      width * 0.76
+    );
+
+
+  const up =
+    magnet.direction === "UP";
+
+
+  const line =
+    svgEl(
+      "line",
+      {
+
+        x1,
+
+        y1,
+
+        x2,
+
+        y2,
+
+        class:
+          up
+            ? "magnet-line-up"
+            : "magnet-line-down"
+
+      }
+    );
+
+
+  svg.appendChild(
+    line
+  );
+
+
+  /*
+   * Arrow head
+   */
+
+  const angle =
+    Math.atan2(
+      y2 - y1,
+      x2 - x1
+    );
+
+
+  const size = 8;
+
+
+  const p1 = [
+
+    x2,
+
+    y2
+
+  ];
+
+
+  const p2 = [
+
+    x2 -
+      size *
+      Math.cos(
+        angle - Math.PI / 6
+      ),
+
+    y2 -
+      size *
+      Math.sin(
+        angle - Math.PI / 6
+      )
+
+  ];
+
+
+  const p3 = [
+
+    x2 -
+      size *
+      Math.cos(
+        angle + Math.PI / 6
+      ),
+
+    y2 -
+      size *
+      Math.sin(
+        angle + Math.PI / 6
+      )
+
+  ];
+
+
+  const arrow =
+    svgEl(
+      "polygon",
+      {
+
+        points:
+          `${p1[0]},${p1[1]} ` +
+          `${p2[0]},${p2[1]} ` +
+          `${p3[0]},${p3[1]}`,
+
+        fill:
+          up
+            ? "#18d69e"
+            : "#ff6370"
+
+      }
+    );
+
+
+  svg.appendChild(
+    arrow
+  );
+
+
+  const sourceCircle =
+    svgEl(
+      "circle",
+      {
+
+        cx: x1,
+
+        cy: y1,
+
+        r: 5,
+
+        class:
+          "magnet-source"
+
+      }
+    );
+
+
+  const targetCircle =
+    svgEl(
+      "circle",
+      {
+
+        cx: x2,
+
+        cy: y2,
+
+        r: 5,
+
+        class:
+          "magnet-target"
+
+      }
+    );
+
+
+  svg.appendChild(
+    sourceCircle
+  );
+
+
+  svg.appendChild(
+    targetCircle
+  );
+
+
+  const pull =
+    magnet.pullScore ??
+    "—";
+
+
+  const probability =
+    magnet.probability ??
+    "—";
+
+
+  const text =
+    `${up ? "↑" : "↓"} MAGNET ${pull} • ${probability}%`;
+
+
+  addSvgLabel(
+
+    svg,
+
+    Math.max(
+      10,
+      Math.min(
+        width - 145,
+        (x1 + x2) / 2 - 62
+      )
+    ),
+
+    Math.max(
+      5,
+      Math.min(
+        height - 25,
+        (y1 + y2) / 2 - 11
+      )
+    ),
+
+    text,
+
+    up
+      ? "zone-label-bg-demand"
+      : "zone-label-bg-supply",
+
+    130
+
+  );
+
+}
+
+
+/* =========================================================
+   DRAW TRADE PLAN ON SVG
+   ========================================================= */
+
+function drawTradePlanSvg(
+  svg,
+  signal,
+  width,
+  height
+) {
+
+  if (!signal) {
+
+    return;
+
+  }
+
+
+  /*
+   * Entry range:
+   * draw middle + range boundaries.
+   */
+
+  const entryLow =
+    Number(
+      signal.entry?.low
+    );
+
+
+  const entryHigh =
+    Number(
+      signal.entry?.high
+    );
+
+
+  if (
+    Number.isFinite(entryLow) &&
+    Number.isFinite(entryHigh)
+  ) {
+
+    const yLow =
+      candleSeries.priceToCoordinate(
+        entryLow
+      );
+
+
+    const yHigh =
+      candleSeries.priceToCoordinate(
+        entryHigh
+      );
+
+
+    if (
+      Number.isFinite(yLow) &&
+      Number.isFinite(yHigh)
+    ) {
+
+      const y =
+        Math.min(
+          yLow,
+          yHigh
+        );
+
+
+      const h =
+        Math.max(
+          2,
+          Math.abs(
+            yLow - yHigh
+          )
+        );
+
+
+      const entryBox =
+        svgEl(
+          "rect",
+          {
+
+            x: 0,
+
+            y,
+
+            width,
+
+            height: h,
+
+            fill:
+              "rgba(74,168,255,.10)",
+
+            stroke:
+              "rgba(74,168,255,.55)",
+
+            "stroke-dasharray":
+              "5 4"
+
+          }
+        );
+
+
+      svg.appendChild(
+        entryBox
+      );
+
+    }
+
+
+    drawTradeLevel(
+
+      svg,
+
+      entryLow,
+
+      "ENTRY",
+
+      "trade-entry-line",
+
+      "trade-label-entry",
+
+      width,
+
+      height
+
+    );
+
+  }
+
+
+  /*
+   * SL
+   */
+
+  drawTradeLevel(
+
+    svg,
+
+    signal.stopLoss,
+
+    "SL",
+
+    "trade-sl-line",
+
+    "trade-label-sl",
+
+    width,
+
+    height
+
+  );
+
+
+  /*
+   * TP1
+   */
+
+  drawTradeLevel(
+
+    svg,
+
+    signal.tp1,
+
+    "TP1",
+
+    "trade-tp-line",
+
+    "trade-label-tp",
+
+    width,
+
+    height
+
+  );
+
+
+  /*
+   * TP2
+   */
+
+  drawTradeLevel(
+
+    svg,
+
+    signal.tp2,
+
+    "TP2",
+
+    "trade-tp-line",
+
+    "trade-label-tp",
+
+    width,
+
+    height
+
+  );
+
+
+  /*
+   * TP3
+   */
+
+  drawTradeLevel(
+
+    svg,
+
+    signal.tp3,
+
+    "TP3",
+
+    "trade-tp-line",
+
+    "trade-label-tp",
+
+    width,
+
+    height
+
+  );
+
+}
+
+
+/* =========================================================
+   DRAW COMPLETE CHART OVERLAY
+   ========================================================= */
+
+function drawChartOverlay() {
+
+  const svg =
+    $("chartOverlay");
+
+
+  if (
+    !svg ||
+    !chart ||
+    !candleSeries
+  ) {
+
+    return;
+
+  }
+
+
+  const wrap =
+    document.querySelector(
+      ".chart-wrap"
+    );
+
+
+  if (!wrap) {
+
+    return;
+
+  }
+
+
+  const width =
+    wrap.clientWidth;
+
+
+  const height =
+    wrap.clientHeight;
+
+
+  if (
+    width <= 0 ||
+    height <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  svg.setAttribute(
+    "viewBox",
+    `0 0 ${width} ${height}`
+  );
+
+
+  svg.innerHTML = "";
+
+
+  const data =
+    currentTimeframe === "15min"
+      ? market15
+      : market5;
+
+
+  const engine =
+    data?.engine || {};
+
+
+  /*
+   * Draw all visible zones.
+   */
+
+  const supply =
+    Array.isArray(engine.supply)
+      ? engine.supply
+      : [];
+
+
+  const demand =
+    Array.isArray(engine.demand)
+      ? engine.demand
+      : [];
+
+
+  supply
+    .slice(0, 3)
+    .forEach(
+      (zone, index) => {
+
+        drawZoneBoxSvg(
+
+          svg,
+
+          zone,
+
+          "Supply",
+
+          index,
+
+          width,
+
+          height
+
+        );
+
+      }
+    );
+
+
+  demand
+    .slice(0, 3)
+    .forEach(
+      (zone, index) => {
+
+        drawZoneBoxSvg(
+
+          svg,
+
+          zone,
+
+          "Demand",
+
+          index,
+
+          width,
+
+          height
+
+        );
+
+      }
+    );
+
+
+  /*
+   * Magnet.
+   */
+
+  const magnet =
+    Array.isArray(
+      engine.magnets
+    )
+      ? engine.magnets[0]
+      : null;
+
+
+  drawMagnetSvg(
+
+    svg,
+
+    magnet,
+
+    width,
+
+    height
+
+  );
+
+
+  /*
+   * Only draw trade plan when this
+   * timeframe has an actual signal.
+   */
+
+  drawTradePlanSvg(
+
+    svg,
+
+    engine.signal,
+
+    width,
+
+    height
+
+  );
+
+}
+
+
+/* =========================================================
    RENDER CHART
    ========================================================= */
 
@@ -2201,7 +3752,9 @@ function renderChart(
     !chart ||
     !candleSeries
   ) {
+
     return;
+
   }
 
 
@@ -2236,6 +3789,10 @@ function renderChart(
   const engine =
     data.engine || {};
 
+
+  /*
+   * Keep price lines as a backup reference.
+   */
 
   drawZones(
     engine.supply,
@@ -2297,6 +3854,22 @@ function renderChart(
 
       : "5M ENTRY • Strong SD Magnet";
 
+
+  /*
+   * SVG needs the chart to finish its
+   * internal coordinate calculation.
+   */
+
+  requestAnimationFrame(
+    () => {
+
+      requestAnimationFrame(
+        drawChartOverlay
+      );
+
+    }
+  );
+
 }
 
 
@@ -2313,7 +3886,9 @@ function formatPrice(
       Number(value)
     )
   ) {
+
     return "—";
+
   }
 
 
@@ -2324,14 +3899,18 @@ function formatPrice(
   if (
     Math.abs(n) >= 100
   ) {
+
     return n.toFixed(2);
+
   }
 
 
   if (
     Math.abs(n) >= 1
   ) {
+
     return n.toFixed(4);
+
   }
 
 
@@ -2514,6 +4093,47 @@ function updateAssetHeader(
 
 
 /* =========================================================
+   FINAL SIGNAL
+   ========================================================= */
+
+function getFinalSignal() {
+
+  const e15 =
+    market15?.engine || {};
+
+
+  const e5 =
+    market5?.engine || {};
+
+
+  const s15 =
+    e15.signal;
+
+
+  const s5 =
+    e5.signal;
+
+
+  if (
+    s15 &&
+    s5 &&
+    s15.direction &&
+    s5.direction &&
+    s15.direction ===
+    s5.direction
+  ) {
+
+    return s15;
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =========================================================
    SIGNAL PANEL
    ========================================================= */
 
@@ -2535,26 +4155,8 @@ function updateSignalPanel() {
     e5.signal;
 
 
-  let finalSignal =
-    null;
-
-
-  /*
-   * Confirmed final signal:
-   * 15M + 5M must agree.
-   */
-
-  if (
-    s15 &&
-    s5 &&
-    s15.direction ===
-    s5.direction
-  ) {
-
-    finalSignal =
-      s15;
-
-  }
+  const finalSignal =
+    getFinalSignal();
 
 
   const status =
@@ -2576,17 +4178,22 @@ function updateSignalPanel() {
 
     (
       status === "BUY"
+
         ? "buy"
+
         : status === "SELL"
+
           ? "sell"
+
           : "wait"
+
     );
 
 
   if (finalSignal) {
 
     $("signalProbability").textContent =
-      `Confirmed 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
+      `CONFIRMED 15M + 5M • Probability ${finalSignal.probability ?? "—"}%`;
 
   } else {
 
@@ -2625,6 +4232,7 @@ function updateSignalPanel() {
 
 
   $("metricScore").textContent =
+
     primary.signal
 
       ? (
@@ -2637,15 +4245,22 @@ function updateSignalPanel() {
 
 
   $("metricRetests").textContent =
+
     primary.signal
 
       ? (
           primary.signal.sourceTouches ??
+          primary.signal.retests ??
           "—"
         )
 
       : "—";
 
+
+  /*
+   * Trade plan only appears when both
+   * timeframes confirm the same direction.
+   */
 
   if (finalSignal) {
 
@@ -2702,21 +4317,41 @@ function updateSignalPanel() {
 
 
   renderZone(
+
     $("supplyZone"),
+
     e15.supply?.[0],
+
     "Supply"
+
   );
 
 
   renderZone(
+
     $("demandZone"),
+
     e15.demand?.[0],
+
     "Demand"
+
   );
 
 
   renderMagnet(
+
     e15.magnets?.[0]
+
+  );
+
+
+  /*
+   * Update SVG because final signal
+   * can change without candle data changing.
+   */
+
+  requestAnimationFrame(
+    drawChartOverlay
   );
 
 }
@@ -2788,7 +4423,11 @@ function renderZone(
 
         <span>
           Retests:
-          ${zone.retests ?? 0}
+          ${
+            zone.retests ??
+            zone.touches ??
+            0
+          }
         </span>
 
         <span>
@@ -2951,6 +4590,7 @@ function updateDiagnostics() {
 
       ? (
           s15.sourceTouches ??
+          s15.retests ??
           "—"
         )
 
@@ -2975,6 +4615,8 @@ function updateDiagnostics() {
 
     s15 &&
     s5 &&
+    s15.direction &&
+    s5.direction &&
     s15.direction ===
     s5.direction;
 
@@ -3199,7 +4841,10 @@ async function searchSymbols(
 
 
     renderSearchResults(
-      results.slice(0, 20)
+      results.slice(
+        0,
+        20
+      )
     );
 
 
@@ -3267,49 +4912,63 @@ function resultPriority(
     category ===
     selectedCategory
   ) {
+
     return 100;
+
   }
 
 
   if (
     category === "crypto"
   ) {
+
     return 90;
+
   }
 
 
   if (
     category === "forex"
   ) {
+
     return 80;
+
   }
 
 
   if (
     category === "metals"
   ) {
+
     return 70;
+
   }
 
 
   if (
     category === "energy"
   ) {
+
     return 60;
+
   }
 
 
   if (
     category === "stocks"
   ) {
+
     return 50;
+
   }
 
 
   if (
     category === "etf"
   ) {
+
     return 40;
+
   }
 
 
@@ -3331,14 +4990,16 @@ function classifyInstrument(
       item?.instrument_type ||
       item?.type ||
       ""
-    ).toLowerCase();
+    )
+      .toLowerCase();
 
 
   const symbol =
     String(
       item?.symbol ||
       ""
-    ).toUpperCase();
+    )
+      .toUpperCase();
 
 
   const name =
@@ -3346,11 +5007,12 @@ function classifyInstrument(
       item?.instrument_name ||
       item?.name ||
       ""
-    ).toLowerCase();
+    )
+      .toLowerCase();
 
 
   /*
-   * Crypto
+   * CRYPTO
    */
 
   if (
@@ -3394,17 +5056,15 @@ function classifyInstrument(
 
 
   /*
-   * Forex
+   * FOREX
    */
 
   if (
 
     type.includes("forex") ||
 
-    (
-      /^[A-Z]{3}\/[A-Z]{3}$/
-        .test(symbol)
-    )
+    /^[A-Z]{3}\/[A-Z]{3}$/
+      .test(symbol)
 
   ) {
 
@@ -3414,7 +5074,7 @@ function classifyInstrument(
 
 
   /*
-   * Metals
+   * METALS
    */
 
   if (
@@ -3443,7 +5103,7 @@ function classifyInstrument(
 
 
   /*
-   * Energy
+   * ENERGY
    */
 
   if (
@@ -3464,7 +5124,7 @@ function classifyInstrument(
 
 
   /*
-   * Stocks
+   * STOCKS
    */
 
   if (
@@ -3509,9 +5169,11 @@ function renderSearchResults(
         No matching instruments found.
       </div>`;
 
+
     box.classList.add(
       "show"
     );
+
 
     return;
 
@@ -3520,6 +5182,7 @@ function renderSearchResults(
 
   box.innerHTML =
     results
+
       .map(
         (
           item,
@@ -3640,7 +5303,9 @@ function selectAsset(
 ) {
 
   if (!item) {
+
     return;
+
   }
 
 
@@ -3685,7 +5350,7 @@ function hideSearchResults() {
 
 
 /* =========================================================
-   ESCAPE
+   ESCAPE HTML
    ========================================================= */
 
 function escapeHtml(
@@ -3768,7 +5433,9 @@ document
 
           if (q) {
 
-            searchSymbols(q);
+            searchSymbols(
+              q
+            );
 
           }
 
@@ -3827,8 +5494,11 @@ document
           if (data) {
 
             renderChart(
+
               data,
+
               currentTimeframe
+
             );
 
           }
@@ -3974,11 +5644,48 @@ function startAutoRefresh() {
       () => {
 
         loadMarket({
+
           silent: true
+
         });
 
       },
       60000
+    );
+
+}
+
+
+/* =========================================================
+   OVERLAY REFRESH
+   ========================================================= */
+
+function startOverlayRefresh() {
+
+  if (overlayRefreshTimer) {
+
+    clearInterval(
+      overlayRefreshTimer
+    );
+
+  }
+
+
+  /*
+   * Lightweight Charts changes vertical
+   * coordinates during scale/interaction.
+   * A lightweight periodic redraw keeps
+   * the zone boxes aligned.
+   */
+
+  overlayRefreshTimer =
+    setInterval(
+      () => {
+
+        drawChartOverlay();
+
+      },
+      300
     );
 
 }
@@ -3998,10 +5705,12 @@ document.addEventListener(
 
     startAutoRefresh();
 
+    startOverlayRefresh();
+
   }
 );
 
 </script>
 
 </body>
-</html>
+  </html>
