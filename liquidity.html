@@ -3,16 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Owajid & Bokul — Swing Liquidity</title>
 
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
   margin:0;
   padding:0;
   background:#071018;
@@ -24,13 +27,18 @@ body{
   min-height:100vh;
 }
 
-button,input{
+button,
+input{
   font:inherit;
 }
 
 button{
   cursor:pointer;
 }
+
+/* =========================================================
+   TOP BAR
+========================================================= */
 
 .topbar{
   position:sticky;
@@ -95,11 +103,19 @@ button{
   font-weight:800;
 }
 
+/* =========================================================
+   WRAPPER
+========================================================= */
+
 .wrap{
   max-width:1500px;
   margin:auto;
   padding:16px;
 }
+
+/* =========================================================
+   CONTROLS
+========================================================= */
 
 .controls{
   display:flex;
@@ -147,6 +163,10 @@ button{
   cursor:pointer;
 }
 
+.searchItem:last-child{
+  border-bottom:none;
+}
+
 .searchItem:hover{
   background:#132531;
 }
@@ -182,6 +202,10 @@ button{
   color:#9ee5a0;
 }
 
+/* =========================================================
+   TIMEFRAMES
+========================================================= */
+
 .timeframes{
   display:flex;
   gap:7px;
@@ -202,6 +226,10 @@ button{
   border-color:#4d8b5c;
 }
 
+/* =========================================================
+   GRID
+========================================================= */
+
 .grid{
   display:grid;
   grid-template-columns:minmax(0,1fr) 360px;
@@ -214,6 +242,10 @@ button{
   border-radius:14px;
   overflow:hidden;
 }
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
 
 .cardHeader{
   padding:13px 15px;
@@ -232,6 +264,10 @@ button{
 .cardHeader small{
   color:#738898;
 }
+
+/* =========================================================
+   CHART
+========================================================= */
 
 .chartWrap{
   position:relative;
@@ -258,6 +294,10 @@ button{
 .hidden{
   display:none!important;
 }
+
+/* =========================================================
+   SIGNAL
+========================================================= */
 
 .signalCard{
   padding:15px;
@@ -313,6 +353,10 @@ button{
   font-weight:700;
 }
 
+/* =========================================================
+   METRICS
+========================================================= */
+
 .metrics{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -339,6 +383,10 @@ button{
   margin-top:4px;
   font-size:13px;
 }
+
+/* =========================================================
+   TRADE PLAN
+========================================================= */
 
 .plan{
   margin-top:12px;
@@ -370,6 +418,10 @@ button{
   font-family:monospace;
 }
 
+/* =========================================================
+   ENGINE INFO
+========================================================= */
+
 .section{
   margin-top:13px;
 }
@@ -393,6 +445,10 @@ button{
 .infoRow span{
   color:#738898;
 }
+
+/* =========================================================
+   HISTORY
+========================================================= */
 
 .history{
   margin-top:14px;
@@ -438,12 +494,9 @@ button{
   font-size:12px;
 }
 
-.footer{
-  padding:18px 5px 30px;
-  color:#536875;
-  text-align:center;
-  font-size:10px;
-}
+/* =========================================================
+   ERROR
+========================================================= */
 
 .error{
   padding:20px;
@@ -451,13 +504,31 @@ button{
   text-align:center;
 }
 
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+  padding:18px 5px 30px;
+  color:#536875;
+  text-align:center;
+  font-size:10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
 @media(max-width:1050px){
+
   .grid{
     grid-template-columns:1fr;
   }
+
 }
 
 @media(max-width:650px){
+
   .wrap{
     padding:10px;
   }
@@ -469,241 +540,604 @@ button{
   .brand h1{
     font-size:15px;
   }
+
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- =======================================================
+     TOP BAR
+======================================================= -->
+
 <header class="topbar">
+
   <div class="brand">
-    <div class="logo">O&B</div>
-    <div>
-      <h1>Owajid & Bokul Trading Assistant</h1>
-      <p>Strategy 02 — Swing Liquidity</p>
+
+    <div class="logo">
+      O&B
     </div>
+
+    <div>
+
+      <h1>
+        Owajid & Bokul Trading Assistant
+      </h1>
+
+      <p>
+        Strategy 02 — Swing Liquidity
+      </p>
+
+    </div>
+
   </div>
 
+
   <div class="strategybar">
-    <a href="/">🧲 Strong SD Magnet</a>
-    <a href="/liquidity.html" class="active">💧 Swing Liquidity</a>
+
+    <a href="/">
+      🧲 Strong SD Magnet
+    </a>
+
+    <a href="/liquidity.html" class="active">
+      💧 Swing Liquidity
+    </a>
+
   </div>
+
 </header>
+
+
+<!-- =======================================================
+     MAIN
+======================================================= -->
 
 <main class="wrap">
 
+
+  <!-- CONTROLS -->
+
   <div class="controls">
+
     <div class="search">
-      <input id="searchInput" placeholder="Search XAU/USD, GBP/USD, BTC/USD..." autocomplete="off">
-      <div id="searchResults" class="searchResults"></div>
+
+      <input
+        id="searchInput"
+        placeholder="Search XAU/USD, GBP/USD, BTC/USD..."
+        autocomplete="off"
+      >
+
+      <div
+        id="searchResults"
+        class="searchResults"
+      ></div>
+
     </div>
+
 
     <div class="categories">
-      <button class="cat active" data-cat="All">All</button>
-      <button class="cat" data-cat="Crypto">Crypto</button>
-      <button class="cat" data-cat="Forex">Forex</button>
-      <button class="cat" data-cat="Metals">Metals</button>
-      <button class="cat" data-cat="Energy">Energy</button>
-      <button class="cat" data-cat="Stocks">Stocks</button>
-      <button class="cat" data-cat="ETF">ETF</button>
+
+      <button
+        class="cat active"
+        data-cat="All"
+      >
+        All
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Crypto"
+      >
+        Crypto
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Forex"
+      >
+        Forex
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Metals"
+      >
+        Metals
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Energy"
+      >
+        Energy
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Stocks"
+      >
+        Stocks
+      </button>
+
+      <button
+        class="cat"
+        data-cat="ETF"
+      >
+        ETF
+      </button>
+
     </div>
+
   </div>
 
+
+  <!-- TIMEFRAME -->
+
   <div class="timeframes">
-    <button class="tf active" id="tf15">15M STRUCTURE</button>
-    <button class="tf" id="tf5">5M ENTRY</button>
+
+    <button
+      class="tf active"
+      id="tf15"
+    >
+      15M STRUCTURE
+    </button>
+
+    <button
+      class="tf"
+      id="tf5"
+    >
+      5M ENTRY
+    </button>
+
   </div>
+
+
+  <!-- MAIN GRID -->
 
   <div class="grid">
 
+
+    <!-- ===================================================
+         CHART
+    ==================================================== -->
+
     <section class="card">
+
       <div class="cardHeader">
+
         <div>
-          <h2 id="assetTitle">Gold — XAU/USD</h2>
-          <small id="assetSubtitle">Swing Liquidity Analysis</small>
+
+          <h2 id="assetTitle">
+            Gold — XAU/USD
+          </h2>
+
+          <small id="assetSubtitle">
+            Swing Liquidity Analysis
+          </small>
+
         </div>
-        <small id="refreshText">Updating...</small>
+
+        <small id="refreshText">
+          Updating...
+        </small>
+
       </div>
 
+
       <div class="chartWrap">
+
         <div id="chart"></div>
-        <div class="loading" id="loading">Loading market data...</div>
+
+        <div
+          class="loading"
+          id="loading"
+        >
+          Loading market data...
+        </div>
+
       </div>
+
     </section>
+
+
+    <!-- ===================================================
+         RIGHT PANEL
+    ==================================================== -->
 
     <aside>
 
+
+      <!-- SIGNAL CARD -->
+
       <section class="card signalCard">
 
+
         <div class="signalStatus">
+
+
           <div class="statusTop">
+
             <div>
-              <div class="statusLabel">Current Signal</div>
-              <div id="direction" class="direction wait">WAIT</div>
+
+              <div class="statusLabel">
+                Current Signal
+              </div>
+
+              <div
+                id="direction"
+                class="direction wait"
+              >
+                WAIT
+              </div>
+
             </div>
-            <div id="signalProbability" class="prob">0%</div>
+
+            <div
+              id="signalProbability"
+              class="prob"
+            >
+              0%
+            </div>
+
           </div>
 
-          <div id="currentPrice" class="price">—</div>
+
+          <div
+            id="currentPrice"
+            class="price"
+          >
+            —
+          </div>
+
 
           <div class="metrics">
-            <div class="metric">
-              <span>15M Swing</span>
-              <strong id="m15Direction">WAIT</strong>
-            </div>
+
 
             <div class="metric">
-              <span>5M Entry</span>
-              <strong id="m5Direction">WAIT</strong>
+
+              <span>
+                15M Swing
+              </span>
+
+              <strong id="m15Direction">
+                WAIT
+              </strong>
+
             </div>
 
-            <div class="metric">
-              <span>Swing High</span>
-              <strong id="swingHigh">—</strong>
-            </div>
 
             <div class="metric">
-              <span>Swing Low</span>
-              <strong id="swingLow">—</strong>
+
+              <span>
+                5M Entry
+              </span>
+
+              <strong id="m5Direction">
+                WAIT
+              </strong>
+
             </div>
 
-            <div class="metric">
-              <span>Liquidity</span>
-              <strong id="liquidityState">—</strong>
-            </div>
 
             <div class="metric">
-              <span>Volume</span>
-              <strong id="volumeState">—</strong>
+
+              <span>
+                Swing High
+              </span>
+
+              <strong id="swingHigh">
+                —
+              </strong>
+
             </div>
+
+
+            <div class="metric">
+
+              <span>
+                Swing Low
+              </span>
+
+              <strong id="swingLow">
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="metric">
+
+              <span>
+                Liquidity
+              </span>
+
+              <strong id="liquidityState">
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="metric">
+
+              <span>
+                Volume
+              </span>
+
+              <strong id="volumeState">
+                —
+              </strong>
+
+            </div>
+
+
           </div>
+
         </div>
+
+
+        <!-- TRADE PLAN -->
 
         <div class="plan">
-          <div class="planTitle">TRADE PLAN</div>
 
-          <div class="planRow">
-            <span>Entry</span>
-            <strong id="entry">—</strong>
+          <div class="planTitle">
+            TRADE PLAN
           </div>
 
-          <div class="planRow">
-            <span>Stop Loss</span>
-            <strong id="sl">—</strong>
-          </div>
 
           <div class="planRow">
-            <span>TP1</span>
-            <strong id="tp1">—</strong>
+
+            <span>
+              Entry
+            </span>
+
+            <strong id="entry">
+              —
+            </strong>
+
           </div>
 
-          <div class="planRow">
-            <span>TP2</span>
-            <strong id="tp2">—</strong>
-          </div>
 
           <div class="planRow">
-            <span>TP3</span>
-            <strong id="tp3">—</strong>
+
+            <span>
+              Stop Loss
+            </span>
+
+            <strong id="sl">
+              —
+            </strong>
+
           </div>
+
+
+          <div class="planRow">
+
+            <span>
+              TP1
+            </span>
+
+            <strong id="tp1">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="planRow">
+
+            <span>
+              TP2
+            </span>
+
+            <strong id="tp2">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="planRow">
+
+            <span>
+              TP3
+            </span>
+
+            <strong id="tp3">
+              —
+            </strong>
+
+          </div>
+
         </div>
+
+
+        <!-- ENGINE -->
 
         <div class="section">
-          <div class="sectionTitle">Swing Liquidity Engine</div>
 
-          <div class="infoRow">
-            <span>15M Liquidity Sweep</span>
-            <strong id="sweep15">NONE</strong>
+          <div class="sectionTitle">
+            Swing Liquidity Engine
           </div>
 
-          <div class="infoRow">
-            <span>5M Confirmation</span>
-            <strong id="confirm5">NONE</strong>
-          </div>
 
           <div class="infoRow">
-            <span>Retests</span>
-            <strong id="retests">0</strong>
+
+            <span>
+              15M Liquidity Sweep
+            </span>
+
+            <strong id="sweep15">
+              NONE
+            </strong>
+
           </div>
 
+
           <div class="infoRow">
-            <span>ATR</span>
-            <strong id="atr">—</strong>
+
+            <span>
+              5M Confirmation
+            </span>
+
+            <strong id="confirm5">
+              NONE
+            </strong>
+
           </div>
+
+
+          <div class="infoRow">
+
+            <span>
+              Liquidity Level
+            </span>
+
+            <strong id="liquidityLevel">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="infoRow">
+
+            <span>
+              Signal Score
+            </span>
+
+            <strong id="signalScore">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="infoRow">
+
+            <span>
+              ATR
+            </span>
+
+            <strong id="atr">
+              —
+            </strong>
+
+          </div>
+
+
         </div>
 
+
       </section>
+
+
+      <!-- =================================================
+           HISTORY
+      ================================================== -->
 
       <section class="card history">
+
         <div class="cardHeader">
-          <h2>Signal History</h2>
-          <small id="historyCount">0</small>
+
+          <h2>
+            Signal History
+          </h2>
+
+          <small id="historyCount">
+            0
+          </small>
+
         </div>
 
-        <div class="historyBody" id="historyBody">
-          <div class="empty">No confirmed signals yet.</div>
+
+        <div
+          class="historyBody"
+          id="historyBody"
+        >
+
+          <div class="empty">
+            No confirmed signals yet.
+          </div>
+
         </div>
+
       </section>
 
+
     </aside>
+
+
   </div>
 
+
   <div class="footer">
-    Swing Liquidity Strategy • Charting by TradingView Lightweight Charts
+
+    Swing Liquidity Strategy •
+    Charting by TradingView Lightweight Charts
+
   </div>
+
 
 </main>
 
-<script>
-/* =========================================================
-   OWJAD & BOKUL — SWING LIQUIDITY ENGINE
-   Strategy 02
 
-   Based on:
-   Swing Points + Liquidity concept supplied by user.
+<script>
+
+/* =========================================================
+   OWajid & Bokul
+   STRATEGY 02 — SWING LIQUIDITY
 
    IMPORTANT:
-   This page does NOT use Strong SD Magnet logic.
+
+   This page uses:
+
+       /api/liquidity
+
+   for the actual Swing Liquidity engine.
+
+   It does NOT duplicate the Swing Liquidity calculations
+   from liquidity.js.
+
+   Page 1 /api/market remains untouched.
+========================================================= */
+
+
+/* =========================================================
+   STATE
 ========================================================= */
 
 const state = {
-  symbol: "XAU/USD",
-  displayName: "Gold — XAU/USD",
-  category: "Metals",
-  candles15: [],
-  candles5: [],
-  data15: null,
-  data5: null,
-  currentSignal: null,
-  lastSignalKey: null,
-  history: loadHistory()
-};
 
-const CONFIG = {
-  swingLeft: 15,
-  swingRight: 10,
+  symbol:
+    "XAU/USD",
 
-  atrLength: 14,
+  displayName:
+    "Gold — XAU/USD",
 
-  /*
-    Price must take the swing level and then close
-    back through/away from it for a sweep.
-  */
-  sweepLookback: 8,
+  category:
+    "Metals",
 
-  /*
-    Confirmation must occur after liquidity sweep.
-  */
-  confirmationBars: 6,
+  data15:
+    null,
 
-  /*
-    Practical trade-plan layer.
-    These are NOT values from the original Pine script.
-  */
-  slAtr: 0.35,
-  tp1R: 1.0,
-  tp2R: 2.0,
-  tp3R: 3.0
+  data5:
+    null,
+
+  currentSignal:
+    null,
+
+  chartTimeframe:
+    "5min",
+
+  lastSignalKey:
+    null,
+
+  history:
+    loadHistory()
+
 };
 
 
@@ -711,77 +1145,181 @@ const CONFIG = {
    DOM
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+const $ =
+  id =>
+    document.getElementById(id);
 
-const chartEl = $("chart");
-const loadingEl = $("loading");
+const chartEl =
+  $("chart");
+
+const loadingEl =
+  $("loading");
 
 
 /* =========================================================
-   CHART
+   CHART VARIABLES
 ========================================================= */
 
-let chart = null;
-let candleSeries = null;
-let volumeSeries = null;
+let chart =
+  null;
+
+let candleSeries =
+  null;
+
+let volumeSeries =
+  null;
+
+let priceLines =
+  [];
+
+let swingMarkers =
+  null;
+
+
+/* =========================================================
+   CREATE CHART
+========================================================= */
 
 function createChart(){
 
-  chart = LightweightCharts.createChart(chartEl,{
-    layout:{
-      background:{type:"solid",color:"#071018"},
-      textColor:"#9eb0bd"
-    },
+  chart =
+    LightweightCharts.createChart(
+      chartEl,
+      {
 
-    grid:{
-      vertLines:{color:"#10202b"},
-      horzLines:{color:"#10202b"}
-    },
+        layout:{
+          background:{
+            type:"solid",
+            color:"#071018"
+          },
 
-    rightPriceScale:{
-      borderColor:"#203441"
-    },
+          textColor:"#9eb0bd"
+        },
 
-    timeScale:{
-      borderColor:"#203441",
-      timeVisible:true,
-      secondsVisible:false
-    },
 
-    crosshair:{
-      mode:LightweightCharts.CrosshairMode.Normal
-    }
-  });
+        grid:{
 
-  candleSeries = chart.addSeries(
-    LightweightCharts.CandlestickSeries,
-    {
-      upColor:"#69c979",
-      downColor:"#ef6874",
-      borderVisible:false,
-      wickUpColor:"#69c979",
-      wickDownColor:"#ef6874"
-    }
-  );
+          vertLines:{
+            color:"#10202b"
+          },
 
-  volumeSeries = chart.addSeries(
-    LightweightCharts.HistogramSeries,
-    {
-      priceFormat:{type:"volume"},
-      priceScaleId:"",
-      scaleMargins:{
-        top:0.85,
-        bottom:0
+          horzLines:{
+            color:"#10202b"
+          }
+
+        },
+
+
+        rightPriceScale:{
+
+          borderColor:
+            "#203441"
+
+        },
+
+
+        timeScale:{
+
+          borderColor:
+            "#203441",
+
+          timeVisible:
+            true,
+
+          secondsVisible:
+            false
+
+        },
+
+
+        crosshair:{
+
+          mode:
+            LightweightCharts
+              .CrosshairMode
+              .Normal
+
+        }
+
       }
-    }
+    );
+
+
+  candleSeries =
+    chart.addSeries(
+      LightweightCharts.CandlestickSeries,
+      {
+
+        upColor:
+          "#69c979",
+
+        downColor:
+          "#ef6874",
+
+        borderVisible:
+          false,
+
+        wickUpColor:
+          "#69c979",
+
+        wickDownColor:
+          "#ef6874"
+
+      }
+    );
+
+
+  volumeSeries =
+    chart.addSeries(
+      LightweightCharts.HistogramSeries,
+      {
+
+        priceFormat:{
+          type:
+            "volume"
+        },
+
+        priceScaleId:
+          "",
+
+        scaleMargins:{
+
+          top:
+            0.85,
+
+          bottom:
+            0
+
+        }
+
+      }
+    );
+
+
+  window.addEventListener(
+    "resize",
+    resizeChart
   );
 
-  window.addEventListener("resize",()=>{
-    chart.applyOptions({
-      width:chartEl.clientWidth,
-      height:chartEl.clientHeight
-    });
+}
+
+
+function resizeChart(){
+
+  if(!chart){
+    return;
+  }
+
+  chart.applyOptions({
+
+    width:
+      chartEl.clientWidth,
+
+    height:
+      chartEl.clientHeight
+
   });
+
 }
 
 
@@ -789,739 +1327,132 @@ function createChart(){
    API
 ========================================================= */
 
-async function fetchMarket(symbol, interval){
+async function fetchLiquidity(
+  symbol,
+  interval
+){
 
   const url =
-    "/api/market?action=market" +
-    "&symbol=" + encodeURIComponent(symbol) +
-    "&interval=" + encodeURIComponent(interval);
-
-  const response = await fetch(url);
-
-  if(!response.ok){
-    throw new Error("Market API error");
-  }
-
-  const json = await response.json();
-
-  return normalizeMarket(json);
-}
+    "/api/liquidity" +
+    "?symbol=" +
+    encodeURIComponent(symbol) +
+    "&interval=" +
+    encodeURIComponent(interval) +
+    "&outputsize=300";
 
 
-function normalizeMarket(raw){
+  const response =
+    await fetch(
+      url,
+      {
+        method:
+          "GET",
 
-  /*
-    Supports the existing backend structure used by the project.
-  */
+        cache:
+          "no-store",
 
-  let rows =
-    raw?.values ||
-    raw?.data?.values ||
-    raw?.data ||
-    [];
+        headers:{
+          "Accept":
+            "application/json"
+        }
 
-  if(!Array.isArray(rows)){
-    rows = [];
-  }
-
-  const candles = rows.map((x,i)=>{
-
-    const timeRaw =
-      x.datetime ??
-      x.time ??
-      x.timestamp;
-
-    let time;
-
-    if(typeof timeRaw === "number"){
-      time =
-        timeRaw > 10000000000
-          ? Math.floor(timeRaw/1000)
-          : Math.floor(timeRaw);
-    }else{
-      const parsed = Date.parse(String(timeRaw));
-      time = Math.floor(parsed/1000);
-    }
-
-    return {
-      time,
-      open:Number(x.open),
-      high:Number(x.high),
-      low:Number(x.low),
-      close:Number(x.close),
-      volume:Number(x.volume || 0)
-    };
-
-  }).filter(x=>
-    Number.isFinite(x.time) &&
-    Number.isFinite(x.open) &&
-    Number.isFinite(x.high) &&
-    Number.isFinite(x.low) &&
-    Number.isFinite(x.close)
-  );
-
-  candles.sort((a,b)=>a.time-b.time);
-
-  return {
-    candles,
-    price:
-      Number(raw?.price) ||
-      Number(raw?.data?.price) ||
-      candles.at(-1)?.close ||
-      null
-  };
-}
-
-
-/* =========================================================
-   INDICATORS
-========================================================= */
-
-function trueRange(c, prev){
-
-  if(!prev){
-    return c.high-c.low;
-  }
-
-  return Math.max(
-    c.high-c.low,
-    Math.abs(c.high-prev.close),
-    Math.abs(c.low-prev.close)
-  );
-}
-
-
-function calculateATR(candles, length=14){
-
-  const tr = [];
-
-  for(let i=0;i<candles.length;i++){
-    tr.push(trueRange(
-      candles[i],
-      i>0 ? candles[i-1] : null
-    ));
-  }
-
-  if(tr.length < length){
-    return tr.at(-1) || 0;
-  }
-
-  let sum = 0;
-
-  for(let i=tr.length-length;i<tr.length;i++){
-    sum += tr[i];
-  }
-
-  return sum/length;
-}
-
-
-function averageVolume(candles, length=20){
-
-  if(!candles.length){
-    return 0;
-  }
-
-  const start =
-    Math.max(0,candles.length-length);
-
-  let total=0;
-  let count=0;
-
-  for(let i=start;i<candles.length;i++){
-
-    const v=Number(candles[i].volume || 0);
-
-    if(v>0){
-      total+=v;
-      count++;
-    }
-  }
-
-  return count ? total/count : 0;
-}
-
-
-/* =========================================================
-   PIVOT DETECTION
-   Pine equivalent:
-
-   ta.pivothigh(high, 15, 10)
-   ta.pivotlow(low, 15, 10)
-
-   A pivot becomes confirmed 10 bars after the actual swing.
-========================================================= */
-
-function findSwingPoints(candles){
-
-  const highs=[];
-  const lows=[];
-
-  const L=CONFIG.swingLeft;
-  const R=CONFIG.swingRight;
-
-  for(let i=L;i<candles.length-R;i++){
-
-    const c=candles[i];
-
-    let isHigh=true;
-    let isLow=true;
-
-    for(let j=1;j<=L;j++){
-
-      if(candles[i-j].high >= c.high){
-        isHigh=false;
       }
-
-      if(candles[i-j].low <= c.low){
-        isLow=false;
-      }
-    }
-
-    for(let j=1;j<=R;j++){
-
-      if(candles[i+j].high > c.high){
-        isHigh=false;
-      }
-
-      if(candles[i+j].low < c.low){
-        isLow=false;
-      }
-    }
-
-    if(isHigh){
-
-      highs.push({
-        index:i,
-        time:c.time,
-        price:c.high,
-        type:"HIGH",
-        filled:false,
-        touches:0
-      });
-    }
-
-    if(isLow){
-
-      lows.push({
-        index:i,
-        time:c.time,
-        price:c.low,
-        type:"LOW",
-        filled:false,
-        touches:0
-      });
-    }
-  }
-
-  return {
-    highs,
-    lows
-  };
-}
-
-
-/* =========================================================
-   LIQUIDITY LEVEL TRACKER
-========================================================= */
-
-function trackLiquidity(candles, swings){
-
-  const all = [
-    ...swings.highs,
-    ...swings.lows
-  ].sort((a,b)=>a.index-b.index);
-
-  for(const level of all){
-
-    for(
-      let i=level.index+CONFIG.swingRight;
-      i<candles.length;
-      i++
-    ){
-
-      const c=candles[i];
-
-      if(c.high >= level.price && c.low <= level.price){
-
-        level.filled=true;
-        level.fillIndex=i;
-        level.fillTime=c.time;
-
-        /*
-          A liquidity level can be touched multiple times
-          before being considered consumed.
-        */
-        level.touches++;
-
-        break;
-      }
-    }
-  }
-
-  return all;
-}
-
-
-/* =========================================================
-   LIQUIDITY SWEEP
-
-   HIGH sweep:
-   price takes previous swing high,
-   then closes back below that level.
-
-   LOW sweep:
-   price takes previous swing low,
-   then closes back above that level.
-========================================================= */
-
-function detectSweeps(candles, swings){
-
-  const sweeps=[];
-
-  const allHighs = swings.highs.filter(x=>x.index < candles.length);
-  const allLows  = swings.lows.filter(x=>x.index < candles.length);
-
-  for(const level of allHighs){
-
-    const start =
-      Math.max(
-        level.index+CONFIG.swingRight,
-        candles.length-CONFIG.sweepLookback
-      );
-
-    for(let i=start;i<candles.length;i++){
-
-      const c=candles[i];
-
-      if(
-        c.high > level.price &&
-        c.close < level.price
-      ){
-
-        sweeps.push({
-          type:"BEARISH",
-          level,
-          index:i,
-          time:c.time,
-          price:c.close
-        });
-
-        break;
-      }
-    }
-  }
-
-  for(const level of allLows){
-
-    const start =
-      Math.max(
-        level.index+CONFIG.swingRight,
-        candles.length-CONFIG.sweepLookback
-      );
-
-    for(let i=start;i<candles.length;i++){
-
-      const c=candles[i];
-
-      if(
-        c.low < level.price &&
-        c.close > level.price
-      ){
-
-        sweeps.push({
-          type:"BULLISH",
-          level,
-          index:i,
-          time:c.time,
-          price:c.close
-        });
-
-        break;
-      }
-    }
-  }
-
-  return sweeps.sort((a,b)=>a.index-b.index);
-}
-
-
-/* =========================================================
-   CONFIRMATION
-
-   Bullish:
-   - liquidity sweep below swing low
-   - bullish candle after sweep
-   - close above previous candle high
-
-   Bearish:
-   - liquidity sweep above swing high
-   - bearish candle after sweep
-   - close below previous candle low
-========================================================= */
-
-function confirmSweep(candles,sweep){
-
-  const end =
-    Math.min(
-      candles.length-1,
-      sweep.index+CONFIG.confirmationBars
     );
 
-  for(let i=sweep.index+1;i<=end;i++){
 
-    const c=candles[i];
-    const p=candles[i-1];
+  let json;
 
-    if(sweep.type==="BULLISH"){
+  try{
 
-      if(
-        c.close > c.open &&
-        c.close > p.high
-      ){
-        return {
-          confirmed:true,
-          direction:"BUY",
-          index:i,
-          time:c.time,
-          price:c.close
-        };
-      }
-    }
+    json =
+      await response.json();
 
-    if(sweep.type==="BEARISH"){
+  }catch(error){
 
-      if(
-        c.close < c.open &&
-        c.close < p.low
-      ){
-        return {
-          confirmed:true,
-          direction:"SELL",
-          index:i,
-          time:c.time,
-          price:c.close
-        };
-      }
-    }
+    throw new Error(
+      "Invalid Liquidity API response"
+    );
+
   }
 
-  return {
-    confirmed:false
-  };
-}
-
-
-/* =========================================================
-   VOLUME CONFIRMATION
-========================================================= */
-
-function volumeConfirmation(candles,index){
-
-  const avg=averageVolume(
-    candles.slice(0,Math.max(1,index)),
-    20
-  );
-
-  const current=
-    Number(candles[index]?.volume || 0);
-
-  if(!avg || !current){
-    return {
-      available:false,
-      strong:false
-    };
-  }
-
-  return {
-    available:true,
-    strong:current >= avg
-  };
-}
-
-
-/* =========================================================
-   SIGNAL ENGINE
-========================================================= */
-
-function analyzeSwingLiquidity(candles){
-
-  if(candles.length < 80){
-    return {
-      direction:"WAIT",
-      probability:0
-    };
-  }
-
-  const swings=findSwingPoints(candles);
-
-  trackLiquidity(candles,swings);
-
-  const sweeps=detectSweeps(candles,swings);
-
-  if(!sweeps.length){
-
-    return {
-      direction:"WAIT",
-      probability:0,
-      swings,
-      sweeps:[],
-      atr:calculateATR(candles,CONFIG.atrLength)
-    };
-  }
-
-  const latestSweep=sweeps.at(-1);
-
-  const confirmation=
-    confirmSweep(candles,latestSweep);
-
-  if(!confirmation.confirmed){
-
-    return {
-      direction:"WAIT",
-      probability:0,
-      swings,
-      sweeps,
-      latestSweep,
-      atr:calculateATR(candles,CONFIG.atrLength)
-    };
-  }
-
-  /*
-    Do not accept an old signal as current.
-  */
-  const latestIndex=candles.length-1;
 
   if(
-    confirmation.index < latestIndex-3
+    !response.ok ||
+    json?.success === false
   ){
 
-    return {
-      direction:"WAIT",
-      probability:0,
-      swings,
-      sweeps,
-      latestSweep,
-      confirmation,
-      atr:calculateATR(candles,CONFIG.atrLength)
-    };
-  }
-
-  const volume=
-    volumeConfirmation(
-      candles,
-      confirmation.index
+    throw new Error(
+      json?.error ||
+      `Liquidity API error (${response.status})`
     );
 
-  let probability=70;
-
-  if(volume.available && volume.strong){
-    probability+=8;
   }
+
 
   if(
-    latestSweep.level.touches<=1
+    !Array.isArray(
+      json?.candles
+    )
   ){
-    probability+=5;
+
+    throw new Error(
+      "Liquidity API returned no candles"
+    );
+
   }
 
-  probability=Math.min(92,probability);
 
-  return {
-    direction:confirmation.direction,
-    probability,
-    swings,
-    sweeps,
-    latestSweep,
-    confirmation,
-    volume,
-    atr:calculateATR(candles,CONFIG.atrLength)
-  };
+  return json;
+
 }
 
 
 /* =========================================================
-   MULTI-TIMEFRAME ENGINE
-
-   15M = Structure
-   5M  = Entry confirmation
-========================================================= */
-
-function buildFinalSignal(){
-
-  if(!state.data15 || !state.data5){
-    return null;
-  }
-
-  const a15=
-    analyzeSwingLiquidity(
-      state.data15.candles
-    );
-
-  const a5=
-    analyzeSwingLiquidity(
-      state.data5.candles
-    );
-
-  /*
-    Conservative alignment:
-    15M and 5M must point in same direction.
-  */
-
-  if(
-    a15.direction==="WAIT" ||
-    a5.direction==="WAIT"
-  ){
-
-    return {
-      direction:"WAIT",
-      probability:Math.round(
-        Math.max(
-          a15.probability||0,
-          a5.probability||0
-        )
-      ),
-      a15,
-      a5
-    };
-  }
-
-  if(a15.direction !== a5.direction){
-
-    return {
-      direction:"WAIT",
-      probability:0,
-      a15,
-      a5,
-      reason:"TIMEFRAME MISALIGNMENT"
-    };
-  }
-
-  const direction=a15.direction;
-
-  const price=
-    state.data5.price ||
-    state.data5.candles.at(-1)?.close;
-
-  const atr=
-    a5.atr ||
-    a15.atr ||
-    0;
-
-  if(!price || !atr){
-    return {
-      direction:"WAIT",
-      probability:0,
-      a15,
-      a5
-    };
-  }
-
-  /*
-    Trade plan:
-    Based on the latest 5M liquidity level.
-  */
-
-  const sweep=a5.latestSweep;
-
-  let entry=price;
-  let sl;
-  let risk;
-
-  if(direction==="BUY"){
-
-    sl=
-      Math.min(
-        sweep?.level?.price || price-atr,
-        price-atr*CONFIG.slAtr
-      );
-
-    risk=Math.max(
-      entry-sl,
-      atr*0.25
-    );
-
-  }else{
-
-    sl=
-      Math.max(
-        sweep?.level?.price || price+atr,
-        price+atr*CONFIG.slAtr
-      );
-
-    risk=Math.max(
-      sl-entry,
-      atr*0.25
-    );
-  }
-
-  let tp1,tp2,tp3;
-
-  if(direction==="BUY"){
-
-    tp1=entry+risk*CONFIG.tp1R;
-    tp2=entry+risk*CONFIG.tp2R;
-    tp3=entry+risk*CONFIG.tp3R;
-
-  }else{
-
-    tp1=entry-risk*CONFIG.tp1R;
-    tp2=entry-risk*CONFIG.tp2R;
-    tp3=entry-risk*CONFIG.tp3R;
-  }
-
-  return {
-    direction,
-    probability:Math.round(
-      (a15.probability+a5.probability)/2
-    ),
-    price,
-    entry,
-    sl,
-    tp1,
-    tp2,
-    tp3,
-    risk,
-    a15,
-    a5,
-    signalTime:
-      a5.confirmation?.time ||
-      state.data5.candles.at(-1)?.time
-  };
-}
-
-
-/* =========================================================
-   FORMAT
+   FORMAT PRICE
 ========================================================= */
 
 function formatPrice(value){
 
   if(
-    value===null ||
-    value===undefined ||
-    !Number.isFinite(Number(value))
+    value === null ||
+    value === undefined ||
+    !Number.isFinite(
+      Number(value)
+    )
   ){
+
     return "—";
+
   }
 
-  const n=Number(value);
 
-  if(n>=1000){
+  const n =
+    Number(value);
+
+
+  if(n >= 1000){
     return n.toFixed(2);
   }
 
-  if(n>=100){
+
+  if(n >= 100){
     return n.toFixed(3);
   }
 
-  if(n>=1){
+
+  if(n >= 1){
     return n.toFixed(4);
   }
 
+
   return n.toFixed(6);
+
 }
 
+
+/* =========================================================
+   FORMAT TIME
+========================================================= */
 
 function formatTime(ts){
 
@@ -1529,334 +1460,1276 @@ function formatTime(ts){
     return "—";
   }
 
-  return new Date(ts*1000).toLocaleString(
+
+  return new Date(
+    Number(ts) * 1000
+  ).toLocaleString(
     undefined,
     {
-      month:"short",
-      day:"2-digit",
-      hour:"2-digit",
-      minute:"2-digit"
+
+      month:
+        "short",
+
+      day:
+        "2-digit",
+
+      hour:
+        "2-digit",
+
+      minute:
+        "2-digit"
+
     }
   );
+
 }
 
 
 /* =========================================================
-   UI
+   GET LATEST SWING
 ========================================================= */
 
-function updateUI(signal){
+function latestSwing(
+  data,
+  type
+){
 
-  const direction=$("direction");
+  if(
+    !data?.swings
+  ){
 
-  direction.className="direction";
+    return null;
 
-  if(signal?.direction==="BUY"){
-    direction.textContent="BUY";
-    direction.classList.add("buy");
   }
-  else if(signal?.direction==="SELL"){
-    direction.textContent="SELL";
-    direction.classList.add("sell");
+
+
+  const list =
+    type === "HIGH"
+      ? data.swings.highs
+      : data.swings.lows;
+
+
+  if(
+    !Array.isArray(list) ||
+    !list.length
+  ){
+
+    return null;
+
+  }
+
+
+  return list[list.length - 1];
+
+}
+
+
+/* =========================================================
+   GET LATEST SWEEP
+========================================================= */
+
+function latestSweep(
+  data
+){
+
+  if(
+    !Array.isArray(
+      data?.liquidity?.sweeps
+    )
+  ){
+
+    return null;
+
+  }
+
+
+  const list =
+    data.liquidity.sweeps;
+
+
+  return list.length
+    ? list[list.length - 1]
+    : null;
+
+}
+
+
+/* =========================================================
+   GET BACKEND SIGNAL
+========================================================= */
+
+function getBackendSignal(
+  data
+){
+
+  if(
+    !data?.signal
+  ){
+
+    return {
+      direction:
+        "WAIT",
+
+      probability:
+        0,
+
+      score:
+        0
+
+    };
+
+  }
+
+
+  const s =
+    data.signal;
+
+
+  return {
+
+    direction:
+      s.direction ||
+      s.value ||
+      "WAIT",
+
+    probability:
+      Number(
+        s.probability || 0
+      ),
+
+    score:
+      Number(
+        s.score || 0
+      ),
+
+    price:
+      s.price ||
+      null,
+
+    time:
+      s.time ||
+      null,
+
+    sweep:
+      s.sweep ||
+      null,
+
+    confirmation:
+      s.confirmation ||
+      null
+
+  };
+
+}
+
+
+/* =========================================================
+   BUILD FINAL SIGNAL
+
+   Backend already performs Swing Liquidity analysis.
+
+   15M = Structure
+   5M  = Entry
+
+   Both must agree.
+========================================================= */
+
+function buildFinalSignal(){
+
+  if(
+    !state.data15 ||
+    !state.data5
+  ){
+
+    return {
+
+      direction:
+        "WAIT",
+
+      probability:
+        0,
+
+      score:
+        0,
+
+      reason:
+        "DATA NOT READY"
+
+    };
+
+  }
+
+
+  const s15 =
+    getBackendSignal(
+      state.data15
+    );
+
+
+  const s5 =
+    getBackendSignal(
+      state.data5
+    );
+
+
+  /* -------------------------------------------------------
+     If either timeframe is WAIT
+  ------------------------------------------------------- */
+
+  if(
+    s15.direction === "WAIT" ||
+    s5.direction === "WAIT"
+  ){
+
+    return {
+
+      direction:
+        "WAIT",
+
+      probability:
+        Math.round(
+          Math.max(
+            s15.probability,
+            s5.probability
+          )
+        ),
+
+      score:
+        Math.max(
+          s15.score,
+          s5.score
+        ),
+
+      a15:
+        s15,
+
+      a5:
+        s5,
+
+      data15:
+        state.data15,
+
+      data5:
+        state.data5,
+
+      reason:
+        "WAITING FOR 15M + 5M CONFIRMATION"
+
+    };
+
+  }
+
+
+  /* -------------------------------------------------------
+     Timeframe mismatch
+  ------------------------------------------------------- */
+
+  if(
+    s15.direction !==
+    s5.direction
+  ){
+
+    return {
+
+      direction:
+        "WAIT",
+
+      probability:
+        0,
+
+      score:
+        0,
+
+      a15:
+        s15,
+
+      a5:
+        s5,
+
+      data15:
+        state.data15,
+
+      data5:
+        state.data5,
+
+      reason:
+        "TIMEFRAME MISALIGNMENT"
+
+    };
+
+  }
+
+
+  /* -------------------------------------------------------
+     Both agree
+  ------------------------------------------------------- */
+
+  const direction =
+    s15.direction;
+
+
+  const price =
+    state.data5?.market?.price ||
+    s5.price ||
+    state.data5?.candles?.at(-1)?.close ||
+    null;
+
+
+  const tradePlan =
+    state.data5?.tradePlan ||
+    state.data15?.tradePlan ||
+    null;
+
+
+  return {
+
+    direction,
+
+    probability:
+      Math.round(
+        (
+          s15.probability +
+          s5.probability
+        ) / 2
+      ),
+
+    score:
+      Math.round(
+        (
+          s15.score +
+          s5.score
+        ) / 2
+      ),
+
+    price,
+
+    entry:
+      tradePlan?.entry ??
+      null,
+
+    sl:
+      tradePlan?.stopLoss ??
+      null,
+
+    tp1:
+      tradePlan?.tp1 ??
+      null,
+
+    tp2:
+      tradePlan?.tp2 ??
+      null,
+
+    tp3:
+      tradePlan?.tp3 ??
+      null,
+
+    risk:
+      tradePlan?.risk ??
+      null,
+
+    a15:
+      s15,
+
+    a5:
+      s5,
+
+    data15:
+      state.data15,
+
+    data5:
+      state.data5,
+
+    signalTime:
+      s5.time ||
+      state.data5?.market?.lastCandleTime ||
+      null,
+
+    reason:
+      "15M + 5M ALIGNED"
+
+  };
+
+}
+
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+
+function updateUI(
+  signal
+){
+
+  const direction =
+    $("direction");
+
+
+  direction.className =
+    "direction";
+
+
+  if(
+    signal?.direction ===
+    "BUY"
+  ){
+
+    direction.textContent =
+      "BUY";
+
+    direction.classList.add(
+      "buy"
+    );
+
+  }
+  else if(
+    signal?.direction ===
+    "SELL"
+  ){
+
+    direction.textContent =
+      "SELL";
+
+    direction.classList.add(
+      "sell"
+    );
+
   }
   else{
-    direction.textContent="WAIT";
-    direction.classList.add("wait");
+
+    direction.textContent =
+      "WAIT";
+
+    direction.classList.add(
+      "wait"
+    );
+
   }
+
 
   $("signalProbability").textContent =
     `${signal?.probability || 0}%`;
 
+
   $("currentPrice").textContent =
     formatPrice(
       signal?.price ||
-      state.data5?.price ||
-      state.data15?.price
+      state.data5?.market?.price ||
+      state.data5?.candles?.at(-1)?.close
     );
+
 
   $("m15Direction").textContent =
-    signal?.a15?.direction || "WAIT";
+    signal?.a15?.direction ||
+    "WAIT";
+
 
   $("m5Direction").textContent =
-    signal?.a5?.direction || "WAIT";
+    signal?.a5?.direction ||
+    "WAIT";
 
-  const s15=latestSwingInfo(
-    signal?.a15
-  );
 
-  const s5=latestSwingInfo(
-    signal?.a5
-  );
-
-  $("swingHigh").textContent=
-    formatPrice(
-      s5.high ??
-      s15.high
+  const high15 =
+    latestSwing(
+      state.data15,
+      "HIGH"
     );
 
-  $("swingLow").textContent=
-    formatPrice(
-      s5.low ??
-      s15.low
+
+  const high5 =
+    latestSwing(
+      state.data5,
+      "HIGH"
     );
+
+
+  const low15 =
+    latestSwing(
+      state.data15,
+      "LOW"
+    );
+
+
+  const low5 =
+    latestSwing(
+      state.data5,
+      "LOW"
+    );
+
+
+  $("swingHigh").textContent =
+    formatPrice(
+      high5?.price ??
+      high15?.price
+    );
+
+
+  $("swingLow").textContent =
+    formatPrice(
+      low5?.price ??
+      low15?.price
+    );
+
+
+  const sweep5 =
+    latestSweep(
+      state.data5
+    );
+
+
+  const sweep15 =
+    latestSweep(
+      state.data15
+    );
+
 
   $("liquidityState").textContent =
-    liquidityText(signal);
+    sweep5?.type ||
+    sweep15?.type ||
+    "NONE";
 
-  $("volumeState").textContent =
-    volumeText(signal);
+
+  const volumeAvailable =
+    state.data5
+      ?.diagnostics
+      ?.volumeAvailable;
+
+
+  const volumeConfirmed =
+    state.data5
+      ?.diagnostics
+      ?.volumeConfirmed;
+
+
+  if(
+    volumeAvailable
+  ){
+
+    $("volumeState").textContent =
+      volumeConfirmed
+        ? "CONFIRMED"
+        : "NORMAL";
+
+  }else{
+
+    $("volumeState").textContent =
+      "N/A";
+
+  }
+
 
   $("sweep15").textContent =
-    signal?.a15?.latestSweep?.type || "NONE";
+    sweep15?.type ||
+    "NONE";
+
 
   $("confirm5").textContent =
-    signal?.a5?.confirmation?.confirmed
+    signal?.a5?.direction !== "WAIT" &&
+    signal?.a5?.confirmation
       ? signal.a5.confirmation.direction
       : "NONE";
 
-  $("retests").textContent =
-    signal?.a5?.latestSweep?.level?.touches ||
-    signal?.a15?.latestSweep?.level?.touches ||
-    0;
 
-  $("atr").textContent=
+  const liquidityLevel =
+    signal?.a5?.sweep?.level?.price ||
+    signal?.a15?.sweep?.level?.price ||
+    null;
+
+
+  $("liquidityLevel").textContent =
     formatPrice(
-      signal?.a5?.atr ||
-      signal?.a15?.atr
+      liquidityLevel
     );
 
-  $("entry").textContent=
-    formatPrice(signal?.entry);
 
-  $("sl").textContent=
-    formatPrice(signal?.sl);
-
-  $("tp1").textContent=
-    formatPrice(signal?.tp1);
-
-  $("tp2").textContent=
-    formatPrice(signal?.tp2);
-
-  $("tp3").textContent=
-    formatPrice(signal?.tp3);
-}
+  $("signalScore").textContent =
+    String(
+      signal?.score || 0
+    );
 
 
-function latestSwingInfo(analysis){
-
-  if(!analysis?.swings){
-    return {};
-  }
-
-  return {
-    high:
-      analysis.swings.highs.at(-1)?.price,
-    low:
-      analysis.swings.lows.at(-1)?.price
-  };
-}
+  $("atr").textContent =
+    formatPrice(
+      state.data5
+        ?.diagnostics
+        ?.atr ||
+      state.data15
+        ?.diagnostics
+        ?.atr
+    );
 
 
-function liquidityText(signal){
-
-  if(
-    signal?.a5?.latestSweep
-  ){
-    return signal.a5.latestSweep.type;
-  }
-
-  if(
-    signal?.a15?.latestSweep
-  ){
-    return signal.a15.latestSweep.type;
-  }
-
-  return "NONE";
-}
+  $("entry").textContent =
+    formatPrice(
+      signal?.entry
+    );
 
 
-function volumeText(signal){
+  $("sl").textContent =
+    formatPrice(
+      signal?.sl
+    );
 
-  if(
-    signal?.a5?.volume?.available
-  ){
-    return signal.a5.volume.strong
-      ? "CONFIRMED"
-      : "NORMAL";
-  }
 
-  return "N/A";
+  $("tp1").textContent =
+    formatPrice(
+      signal?.tp1
+    );
+
+
+  $("tp2").textContent =
+    formatPrice(
+      signal?.tp2
+    );
+
+
+  $("tp3").textContent =
+    formatPrice(
+      signal?.tp3
+    );
+
 }
 
 
 /* =========================================================
-   DRAW SWING LEVELS
+   CLEAR PRICE LINES
 ========================================================= */
-
-let priceLines=[];
 
 function clearPriceLines(){
 
-  for(const line of priceLines){
+  if(
+    !candleSeries
+  ){
+
+    return;
+
+  }
+
+
+  for(
+    const line of priceLines
+  ){
 
     try{
-      candleSeries.removePriceLine(line);
-    }catch(e){}
+
+      candleSeries.removePriceLine(
+        line
+      );
+
+    }catch(error){}
+
   }
 
-  priceLines=[];
-}
 
-
-function addLevel(price,title,color){
-
-  if(
-    !Number.isFinite(Number(price))
-  ){
-    return;
-  }
-
-  const line=
-    candleSeries.createPriceLine({
-      price:Number(price),
-      color,
-      lineWidth:1,
-      lineStyle:LightweightCharts.LineStyle.Dotted,
-      axisLabelVisible:true,
-      title
-    });
-
-  priceLines.push(line);
-}
-
-
-function drawLevels(analysis){
-
-  clearPriceLines();
-
-  if(!analysis?.swings){
-    return;
-  }
-
-  const highs=
-    analysis.swings.highs.slice(-6);
-
-  const lows=
-    analysis.swings.lows.slice(-6);
-
-  for(const h of highs){
-
-    addLevel(
-      h.price,
-      "Liquidity High",
-      "#b65a64"
-    );
-  }
-
-  for(const l of lows){
-
-    addLevel(
-      l.price,
-      "Liquidity Low",
-      "#63a96c"
-    );
-  }
-
-  /*
-    Trade plan lines are added after liquidity lines.
-  */
+  priceLines = [];
 
 }
 
 
 /* =========================================================
-   CHART DATA
+   ADD PRICE LINE
+========================================================= */
+
+function addPriceLine(
+  price,
+  title,
+  color,
+  style =
+    LightweightCharts.LineStyle.Dotted
+){
+
+  if(
+    !Number.isFinite(
+      Number(price)
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const line =
+    candleSeries.createPriceLine({
+
+      price:
+        Number(price),
+
+      color,
+
+      lineWidth:
+        1,
+
+      lineStyle:
+        style,
+
+      axisLabelVisible:
+        true,
+
+      title
+
+    });
+
+
+  priceLines.push(
+    line
+  );
+
+}
+
+
+/* =========================================================
+   DRAW LIQUIDITY LEVELS
+========================================================= */
+
+function drawLiquidityLevels(
+  data
+){
+
+  if(
+    !data?.swings
+  ){
+
+    return;
+
+  }
+
+
+  const highs =
+    Array.isArray(
+      data.swings.highs
+    )
+      ? data.swings.highs
+      : [];
+
+
+  const lows =
+    Array.isArray(
+      data.swings.lows
+    )
+      ? data.swings.lows
+      : [];
+
+
+  /* Last 8 swing highs */
+
+  highs
+    .slice(-8)
+    .forEach(
+      level => {
+
+        addPriceLine(
+          level.price,
+          "LIQ HIGH",
+          "#b65a64"
+        );
+
+      }
+    );
+
+
+  /* Last 8 swing lows */
+
+  lows
+    .slice(-8)
+    .forEach(
+      level => {
+
+        addPriceLine(
+          level.price,
+          "LIQ LOW",
+          "#63a96c"
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   DRAW SWEEP LEVELS
+========================================================= */
+
+function drawSweep(
+  data
+){
+
+  const sweeps =
+    data?.liquidity?.sweeps;
+
+
+  if(
+    !Array.isArray(sweeps) ||
+    !sweeps.length
+  ){
+
+    return;
+
+  }
+
+
+  const latest =
+    sweeps[sweeps.length - 1];
+
+
+  const price =
+    latest?.level?.price;
+
+
+  if(
+    !Number.isFinite(
+      Number(price)
+    )
+  ){
+
+    return;
+
+  }
+
+
+  if(
+    latest.type ===
+    "BULLISH"
+  ){
+
+    addPriceLine(
+      price,
+      "BULL SWEEP",
+      "#69c979",
+      LightweightCharts.LineStyle.Dashed
+    );
+
+  }
+  else{
+
+    addPriceLine(
+      price,
+      "BEAR SWEEP",
+      "#ef6874",
+      LightweightCharts.LineStyle.Dashed
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DRAW TRADE PLAN
+========================================================= */
+
+function drawTradePlan(
+  signal
+){
+
+  if(
+    !signal ||
+    signal.direction ===
+    "WAIT"
+  ){
+
+    return;
+
+  }
+
+
+  addPriceLine(
+    signal.entry,
+    "ENTRY",
+    "#d8d8d8",
+    LightweightCharts.LineStyle.Solid
+  );
+
+
+  addPriceLine(
+    signal.sl,
+    "SL",
+    "#ef6874",
+    LightweightCharts.LineStyle.Dashed
+  );
+
+
+  addPriceLine(
+    signal.tp1,
+    "TP1",
+    "#69c979",
+    LightweightCharts.LineStyle.Dotted
+  );
+
+
+  addPriceLine(
+    signal.tp2,
+    "TP2",
+    "#69c979",
+    LightweightCharts.LineStyle.Dotted
+  );
+
+
+  addPriceLine(
+    signal.tp3,
+    "TP3",
+    "#69c979",
+    LightweightCharts.LineStyle.Dotted
+  );
+
+}
+
+
+/* =========================================================
+   DRAW CHART
 ========================================================= */
 
 function renderChart(){
 
-  if(!candleSeries){
+  if(
+    !candleSeries
+  ){
+
     return;
+
   }
 
-  const candles=
-    state.candles5.length
-      ? state.candles5
-      : state.candles15;
+
+  const data =
+    state.chartTimeframe ===
+    "15min"
+      ? state.data15
+      : state.data5;
+
+
+  if(
+    !data?.candles?.length
+  ){
+
+    return;
+
+  }
+
+
+  const candles =
+    data.candles;
+
 
   candleSeries.setData(
-    candles.map(c=>({
-      time:c.time,
-      open:c.open,
-      high:c.high,
-      low:c.low,
-      close:c.close
-    }))
+
+    candles.map(
+      candle => ({
+
+        time:
+          candle.time,
+
+        open:
+          candle.open,
+
+        high:
+          candle.high,
+
+        low:
+          candle.low,
+
+        close:
+          candle.close
+
+      })
+    )
+
   );
+
 
   volumeSeries.setData(
-    candles.map(c=>({
-      time:c.time,
-      value:Number(c.volume||0),
-      color:
-        c.close>=c.open
-          ? "rgba(105,201,121,.35)"
-          : "rgba(239,104,116,.35)"
-    }))
+
+    candles.map(
+      candle => ({
+
+        time:
+          candle.time,
+
+        value:
+          Number(
+            candle.volume || 0
+          ),
+
+        color:
+          candle.close >= candle.open
+            ? "rgba(105,201,121,.35)"
+            : "rgba(239,104,116,.35)"
+
+      })
+    )
+
   );
 
-  chart.timeScale().fitContent();
 
-  drawLevels(
-    state.currentSignal?.a5 ||
-    state.currentSignal?.a15
+  clearPriceLines();
+
+
+  drawLiquidityLevels(
+    data
   );
 
-  drawTradeLines();
+
+  drawSweep(
+    data
+  );
+
+
+  /*
+    Trade plan uses final aligned signal.
+  */
+
+  drawTradePlan(
+    state.currentSignal
+  );
+
+
+  chart
+    .timeScale()
+    .fitContent();
+
 }
 
 
-function drawTradeLines(){
+/* =========================================================
+   CHART MARKERS
+========================================================= */
 
-  if(!state.currentSignal){
+function drawMarkers(){
+
+  if(
+    !candleSeries
+  ){
+
     return;
+
   }
 
-  const s=state.currentSignal;
 
-  if(s.direction==="WAIT"){
+  const data =
+    state.chartTimeframe ===
+    "15min"
+      ? state.data15
+      : state.data5;
+
+
+  if(
+    !data?.candles?.length
+  ){
+
     return;
+
   }
 
-  addLevel(
-    s.entry,
-    "ENTRY",
-    "#d8d8d8"
+
+  const markers=[];
+
+
+  /* -----------------------------------------------
+     Swing High markers
+  ------------------------------------------------ */
+
+  if(
+    Array.isArray(
+      data?.swings?.highs
+    )
+  ){
+
+    data.swings.highs
+      .slice(-12)
+      .forEach(
+        swing => {
+
+          markers.push({
+
+            time:
+              swing.time,
+
+            position:
+              "aboveBar",
+
+            color:
+              "#b65a64",
+
+            shape:
+              "arrowDown",
+
+            text:
+              "SH"
+
+          });
+
+        }
+      );
+
+  }
+
+
+  /* -----------------------------------------------
+     Swing Low markers
+  ------------------------------------------------ */
+
+  if(
+    Array.isArray(
+      data?.swings?.lows
+    )
+  ){
+
+    data.swings.lows
+      .slice(-12)
+      .forEach(
+        swing => {
+
+          markers.push({
+
+            time:
+              swing.time,
+
+            position:
+              "belowBar",
+
+            color:
+              "#63a96c",
+
+            shape:
+              "arrowUp",
+
+            text:
+              "SL"
+
+          });
+
+        }
+      );
+
+  }
+
+
+  /* -----------------------------------------------
+     Liquidity sweep markers
+  ------------------------------------------------ */
+
+  if(
+    Array.isArray(
+      data?.liquidity?.sweeps
+    )
+  ){
+
+    data.liquidity.sweeps
+      .slice(-10)
+      .forEach(
+        sweep => {
+
+          const bullish =
+            sweep.type ===
+            "BULLISH";
+
+
+          markers.push({
+
+            time:
+              sweep.time,
+
+            position:
+              bullish
+                ? "belowBar"
+                : "aboveBar",
+
+            color:
+              bullish
+                ? "#69c979"
+                : "#ef6874",
+
+            shape:
+              bullish
+                ? "arrowUp"
+                : "arrowDown",
+
+            text:
+              bullish
+                ? "SWEEP BUY"
+                : "SWEEP SELL"
+
+          });
+
+        }
+      );
+
+  }
+
+
+  markers.sort(
+    (a,b) =>
+      Number(a.time) -
+      Number(b.time)
   );
 
-  addLevel(
-    s.sl,
-    "SL",
-    "#ef6874"
-  );
 
-  addLevel(
-    s.tp1,
-    "TP1",
-    "#69c979"
-  );
+  /*
+    Lightweight Charts markers require
+    unique/sorted timestamps.
+  */
 
-  addLevel(
-    s.tp2,
-    "TP2",
-    "#69c979"
-  );
+  const unique=[];
 
-  addLevel(
-    s.tp3,
-    "TP3",
-    "#69c979"
-  );
+  const seen=
+    new Set();
+
+
+  for(
+    const marker of markers
+  ){
+
+    const key =
+      `${marker.time}|${marker.position}|${marker.text}`;
+
+
+    if(
+      seen.has(key)
+    ){
+
+      continue;
+
+    }
+
+
+    seen.add(key);
+
+    unique.push(
+      marker
+    );
+
+  }
+
+
+  try{
+
+    if(
+      !swingMarkers
+    ){
+
+      swingMarkers =
+        LightweightCharts
+          .createSeriesMarkers(
+            candleSeries,
+            unique
+          );
+
+    }else{
+
+      swingMarkers.setMarkers(
+        unique
+      );
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Marker rendering error:",
+      error
+    );
+
+  }
+
 }
 
 
@@ -1868,21 +2741,37 @@ function loadHistory(){
 
   try{
 
-    const raw=
+    const raw =
       localStorage.getItem(
         "ob_swing_liquidity_history"
       );
 
-    return raw
-      ? JSON.parse(raw)
+
+    if(!raw){
+      return [];
+    }
+
+
+    const parsed =
+      JSON.parse(raw);
+
+
+    return Array.isArray(parsed)
+      ? parsed
       : [];
 
-  }catch(e){
+  }catch(error){
 
     return [];
+
   }
+
 }
 
+
+/* =========================================================
+   SAVE HISTORY
+========================================================= */
 
 function saveHistory(){
 
@@ -1890,381 +2779,812 @@ function saveHistory(){
 
     localStorage.setItem(
       "ob_swing_liquidity_history",
+
       JSON.stringify(
-        state.history.slice(0,100)
+        state.history
+          .slice(0,100)
       )
     );
 
-  }catch(e){}
+  }catch(error){}
+
 }
 
 
-function signalKey(signal){
+/* =========================================================
+   SIGNAL KEY
+========================================================= */
+
+function signalKey(
+  signal
+){
 
   return [
+
     state.symbol,
+
     signal.direction,
+
     signal.signalTime,
-    Number(signal.entry).toFixed(5)
+
+    Number(
+      signal.entry || 0
+    ).toFixed(5)
+
   ].join("|");
+
 }
 
 
-function recordSignal(signal){
+/* =========================================================
+   RECORD SIGNAL
+========================================================= */
+
+function recordSignal(
+  signal
+){
 
   if(
     !signal ||
-    signal.direction==="WAIT"
+    signal.direction ===
+    "WAIT"
   ){
+
     return;
+
   }
 
-  const key=signalKey(signal);
 
   if(
-    state.lastSignalKey===key
+    !signal.entry
   ){
+
     return;
+
   }
 
-  const already=
-    state.history.some(
-      x=>x.key===key
+
+  const key =
+    signalKey(
+      signal
     );
 
-  if(already){
-    state.lastSignalKey=key;
+
+  if(
+    state.lastSignalKey ===
+    key
+  ){
+
     return;
+
   }
 
-  state.lastSignalKey=key;
+
+  const already =
+    state.history.some(
+      item =>
+        item.key === key
+    );
+
+
+  if(already){
+
+    state.lastSignalKey =
+      key;
+
+    return;
+
+  }
+
+
+  state.lastSignalKey =
+    key;
+
 
   state.history.unshift({
 
     key,
 
-    symbol:state.symbol,
+    symbol:
+      state.symbol,
 
-    time:signal.signalTime ||
-      Math.floor(Date.now()/1000),
+    time:
+      signal.signalTime ||
+      Math.floor(
+        Date.now()/1000
+      ),
 
-    direction:signal.direction,
+    direction:
+      signal.direction,
 
-    entry:signal.entry,
+    entry:
+      signal.entry,
 
-    sl:signal.sl,
+    sl:
+      signal.sl,
 
-    tp1:signal.tp1,
+    tp1:
+      signal.tp1,
 
-    tp2:signal.tp2,
+    tp2:
+      signal.tp2,
 
-    tp3:signal.tp3,
+    tp3:
+      signal.tp3,
 
-    probability:signal.probability,
+    probability:
+      signal.probability,
 
-    status:"OPEN",
+    score:
+      signal.score,
 
-    result:null,
+    status:
+      "OPEN",
 
-    resultTime:null
+    result:
+      null,
+
+    resultTime:
+      null
+
   });
 
+
   saveHistory();
+
   renderHistory();
-}
 
-
-function updateHistoryOutcomes(){
-
-  if(!state.data5?.candles?.length){
-    return;
-  }
-
-  const candles=
-    state.data5.candles;
-
-  let changed=false;
-
-  for(const item of state.history){
-
-    if(item.status!=="OPEN"){
-      continue;
-    }
-
-    const start=
-      candles.findIndex(
-        c=>c.time > item.time
-      );
-
-    if(start<0){
-      continue;
-    }
-
-    for(let i=start;i<candles.length;i++){
-
-      const c=candles[i];
-
-      /*
-        Conservative rule:
-        if SL and TP are both touched
-        on same candle, SL is counted first.
-      */
-
-      if(item.direction==="BUY"){
-
-        if(c.low <= item.sl){
-
-          item.status="LOSS";
-          item.result="SL HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.high >= item.tp3){
-
-          item.status="WIN";
-          item.result="TP3 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.high >= item.tp2){
-
-          item.status="WIN";
-          item.result="TP2 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.high >= item.tp1){
-
-          item.status="WIN";
-          item.result="TP1 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-      }
-
-      if(item.direction==="SELL"){
-
-        if(c.high >= item.sl){
-
-          item.status="LOSS";
-          item.result="SL HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.low <= item.tp3){
-
-          item.status="WIN";
-          item.result="TP3 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.low <= item.tp2){
-
-          item.status="WIN";
-          item.result="TP2 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-
-        if(c.low <= item.tp1){
-
-          item.status="WIN";
-          item.result="TP1 HIT";
-          item.resultTime=c.time;
-          changed=true;
-          break;
-        }
-      }
-    }
-  }
-
-  if(changed){
-
-    saveHistory();
-    renderHistory();
-  }
-}
-
-
-function renderHistory(){
-
-  const body=$("historyBody");
-
-  $("historyCount").textContent=
-    state.history.length;
-
-  if(!state.history.length){
-
-    body.innerHTML=
-      `<div class="empty">
-        No confirmed signals yet.
-      </div>`;
-
-    return;
-  }
-
-  body.innerHTML=
-    state.history
-      .slice(0,50)
-      .map(item=>{
-
-        const dirClass=
-          item.direction==="BUY"
-            ? "buy"
-            : "sell";
-
-        let resultClass="wait";
-
-        if(item.status==="WIN"){
-          resultClass="buy";
-        }
-
-        if(item.status==="LOSS"){
-          resultClass="sell";
-        }
-
-        return `
-          <div class="historyItem">
-
-            <div class="historyHead">
-              <span>
-                ${escapeHtml(item.symbol)}
-                <span class="${dirClass}">
-                  ${item.direction}
-                </span>
-              </span>
-
-              <span class="${resultClass}">
-                ${item.status}
-              </span>
-            </div>
-
-            <div class="historyMeta">
-              ${formatTime(item.time)}
-              • Probability ${item.probability}%
-            </div>
-
-            <div class="historyMeta">
-              Entry ${formatPrice(item.entry)}
-              • SL ${formatPrice(item.sl)}
-            </div>
-
-            <div class="historyMeta">
-              TP1 ${formatPrice(item.tp1)}
-              • TP2 ${formatPrice(item.tp2)}
-              • TP3 ${formatPrice(item.tp3)}
-            </div>
-
-            <div class="historyResult">
-              ${
-                item.result
-                  ? `${item.result} • ${formatTime(item.resultTime)}`
-                  : "Waiting for outcome..."
-              }
-            </div>
-
-          </div>
-        `;
-      })
-      .join("");
-}
-
-
-function escapeHtml(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
 }
 
 
 /* =========================================================
-   LOAD
+   UPDATE HISTORY OUTCOMES
+========================================================= */
+
+function updateHistoryOutcomes(){
+
+  const candles =
+    state.data5?.candles;
+
+
+  if(
+    !Array.isArray(candles) ||
+    !candles.length
+  ){
+
+    return;
+
+  }
+
+
+  let changed =
+    false;
+
+
+  for(
+    const item of state.history
+  ){
+
+    if(
+      item.status !==
+      "OPEN"
+    ){
+
+      continue;
+
+    }
+
+
+    const start =
+      candles.findIndex(
+        candle =>
+          Number(candle.time) >
+          Number(item.time)
+      );
+
+
+    if(
+      start < 0
+    ){
+
+      continue;
+
+    }
+
+
+    for(
+      let i=start;
+      i<candles.length;
+      i++
+    ){
+
+      const candle =
+        candles[i];
+
+
+      /* ---------------------------------------------
+         BUY
+      --------------------------------------------- */
+
+      if(
+        item.direction ===
+        "BUY"
+      ){
+
+        /*
+          Conservative:
+          SL gets priority if same candle
+          touches SL and TP.
+        */
+
+        if(
+          Number(candle.low) <=
+          Number(item.sl)
+        ){
+
+          item.status =
+            "LOSS";
+
+          item.result =
+            "SL HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.high) >=
+          Number(item.tp3)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP3 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.high) >=
+          Number(item.tp2)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP2 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.high) >=
+          Number(item.tp1)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP1 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+      }
+
+
+      /* ---------------------------------------------
+         SELL
+      --------------------------------------------- */
+
+      if(
+        item.direction ===
+        "SELL"
+      ){
+
+        if(
+          Number(candle.high) >=
+          Number(item.sl)
+        ){
+
+          item.status =
+            "LOSS";
+
+          item.result =
+            "SL HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.low) <=
+          Number(item.tp3)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP3 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.low) <=
+          Number(item.tp2)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP2 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        if(
+          Number(candle.low) <=
+          Number(item.tp1)
+        ){
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP1 HIT";
+
+          item.resultTime =
+            candle.time;
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+      }
+
+    }
+
+  }
+
+
+  if(changed){
+
+    saveHistory();
+
+    renderHistory();
+
+  }
+
+}
+
+
+/* =========================================================
+   HISTORY UI
+========================================================= */
+
+function renderHistory(){
+
+  const body =
+    $("historyBody");
+
+
+  $("historyCount").textContent =
+    String(
+      state.history.length
+    );
+
+
+  if(
+    !state.history.length
+  ){
+
+    body.innerHTML =
+      `
+      <div class="empty">
+        No confirmed signals yet.
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  body.innerHTML =
+    state.history
+      .slice(0,50)
+      .map(
+        item => {
+
+          const directionClass =
+            item.direction ===
+            "BUY"
+              ? "buy"
+              : "sell";
+
+
+          let resultClass =
+            "wait";
+
+
+          if(
+            item.status ===
+            "WIN"
+          ){
+
+            resultClass =
+              "buy";
+
+          }
+
+
+          if(
+            item.status ===
+            "LOSS"
+          ){
+
+            resultClass =
+              "sell";
+
+          }
+
+
+          return `
+
+            <div class="historyItem">
+
+              <div class="historyHead">
+
+                <span>
+
+                  ${escapeHtml(
+                    item.symbol
+                  )}
+
+                  <span
+                    class="${directionClass}"
+                  >
+
+                    ${escapeHtml(
+                      item.direction
+                    )}
+
+                  </span>
+
+                </span>
+
+
+                <span
+                  class="${resultClass}"
+                >
+
+                  ${escapeHtml(
+                    item.status
+                  )}
+
+                </span>
+
+              </div>
+
+
+              <div class="historyMeta">
+
+                ${formatTime(
+                  item.time
+                )}
+
+                • Probability
+                ${escapeHtml(
+                  item.probability
+                )}%
+
+                • Score
+                ${escapeHtml(
+                  item.score || 0
+                )}
+
+              </div>
+
+
+              <div class="historyMeta">
+
+                Entry
+                ${formatPrice(
+                  item.entry
+                )}
+
+                • SL
+                ${formatPrice(
+                  item.sl
+                )}
+
+              </div>
+
+
+              <div class="historyMeta">
+
+                TP1
+                ${formatPrice(
+                  item.tp1
+                )}
+
+                • TP2
+                ${formatPrice(
+                  item.tp2
+                )}
+
+                • TP3
+                ${formatPrice(
+                  item.tp3
+                )}
+
+              </div>
+
+
+              <div class="historyResult">
+
+                ${
+                  item.result
+
+                    ? escapeHtml(
+                        item.result
+                      )
+                      +
+                      " • "
+                      +
+                      escapeHtml(
+                        formatTime(
+                          item.resultTime
+                        )
+                      )
+
+                    : "Waiting for outcome..."
+                }
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   LOAD MARKET
 ========================================================= */
 
 async function loadMarket(){
 
-  loadingEl.classList.remove("hidden");
+  loadingEl
+    .classList
+    .remove(
+      "hidden"
+    );
 
-  $("refreshText").textContent="Updating...";
+
+  $("refreshText").textContent =
+    "Updating...";
+
 
   try{
 
-    const [m15,m5]=
+    /*
+      IMPORTANT:
+      Page 2 now uses /api/liquidity
+    */
+
+    const results =
       await Promise.all([
-        fetchMarket(
+
+        fetchLiquidity(
           state.symbol,
           "15min"
         ),
-        fetchMarket(
+
+        fetchLiquidity(
           state.symbol,
           "5min"
         )
+
       ]);
 
-    state.data15=m15;
-    state.data5=m5;
 
-    state.candles15=m15.candles;
-    state.candles5=m5.candles;
+    state.data15 =
+      results[0];
 
-    state.currentSignal=
+
+    state.data5 =
+      results[1];
+
+
+    state.currentSignal =
       buildFinalSignal();
+
 
     updateUI(
       state.currentSignal
     );
 
+
     renderChart();
+
+
+    drawMarkers();
+
 
     recordSignal(
       state.currentSignal
     );
 
+
     updateHistoryOutcomes();
 
-    $("assetTitle").textContent=
+
+    $("assetTitle").textContent =
       state.displayName;
 
-    $("assetSubtitle").textContent=
+
+    $("assetSubtitle").textContent =
       `${state.symbol} • Swing Liquidity`;
 
-    $("refreshText").textContent=
+
+    $("refreshText").textContent =
       "Updated " +
-      new Date().toLocaleTimeString();
+      new Date()
+        .toLocaleTimeString();
+
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Swing Liquidity page error:",
+      error
+    );
 
-    $("refreshText").textContent=
+
+    $("refreshText").textContent =
       "API Error";
 
-    $("direction").textContent=
+
+    $("direction").textContent =
       "ERROR";
 
-    $("direction").className=
+
+    $("direction").className =
       "direction sell";
+
+
+    $("signalProbability").textContent =
+      "—";
+
+
+    $("currentPrice").textContent =
+      "—";
+
+
+    /*
+      Show useful error in console
+      without exposing secret/API key.
+    */
 
   }finally{
 
-    loadingEl.classList.add("hidden");
+    loadingEl
+      .classList
+      .add(
+        "hidden"
+      );
+
   }
+
 }
 
 
@@ -2272,153 +3592,321 @@ async function loadMarket(){
    SEARCH
 ========================================================= */
 
-let searchTimer=null;
+let searchTimer =
+  null;
 
-$("searchInput").addEventListener(
-  "input",
-  e=>{
 
-    const q=e.target.value.trim();
+$("searchInput")
+  .addEventListener(
+    "input",
+    event => {
 
-    clearTimeout(searchTimer);
+      const q =
+        event.target.value
+          .trim();
 
-    if(q.length<2){
 
-      $("searchResults").style.display="none";
-
-      return;
-    }
-
-    searchTimer=
-      setTimeout(
-        ()=>searchAssets(q),
-        300
+      clearTimeout(
+        searchTimer
       );
-  }
-);
 
 
-async function searchAssets(q){
+      if(
+        q.length < 2
+      ){
+
+        $("searchResults")
+          .style.display =
+            "none";
+
+        return;
+
+      }
+
+
+      searchTimer =
+        setTimeout(
+          () =>
+            searchAssets(q),
+          300
+        );
+
+    }
+  );
+
+
+/* =========================================================
+   SEARCH ASSETS
+========================================================= */
+
+async function searchAssets(
+  q
+){
 
   try{
 
-    const response=
+    /*
+      Search itself can continue
+      using the existing market.js
+      search endpoint.
+
+      This does NOT perform Strategy 02 analysis.
+    */
+
+    const response =
       await fetch(
+
         "/api/market?action=search&q=" +
-        encodeURIComponent(q)
+        encodeURIComponent(q),
+
+        {
+          cache:
+            "no-store"
+        }
+
       );
 
-    if(!response.ok){
-      throw new Error("Search error");
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+        "Search error"
+      );
+
     }
 
-    const json=
+
+    const json =
       await response.json();
 
-    const results=
+
+    const results =
       json?.results ||
       json?.data ||
       [];
 
-    if(!Array.isArray(results) ||
-       !results.length){
 
-      $("searchResults").innerHTML=
-        `<div class="empty">No result</div>`;
+    if(
+      !Array.isArray(results) ||
+      !results.length
+    ){
 
-      $("searchResults").style.display="block";
+      $("searchResults")
+        .innerHTML =
+          `
+          <div class="empty">
+            No result
+          </div>
+          `;
+
+
+      $("searchResults")
+        .style.display =
+          "block";
+
 
       return;
+
     }
 
-    $("searchResults").innerHTML=
-      results.slice(0,10).map(item=>{
 
-        const symbol=
-          item.symbol ||
-          item.ticker ||
-          item.value ||
-          "";
+    $("searchResults")
+      .innerHTML =
 
-        const name=
-          item.name ||
-          symbol;
+        results
+          .slice(0,10)
+          .map(
+            item => {
 
-        const category=
-          item.category ||
-          item.type ||
-          "";
+              const symbol =
+                item.symbol ||
+                item.ticker ||
+                item.value ||
+                "";
 
-        return `
-          <div
-            class="searchItem"
-            data-symbol="${escapeHtml(symbol)}"
-            data-name="${escapeHtml(name)}"
-            data-category="${escapeHtml(category)}"
-          >
-            <strong>${escapeHtml(symbol)}</strong>
-            <span>
-              ${escapeHtml(name)}
-              ${category ? " • "+escapeHtml(category) : ""}
-            </span>
-          </div>
-        `;
-      }).join("");
 
-    $("searchResults").style.display="block";
+              const name =
+                item.name ||
+                symbol;
+
+
+              const category =
+                item.category ||
+                item.type ||
+                "";
+
+
+              return `
+
+                <div
+                  class="searchItem"
+
+                  data-symbol="${escapeHtml(
+                    symbol
+                  )}"
+
+                  data-name="${escapeHtml(
+                    name
+                  )}"
+
+                  data-category="${escapeHtml(
+                    category
+                  )}"
+                >
+
+                  <strong>
+
+                    ${escapeHtml(
+                      symbol
+                    )}
+
+                  </strong>
+
+
+                  <span>
+
+                    ${escapeHtml(
+                      name
+                    )}
+
+                    ${
+                      category
+                        ? " • " +
+                          escapeHtml(
+                            category
+                          )
+                        : ""
+                    }
+
+                  </span>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+
+    $("searchResults")
+      .style.display =
+        "block";
+
 
     document
-      .querySelectorAll(".searchItem")
-      .forEach(el=>{
+      .querySelectorAll(
+        ".searchItem"
+      )
+      .forEach(
+        element => {
 
-        el.addEventListener(
-          "click",
-          ()=>{
+          element.addEventListener(
+            "click",
+            () => {
 
-            state.symbol=
-              el.dataset.symbol;
+              state.symbol =
+                element.dataset
+                  .symbol;
 
-            state.displayName=
-              el.dataset.name ||
-              state.symbol;
 
-            state.category=
-              el.dataset.category ||
-              "All";
+              state.displayName =
+                element.dataset
+                  .name ||
+                state.symbol;
 
-            $("searchInput").value=
-              state.symbol;
 
-            $("searchResults").style.display=
-              "none";
+              state.category =
+                element.dataset
+                  .category ||
+                "All";
 
-            loadMarket();
-          }
-        );
-      });
+
+              $("searchInput")
+                .value =
+                  state.symbol;
+
+
+              $("searchResults")
+                .style.display =
+                  "none";
+
+
+              /*
+                Reset to 15M structure
+                when changing asset.
+              */
+
+              state.chartTimeframe =
+                "15min";
+
+
+              $("tf15")
+                .classList
+                .add("active");
+
+
+              $("tf5")
+                .classList
+                .remove("active");
+
+
+              loadMarket();
+
+            }
+          );
+
+        }
+      );
+
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      error
+    );
 
-    $("searchResults").innerHTML=
-      `<div class="empty">Search error</div>`;
 
-    $("searchResults").style.display="block";
+    $("searchResults")
+      .innerHTML =
+        `
+        <div class="empty">
+          Search error
+        </div>
+        `;
+
+
+    $("searchResults")
+      .style.display =
+        "block";
+
   }
+
 }
 
 
+/* =========================================================
+   CLOSE SEARCH
+========================================================= */
+
 document.addEventListener(
   "click",
-  e=>{
+  event => {
 
     if(
-      !e.target.closest(".search")
+      !event.target.closest(
+        ".search"
+      )
     ){
-      $("searchResults").style.display=
-        "none";
+
+      $("searchResults")
+        .style.display =
+          "none";
+
     }
+
   }
 );
 
@@ -2428,58 +3916,111 @@ document.addEventListener(
 ========================================================= */
 
 document
-  .querySelectorAll(".cat")
-  .forEach(button=>{
+  .querySelectorAll(
+    ".cat"
+  )
+  .forEach(
+    button => {
 
-    button.addEventListener(
-      "click",
-      ()=>{
+      button.addEventListener(
+        "click",
+        () => {
 
-        document
-          .querySelectorAll(".cat")
-          .forEach(x=>
-            x.classList.remove("active")
-          );
+          document
+            .querySelectorAll(
+              ".cat"
+            )
+            .forEach(
+              item =>
+                item.classList
+                  .remove(
+                    "active"
+                  )
+            );
 
-        button.classList.add("active");
 
-        /*
-          Category is primarily a UI filter.
-          Asset selection still happens through search.
-        */
-      }
-    );
-  });
+          button.classList
+            .add(
+              "active"
+            );
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================================================
-   TIMEFRAME BUTTONS
+   15M BUTTON
 ========================================================= */
 
-$("tf15").addEventListener(
-  "click",
-  ()=>{
+$("tf15")
+  .addEventListener(
+    "click",
+    () => {
 
-    $("tf15").classList.add("active");
-    $("tf5").classList.remove("active");
+      $("tf15")
+        .classList
+        .add(
+          "active"
+        );
 
-    /*
-      Structure remains 15M.
-      Chart itself continues displaying 5M entry data
-      because the strategy uses both timeframes.
-    */
-  }
-);
 
-$("tf5").addEventListener(
-  "click",
-  ()=>{
+      $("tf5")
+        .classList
+        .remove(
+          "active"
+        );
 
-    $("tf5").classList.add("active");
-    $("tf15").classList.remove("active");
 
-  }
-);
+      state.chartTimeframe =
+        "15min";
+
+
+      renderChart();
+
+
+      drawMarkers();
+
+    }
+  );
+
+
+/* =========================================================
+   5M BUTTON
+========================================================= */
+
+$("tf5")
+  .addEventListener(
+    "click",
+    () => {
+
+      $("tf5")
+        .classList
+        .add(
+          "active"
+        );
+
+
+      $("tf15")
+        .classList
+        .remove(
+          "active"
+        );
+
+
+      state.chartTimeframe =
+        "5min";
+
+
+      renderChart();
+
+
+      drawMarkers();
+
+    }
+  );
 
 
 /* =========================================================
@@ -2487,8 +4028,10 @@ $("tf5").addEventListener(
 ========================================================= */
 
 setInterval(
-  ()=>{
+  () => {
+
     loadMarket();
+
   },
   60000
 );
@@ -2499,7 +4042,9 @@ setInterval(
 ========================================================= */
 
 createChart();
+
 renderHistory();
+
 loadMarket();
 
 </script>
