@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owajid AI — Swing Structure Forecast</title>
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+*{box-sizing:border-box} body{margin:0;background:#061019;color:#e9f2f8;font-family:Arial,sans-serif}
+.wrap{max-width:1400px;margin:auto;padding:14px}.top{position:sticky;top:0;z-index:5;background:#091721;border-bottom:1px solid #1b2b38;padding:12px 14px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-weight:900;font-size:18px}.muted{color:#8296a6;font-size:12px}
+.nav{display:flex;gap:8px;overflow:auto;margin-top:10px}.nav a{color:#9db1c0;text-decoration:none;border:1px solid #223744;border-radius:9px;padding:8px 12px;white-space:nowrap;font-size:12px}.nav a.active{background:#3da8ff;color:#fff;border-color:#3da8ff}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.controls input,.controls select,.controls button{background:#0c1b26;color:#fff;border:1px solid #233a49;border-radius:9px;padding:10px}.controls input{flex:1;min-width:200px}
+.grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,1fr);gap:14px}.card{background:#091722;border:1px solid #1b303e;border-radius:14px;padding:14px}.title{font-weight:800}.chart{height:520px}.signal{text-align:center;border-radius:12px;padding:18px;margin:10px 0;background:#0d202b}.signal.buy{border:1px solid #26c77a}.signal.sell{border:1px solid #ff5264}.dir{font-size:30px;font-weight:900}.buy .dir{color:#35dc8a}.sell .dir{color:#ff6575}.wait .dir{color:#aab9c4}.metric{display:flex;justify-content:space-between;border-bottom:1px solid #18303d;padding:10px 0;font-size:13px}.metric:last-child{border-bottom:0}.history{margin-top:14px}.row{display:grid;grid-template-columns:1fr 80px 90px 100px;gap:8px;padding:9px 0;border-bottom:1px solid #18303d;font-size:12px}.status{font-weight:800}.hint{color:#8da2b2;font-size:11px;line-height:1.5;margin-top:10px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.chart{height:420px}.row{grid-template-columns:1fr 70px 80px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div><div class="logo">Owajid AI • Swing Forecast</div><div class="muted">Closed-candle confirmation → next-candle-open entry</div></div>
+    <div id="connection" class="muted">Connecting…</div>
+  </div>
+  <nav class="nav">
+    <a href="/">🧲 Strong SD Magnet</a>
+    <a href="/liquidity.html">💧 Swing Liquidity</a>
+    <a class="active" href="/forecast.html">📐 Swing Forecast</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="controls">
+    <input id="symbol" value="XAU/USD" placeholder="XAU/USD, BTC/USD, EUR/USD…">
+    <select id="interval"><option value="5min">5M</option><option value="15min" selected>15M</option><option value="30min">30M</option><option value="1h">1H</option></select>
+    <button id="load">Analyze</button>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="title" id="chartTitle">XAU/USD • 15M</div>
+      <div class="chart" id="chart"></div>
+      <div class="hint">The newest candle is treated as the entry candle. Forecast calculations use only completed candles.</div>
+    </section>
+
+    <aside class="card">
+      <div class="title">LIVE FORECAST</div>
+      <div id="signal" class="signal wait"><div class="dir">WAIT</div><div id="signalText" class="muted">Waiting for a confirmed swing change…</div></div>
+      <div class="metric"><span>Entry</span><b id="entry">—</b></div>
+      <div class="metric"><span>Stop Loss</span><b id="sl">—</b></div>
+      <div class="metric"><span>TP1</span><b id="tp1">—</b></div>
+      <div class="metric"><span>TP2</span><b id="tp2">—</b></div>
+      <div class="metric"><span>Forecast Target</span><b id="forecastTarget">—</b></div>
+      <div class="metric"><span>Forecast Move</span><b id="forecastPct">—</b></div>
+      <div class="metric"><span>Confidence</span><b id="confidence">—</b></div>
+      <div class="metric"><span>Uncertainty</span><b id="uncertainty">—</b></div>
+      <div class="metric"><span>ATR Multiple</span><b id="atrMultiple">—</b></div>
+      <div class="metric"><span>Signal Candle</span><b id="signalCandle">—</b></div>
+      <div class="metric"><span>Entry Rule</span><b>NEXT OPEN</b></div>
+    </aside>
+  </div>
+
+  <section class="card history">
+    <div class="title">RECENT SIGNALS</div>
+    <div id="history"></div>
+  </section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+let chart,series,timer;
+const HISTORY_KEY="owajid_swing_forecast_history_v1";
+
+function loadHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]")}catch{return[]}}
+function saveHistory(a){localStorage.setItem(HISTORY_KEY,JSON.stringify(a.slice(0,50)))}
+function fmt(v){return v==null?"—":Number(v).toFixed(3)}
+function renderHistory(){
+  const h=loadHistory();
+  $("history").innerHTML=h.length?h.map(x=>`<div class="row"><span>${x.symbol}<br><span class="muted">${x.time}</span></span><span class="status">${x.direction}</span><span>${fmt(x.entry)}</span><span>${x.confidence}%</span></div>`).join(""):`<div class="muted" style="padding:12px 0">No confirmed signals yet.</div>`;
+}
+
+function createChart(){
+  chart=LightweightCharts.createChart($("chart"),{
+    layout:{background:{type:"solid",color:"#091722"},textColor:"#8ea3b2"},
+    grid:{vertLines:{color:"#122733"},horzLines:{color:"#122733"}},
+    rightPriceScale:{borderColor:"#213744"},
+    timeScale:{borderColor:"#213744",timeVisible:true,secondsVisible:false}
+  });
+  series=chart.addSeries(LightweightCharts.CandlestickSeries,{
+    upColor:"#35d98a",downColor:"#ff5264",borderVisible:false,wickUpColor:"#35d98a",wickDownColor:"#ff5264"
+  });
+  window.addEventListener("resize",()=>chart.applyOptions({width:$("chart").clientWidth}));
+}
+
+async function load(){
+  $("connection").textContent="Loading…";
+  const symbol=$("symbol").value.trim()||"XAU/USD";
+  const interval=$("interval").value;
+  $("chartTitle").textContent=`${symbol} • ${interval}`;
+  try{
+    const r=await fetch(`/api/forecast?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}&outputsize=250`,{cache:"no-store"});
+    const j=await r.json();
+    if(!r.ok||!j.success)throw new Error(j.error||"Request failed");
+    const candles=j.candles||[];
+    series.setData(candles.map(c=>({time:toTime(c.time),open:c.open,high:c.high,low:c.low,close:c.close})).filter(x=>x.time));
+    chart.timeScale().fitContent();
+
+    const f=j.engine?.forecast||{};
+    const s=j.engine?.signal||null;
+
+    $("signal").className="signal "+(s?.direction==="BUY"?"buy":s?.direction==="SELL"?"sell":"wait");
+    $("signal").querySelector(".dir").textContent=s?.direction||"WAIT";
+    $("signalText").textContent=s
+      ? `Confirmed on closed candle → entry at next candle open (${fmt(s.entry)})`
+      : (f.reason||"Waiting for a new confirmed swing change…");
+
+    $("entry").textContent=fmt(s?.entry);
+    $("sl").textContent=fmt(s?.stopLoss);
+    $("tp1").textContent=fmt(s?.tp1);
+    $("tp2").textContent=fmt(s?.tp2);
+    $("forecastTarget").textContent=fmt(f.target);
+    $("forecastPct").textContent=f.forecastPercent==null?"—":`${f.forecastPercent}%`;
+    $("confidence").textContent=f.confidence==null?"—":`${f.confidence}%`;
+    $("uncertainty").textContent=f.uncertaintyPercent==null?"—":`${f.uncertaintyPercent}%`;
+    $("atrMultiple").textContent=f.atrMultiple==null?"—":`${f.atrMultiple}x`;
+    $("signalCandle").textContent=s?.signalCandleTime||"—";
+    $("connection").textContent=`Live • ${new Date().toLocaleTimeString()}`;
+
+    if(s){
+      const h=loadHistory();
+      const key=`${symbol}|${interval}|${s.direction}|${s.signalCandleTime}|${s.entry}`;
+      if(!h.some(x=>x.key===key)){
+        h.unshift({key,symbol,interval,direction:s.direction,entry:s.entry,confidence:s.confidence,time:s.signalCandleTime});
+        saveHistory(h);
+      }
+      renderHistory();
+    }
+  }catch(e){
+    $("connection").textContent="Error";
+    $("signal").className="signal wait";
+    $("signal").querySelector(".dir").textContent="ERROR";
+    $("signalText").textContent=e.message;
+  }
+}
+
+function toTime(v){
+  if(typeof v==="number")return v;
+  const d=new Date(String(v).replace(" ","T")+"Z");
+  return Math.floor(d.getTime()/1000);
+}
+
+$("load").addEventListener("click",load);
+$("interval").addEventListener("change",load);
+renderHistory(); createChart(); load();
+timer=setInterval(load,30000);
+</script>
+</body>
+</html>
