@@ -3427,276 +3427,213 @@ function recordSignal(
 /* =========================================================
    UPDATE HISTORY OUTCOMES
 ========================================================= */
-
 function updateHistoryOutcomes(){
+  const candles = state.data5?.candles || [];
+  if(!candles.length || !state.history.length) return;
 
-  const candles =
-    state.data5?.candles;
+  let changed = false;
 
+  state.history.forEach(item => {
+    if(item.status !== "OPEN") return;
 
-  if(
-    !Array.isArray(candles) ||
-    !candles.length
-  ){
+    // For old history records
+    item.events = Array.isArray(item.events) ? item.events : [];
+    item.tp1Hit = !!item.tp1Hit;
+    item.tp2Hit = !!item.tp2Hit;
+    item.slHit = !!item.slHit;
 
-    return;
+    const signalTime = new Date(item.time).getTime();
 
-  }
-
-
-  let changed =
-    false;
-
-
-  for(
-    const item of state.history
-  ){
-
-    if(
-      item.status !==
-      "OPEN"
-    ){
-
-      continue;
-
-    }
-
-
-    const start =
-      candles.findIndex(
-        candle =>
-          Number(candle.time) >
-          Number(item.time)
+    const futureCandles = candles
+      .filter(c => new Date(c.time).getTime() > signalTime)
+      .sort((a,b) =>
+        new Date(a.time).getTime() - new Date(b.time).getTime()
       );
 
+    for(const candle of futureCandles){
 
-    if(
-      start < 0
-    ){
+      const high = Number(candle.high);
+      const low  = Number(candle.low);
 
-      continue;
+      if(!Number.isFinite(high) || !Number.isFinite(low)) continue;
 
-    }
+      const isBuy = item.direction === "BUY";
 
+      /*
+       * =========================================================
+       * BUY
+       * =========================================================
+       */
+      if(isBuy){
 
-    for(
-      let i=start;
-      i<candles.length;
-      i++
-    ){
+        // -------------------------------------------------------
+        // 1. SL HIT = terminal LOSS
+        // -------------------------------------------------------
+        if(low <= Number(item.sl)){
 
-      const candle =
-        candles[i];
+          if(!item.slHit){
+            item.slHit = true;
 
+            item.events.push({
+              type: "SL",
+              target: Number(item.sl),
+              hitPrice: low,
+              time: candle.time
+            });
 
-      /* BUY */
+            item.status = "LOSS";
+            item.result = "SL HIT";
+            item.resultPrice = low;
+            item.resultTime = candle.time;
 
-      if(
-        item.direction ===
-        "BUY"
-      ){
-
-        if(
-          Number(candle.low) <=
-          Number(item.sl)
-        ){
-
-          item.status =
-            "LOSS";
-
-          item.result =
-            "SL HIT";
-
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
+            changed = true;
+          }
 
           break;
-
         }
 
+        // -------------------------------------------------------
+        // 2. TP2 HIT = terminal WIN
+        // -------------------------------------------------------
+        if(high >= Number(item.tp2)){
 
-        if(
-          Number(candle.high) >=
-          Number(item.tp3)
-        ){
+          if(!item.tp2Hit){
+            item.tp2Hit = true;
 
-          item.status =
-            "WIN";
+            item.events.push({
+              type: "TP2",
+              target: Number(item.tp2),
+              hitPrice: high,
+              time: candle.time
+            });
 
-          item.result =
-            "TP3 HIT";
+            item.status = "WIN";
+            item.result = "TP2 HIT";
+            item.resultPrice = high;
+            item.resultTime = candle.time;
 
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
+            changed = true;
+          }
 
           break;
-
         }
 
+        // -------------------------------------------------------
+        // 3. TP1 HIT = keep signal ACTIVE
+        // -------------------------------------------------------
+        if(high >= Number(item.tp1) && !item.tp1Hit){
 
-        if(
-          Number(candle.high) >=
-          Number(item.tp2)
-        ){
+          item.tp1Hit = true;
+          item.tp1HitPrice = high;
+          item.tp1HitTime = candle.time;
 
-          item.status =
-            "WIN";
+          item.events.push({
+            type: "TP1",
+            target: Number(item.tp1),
+            hitPrice: high,
+            time: candle.time
+          });
 
-          item.result =
-            "TP2 HIT";
+          // IMPORTANT:
+          // TP1 does NOT close the signal.
+          item.status = "OPEN";
 
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
-
-          break;
-
+          changed = true;
         }
-
-
-        if(
-          Number(candle.high) >=
-          Number(item.tp1)
-        ){
-
-          item.status =
-            "WIN";
-
-          item.result =
-            "TP1 HIT";
-
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
-
-          break;
-
-        }
-
       }
 
 
-      /* SELL */
+      /*
+       * =========================================================
+       * SELL
+       * =========================================================
+       */
+      else if(item.direction === "SELL"){
 
-      if(
-        item.direction ===
-        "SELL"
-      ){
+        // -------------------------------------------------------
+        // 1. SL HIT = terminal LOSS
+        // -------------------------------------------------------
+        if(high >= Number(item.sl)){
 
-        if(
-          Number(candle.high) >=
-          Number(item.sl)
-        ){
+          if(!item.slHit){
+            item.slHit = true;
 
-          item.status =
-            "LOSS";
+            item.events.push({
+              type: "SL",
+              target: Number(item.sl),
+              hitPrice: high,
+              time: candle.time
+            });
 
-          item.result =
-            "SL HIT";
+            item.status = "LOSS";
+            item.result = "SL HIT";
+            item.resultPrice = high;
+            item.resultTime = candle.time;
 
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
-
-          break;
-
-        }
-
-
-        if(
-          Number(candle.low) <=
-          Number(item.tp3)
-        ){
-
-          item.status =
-            "WIN";
-
-          item.result =
-            "TP3 HIT";
-
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
+            changed = true;
+          }
 
           break;
-
         }
 
+        // -------------------------------------------------------
+        // 2. TP2 HIT = terminal WIN
+        // -------------------------------------------------------
+        if(low <= Number(item.tp2)){
 
-        if(
-          Number(candle.low) <=
-          Number(item.tp2)
-        ){
+          if(!item.tp2Hit){
+            item.tp2Hit = true;
 
-          item.status =
-            "WIN";
+            item.events.push({
+              type: "TP2",
+              target: Number(item.tp2),
+              hitPrice: low,
+              time: candle.time
+            });
 
-          item.result =
-            "TP2 HIT";
+            item.status = "WIN";
+            item.result = "TP2 HIT";
+            item.resultPrice = low;
+            item.resultTime = candle.time;
 
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
+            changed = true;
+          }
 
           break;
-
         }
 
+        // -------------------------------------------------------
+        // 3. TP1 HIT = keep signal ACTIVE
+        // -------------------------------------------------------
+        if(low <= Number(item.tp1) && !item.tp1Hit){
 
-        if(
-          Number(candle.low) <=
-          Number(item.tp1)
-        ){
+          item.tp1Hit = true;
+          item.tp1HitPrice = low;
+          item.tp1HitTime = candle.time;
 
-          item.status =
-            "WIN";
+          item.events.push({
+            type: "TP1",
+            target: Number(item.tp1),
+            hitPrice: low,
+            time: candle.time
+          });
 
-          item.result =
-            "TP1 HIT";
+          // IMPORTANT:
+          // TP1 does NOT close the signal.
+          item.status = "OPEN";
 
-          item.resultTime =
-            candle.time;
-
-          changed =
-            true;
-
-          break;
-
+          changed = true;
         }
-
       }
-
     }
-
-  }
-
+  });
 
   if(changed){
-
     saveHistory();
-
     renderHistory();
-
   }
-
 }
-
+        
 
 /* =========================================================
    RENDER HISTORY
