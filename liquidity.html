@@ -1,33 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1.0"
->
-
-<title>
-  Owajid & Bokul — Swing Liquidity
-</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Owajid & Bokul — Swing Liquidity</title>
 
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
-
 <style>
+*{box-sizing:border-box}
 
-/* =========================================================
-   RESET
-========================================================= */
-
-*{
-  box-sizing:border-box;
-}
-
-html,
-body{
+html,body{
   margin:0;
   padding:0;
   background:#071018;
@@ -35,23 +18,10 @@ body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
-body{
-  min-height:100vh;
-}
+body{min-height:100vh}
 
-button,
-input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-
-/* =========================================================
-   TOP BAR
-========================================================= */
+button,input{font:inherit}
+button{cursor:pointer}
 
 .topbar{
   position:sticky;
@@ -72,13 +42,10 @@ button{
   width:42px;
   height:42px;
   border-radius:12px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-weight:900;
-
   color:#071018;
   background:#8be28b;
 }
@@ -103,18 +70,12 @@ button{
 
 .strategybar a{
   text-decoration:none;
-
   color:#9db0c0;
   background:#0e1c27;
-
   border:1px solid #213443;
-
   padding:9px 13px;
-
   border-radius:9px;
-
   white-space:nowrap;
-
   font-size:12px;
 }
 
@@ -125,21 +86,11 @@ button{
   font-weight:800;
 }
 
-
-/* =========================================================
-   MAIN
-========================================================= */
-
 .wrap{
   max-width:1500px;
   margin:auto;
   padding:16px;
 }
-
-
-/* =========================================================
-   SEARCH / CONTROLS
-========================================================= */
 
 .controls{
   display:flex;
@@ -156,54 +107,36 @@ button{
 
 .search input{
   width:100%;
-
   padding:12px 14px;
-
   background:#0c1822;
   color:#fff;
-
   border:1px solid #203341;
-
   border-radius:10px;
-
   outline:none;
 }
 
-.search input:focus{
-  border-color:#5d899f;
-}
+.search input:focus{border-color:#5d899f}
 
 .searchResults{
   position:absolute;
-
   left:0;
   right:0;
   top:48px;
-
   background:#0b1721;
-
   border:1px solid #263b49;
-
   border-radius:10px;
-
   overflow:hidden;
-
   z-index:100;
-
   display:none;
 }
 
 .searchItem{
   padding:11px 13px;
-
   border-bottom:1px solid #172834;
-
   cursor:pointer;
 }
 
-.searchItem:hover{
-  background:#132531;
-}
+.searchItem:hover{background:#132531}
 
 .searchItem strong{
   display:block;
@@ -223,30 +156,18 @@ button{
 
 .cat{
   border:1px solid #203341;
-
   background:#0c1822;
-
   color:#9db0c0;
-
   border-radius:9px;
-
   padding:10px 12px;
-
   white-space:nowrap;
 }
 
 .cat.active{
   background:#173022;
-
   border-color:#4d8b5c;
-
   color:#9ee5a0;
 }
-
-
-/* =========================================================
-   TIMEFRAMES
-========================================================= */
 
 .timeframes{
   display:flex;
@@ -256,88 +177,48 @@ button{
 
 .tf{
   border:1px solid #203341;
-
   background:#0c1822;
-
   color:#a8bac8;
-
   border-radius:8px;
-
   padding:8px 12px;
 }
 
 .tf.active{
   background:#173022;
-
   color:#9ee5a0;
-
   border-color:#4d8b5c;
 }
 
-
-/* =========================================================
-   ERROR
-========================================================= */
-
 .errorBox{
   display:none;
-
   margin-bottom:12px;
-
   padding:12px;
-
   border:1px solid #6c3038;
-
   background:#261116;
-
   color:#ff8992;
-
   border-radius:10px;
-
   font-size:12px;
 }
 
-
-/* =========================================================
-   GRID
-========================================================= */
-
 .grid{
   display:grid;
-
-  grid-template-columns:
-    minmax(0,1fr)
-    380px;
-
+  grid-template-columns:minmax(0,1fr) 380px;
   gap:14px;
 }
 
 .card{
   background:#0b1721;
-
   border:1px solid #1b2d3a;
-
   border-radius:14px;
-
   overflow:hidden;
 }
 
-
-/* =========================================================
-   CARD HEADER
-========================================================= */
-
 .cardHeader{
   padding:13px 15px;
-
   border-bottom:1px solid #1b2d3a;
-
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   gap:10px;
 }
 
@@ -346,20 +227,11 @@ button{
   font-size:14px;
 }
 
-.cardHeader small{
-  color:#738898;
-}
-
-
-/* =========================================================
-   CHART
-========================================================= */
+.cardHeader small{color:#738898}
 
 .chartWrap{
   position:relative;
-
   height:590px;
-
   background:#071018;
 }
 
@@ -370,462 +242,233 @@ button{
 
 .loading{
   position:absolute;
-
   inset:0;
-
   display:flex;
-
   align-items:center;
-
   justify-content:center;
-
   background:rgba(7,16,24,.72);
-
   z-index:5;
-
   color:#9db0c0;
 }
 
-.hidden{
-  display:none!important;
-}
+.hidden{display:none!important}
 
-
-/* =========================================================
-   SIGNAL CARD
-========================================================= */
-
-.signalCard{
-  padding:14px;
-}
-
-
-/* =========================================================
-   CURRENT SIGNAL BOX
-========================================================= */
+.signalCard{padding:14px}
 
 .signalStatus{
-
   border:1px solid #263846;
-
   background:#09141d;
-
   border-radius:13px;
-
   padding:15px;
-
 }
-
-
-/* signal heading */
 
 .signalHeader{
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   gap:10px;
 }
 
-
-/* small title */
-
 .statusLabel{
   color:#738898;
-
   font-size:10px;
-
   text-transform:uppercase;
-
   letter-spacing:1px;
 }
 
-
-/* big direction */
-
 .direction{
   font-size:34px;
-
   font-weight:900;
-
   line-height:1;
-
   margin-top:7px;
 }
 
-.wait{
-  color:#91a2b0;
-}
+.wait{color:#91a2b0}
+.buy{color:#79dc8a}
+.sell{color:#ff7884}
 
-.buy{
-  color:#79dc8a;
-}
-
-.sell{
-  color:#ff7884;
-}
-
-
-/* confidence */
-
-.confidenceBox{
-  text-align:right;
-}
+.confidenceBox{text-align:right}
 
 .confidenceLabel{
   color:#718594;
-
   font-size:9px;
-
   text-transform:uppercase;
-
   letter-spacing:.7px;
 }
 
 .confidenceValue{
   margin-top:4px;
-
   font-size:22px;
-
   font-weight:900;
 }
 
-
-/* current price */
-
 .price{
   margin-top:14px;
-
   font-size:20px;
-
   font-weight:800;
 }
 
-
-/* status message */
-
 .signalReason{
-
   margin-top:9px;
-
   padding:8px 10px;
-
   background:#0e1c27;
-
   border:1px solid #1e303d;
-
   border-radius:8px;
-
   color:#8da0ae;
-
   font-size:10px;
-
   line-height:1.4;
 }
 
-
-/* =========================================================
-   METRICS
-========================================================= */
-
 .metrics{
-
   display:grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
+  grid-template-columns:1fr 1fr;
   gap:8px;
-
   margin-top:12px;
 }
 
 .metric{
-
   background:#0e1c27;
-
   border:1px solid #1e303d;
-
   border-radius:9px;
-
   padding:10px;
 }
 
 .metric span{
-
   display:block;
-
   color:#718594;
-
   font-size:9px;
-
   text-transform:uppercase;
-
   letter-spacing:.4px;
 }
 
 .metric strong{
-
   display:block;
-
   margin-top:5px;
-
   font-size:13px;
 }
 
-
-/* =========================================================
-   TRADE PLAN
-========================================================= */
-
 .plan{
-
   margin-top:12px;
-
   border:1px solid #1e303d;
-
   border-radius:10px;
-
   overflow:hidden;
 }
 
 .planTitle{
-
   padding:10px;
-
   background:#0e1c27;
-
   font-size:11px;
-
   font-weight:800;
-
   letter-spacing:.5px;
 }
 
 .planRow{
-
   display:flex;
-
   justify-content:space-between;
-
   padding:9px 10px;
-
   border-top:1px solid #1b2b37;
-
   font-size:12px;
 }
 
-.planRow span{
-  color:#738898;
-}
+.planRow span{color:#738898}
+.planRow strong{font-family:monospace}
 
-.planRow strong{
-  font-family:monospace;
-}
-
-
-/* =========================================================
-   ENGINE DETAILS
-========================================================= */
-
-.section{
-  margin-top:13px;
-}
+.section{margin-top:13px}
 
 .sectionTitle{
-
   color:#718594;
-
   font-size:10px;
-
   text-transform:uppercase;
-
   letter-spacing:.8px;
-
   margin-bottom:7px;
 }
 
 .infoRow{
-
   display:flex;
-
   justify-content:space-between;
-
   padding:8px 0;
-
   border-bottom:1px solid #172833;
-
   font-size:12px;
 }
 
-.infoRow span{
-  color:#738898;
-}
+.infoRow span{color:#738898}
+.infoRow strong{text-align:right}
 
-.infoRow strong{
-  text-align:right;
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-.history{
-  margin-top:14px;
-}
+.history{margin-top:14px}
 
 .historyBody{
-
   padding:10px;
-
   max-height:430px;
-
   overflow:auto;
 }
 
 .historyItem{
-
   border:1px solid #1d303c;
-
   background:#0d1b25;
-
   border-radius:10px;
-
   padding:11px;
-
   margin-bottom:8px;
 }
 
 .historyHead{
-
   display:flex;
-
   justify-content:space-between;
-
   gap:10px;
-
   font-weight:800;
-
   font-size:12px;
 }
 
 .historyMeta{
-
   color:#748897;
-
   font-size:10px;
-
   margin-top:5px;
 }
 
 .historyResult{
-
   margin-top:8px;
-
   font-size:11px;
 }
 
 .empty{
-
   color:#718594;
-
   padding:16px 5px;
-
   text-align:center;
-
   font-size:12px;
 }
 
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
 .footer{
-
   padding:18px 5px 30px;
-
   color:#536875;
-
   text-align:center;
-
   font-size:10px;
 }
 
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
 @media(max-width:1050px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
+  .grid{grid-template-columns:1fr}
 }
 
 @media(max-width:650px){
-
-  .wrap{
-    padding:10px;
-  }
-
-  .chartWrap{
-    height:470px;
-  }
-
-  .brand h1{
-    font-size:15px;
-  }
-
-  .brand p{
-    font-size:11px;
-  }
-
-  .direction{
-    font-size:30px;
-  }
-
+  .wrap{padding:10px}
+  .chartWrap{height:470px}
+  .brand h1{font-size:15px}
+  .brand p{font-size:11px}
+  .direction{font-size:30px}
 }
-
 </style>
-
 </head>
 
-
 <body>
-
-
-<!-- =======================================================
-     TOP BAR
-======================================================= -->
 
 <header class="topbar">
 
   <div class="brand">
-
-    <div class="logo">
-      O&B
-    </div>
+    <div class="logo">O&B</div>
 
     <div>
-
-      <h1>
-        Owajid & Bokul Trading Assistant
-      </h1>
-
-      <p>
-        Strategy 02 — Swing Liquidity
-      </p>
-
+      <h1>Owajid & Bokul Trading Assistant</h1>
+      <p>Strategy 02 — Swing Liquidity</p>
     </div>
-
   </div>
-
 
   <div class="strategybar">
 
@@ -833,10 +476,7 @@ button{
       🧲 Strong SD Magnet
     </a>
 
-    <a
-      href="/liquidity.html"
-      class="active"
-    >
+    <a href="/liquidity.html" class="active">
       💧 Swing Liquidity
     </a>
 
@@ -844,18 +484,9 @@ button{
 
 </header>
 
-
-<!-- =======================================================
-     MAIN
-======================================================= -->
-
 <main class="wrap">
 
-
-  <!-- CONTROLS -->
-
   <div class="controls">
-
 
     <div class="search">
 
@@ -865,112 +496,41 @@ button{
         autocomplete="off"
       >
 
-      <div
-        id="searchResults"
-        class="searchResults"
-      ></div>
+      <div id="searchResults" class="searchResults"></div>
 
     </div>
 
-
     <div class="categories">
 
-      <button
-        class="cat active"
-        data-cat="All"
-      >
-        All
-      </button>
-
-      <button
-        class="cat"
-        data-cat="Crypto"
-      >
-        Crypto
-      </button>
-
-      <button
-        class="cat"
-        data-cat="Forex"
-      >
-        Forex
-      </button>
-
-      <button
-        class="cat"
-        data-cat="Metals"
-      >
-        Metals
-      </button>
-
-      <button
-        class="cat"
-        data-cat="Energy"
-      >
-        Energy
-      </button>
-
-      <button
-        class="cat"
-        data-cat="Stocks"
-      >
-        Stocks
-      </button>
-
-      <button
-        class="cat"
-        data-cat="ETF"
-      >
-        ETF
-      </button>
+      <button class="cat active" data-cat="All">All</button>
+      <button class="cat" data-cat="Crypto">Crypto</button>
+      <button class="cat" data-cat="Forex">Forex</button>
+      <button class="cat" data-cat="Metals">Metals</button>
+      <button class="cat" data-cat="Energy">Energy</button>
+      <button class="cat" data-cat="Stocks">Stocks</button>
+      <button class="cat" data-cat="ETF">ETF</button>
 
     </div>
 
   </div>
 
-
-  <!-- TIMEFRAME -->
-
   <div class="timeframes">
 
-    <button
-      class="tf active"
-      id="tf15"
-    >
+    <button class="tf active" id="tf15">
       15M STRUCTURE
     </button>
 
-    <button
-      class="tf"
-      id="tf5"
-    >
+    <button class="tf" id="tf5">
       5M ENTRY
     </button>
 
   </div>
 
-
-  <!-- ERROR -->
-
-  <div
-    id="errorBox"
-    class="errorBox"
-  ></div>
-
-
-  <!-- =====================================================
-       GRID
-  ====================================================== -->
+  <div id="errorBox" class="errorBox"></div>
 
   <div class="grid">
 
-
-    <!-- ===================================================
-         CHART
-    ==================================================== -->
-
     <section class="card">
-
 
       <div class="cardHeader">
 
@@ -986,23 +546,17 @@ button{
 
         </div>
 
-
         <small id="refreshText">
           Updating...
         </small>
 
       </div>
 
-
       <div class="chartWrap">
 
         <div id="chart"></div>
 
-
-        <div
-          class="loading"
-          id="loading"
-        >
+        <div class="loading" id="loading">
           Loading market data...
         </div>
 
@@ -1010,351 +564,157 @@ button{
 
     </section>
 
-
-    <!-- ===================================================
-         SIGNAL PANEL
-    ==================================================== -->
-
     <aside>
-
 
       <section class="card signalCard">
 
-
-        <!-- CURRENT SIGNAL -->
-
         <div class="signalStatus">
 
-
           <div class="signalHeader">
-
 
             <div>
 
               <div class="statusLabel">
-                Current Signal
+                Current 5M Entry Signal
               </div>
 
-
-              <div
-                id="direction"
-                class="direction wait"
-              >
+              <div id="direction" class="direction wait">
                 WAIT
               </div>
 
             </div>
 
-
             <div class="confidenceBox">
 
               <div class="confidenceLabel">
-                Confidence
+                Entry Confidence
               </div>
 
-              <div
-                id="signalProbability"
-                class="confidenceValue"
-              >
+              <div id="signalProbability" class="confidenceValue">
                 0%
               </div>
 
             </div>
 
-
           </div>
 
-
-          <div
-            id="currentPrice"
-            class="price"
-          >
+          <div id="currentPrice" class="price">
             —
           </div>
 
-
-          <div
-            id="signalReason"
-            class="signalReason"
-          >
-            Waiting for liquidity sweep + confirmation.
+          <div id="signalReason" class="signalReason">
+            Waiting for independent 15M structure / 5M entry setup.
           </div>
-
-
-          <!-- METRICS -->
 
           <div class="metrics">
 
-
             <div class="metric">
-
-              <span>
-                15M Structure
-              </span>
-
-              <strong
-                id="m15Direction"
-              >
-                WAIT
-              </strong>
-
+              <span>15M Structure</span>
+              <strong id="m15Direction">WAIT</strong>
             </div>
 
-
             <div class="metric">
-
-              <span>
-                5M Entry
-              </span>
-
-              <strong
-                id="m5Direction"
-              >
-                WAIT
-              </strong>
-
+              <span>5M Entry</span>
+              <strong id="m5Direction">WAIT</strong>
             </div>
 
-
             <div class="metric">
-
-              <span>
-                Liquidity
-              </span>
-
-              <strong
-                id="liquidityState"
-              >
-                NONE
-              </strong>
-
+              <span>Liquidity</span>
+              <strong id="liquidityState">NONE</strong>
             </div>
 
-
             <div class="metric">
-
-              <span>
-                Volume
-              </span>
-
-              <strong
-                id="volumeState"
-              >
-                N/A
-              </strong>
-
+              <span>Volume</span>
+              <strong id="volumeState">N/A</strong>
             </div>
 
-
             <div class="metric">
-
-              <span>
-                Swing High
-              </span>
-
-              <strong
-                id="swingHigh"
-              >
-                —
-              </strong>
-
+              <span>Swing High</span>
+              <strong id="swingHigh">—</strong>
             </div>
 
-
             <div class="metric">
-
-              <span>
-                Swing Low
-              </span>
-
-              <strong
-                id="swingLow"
-              >
-                —
-              </strong>
-
+              <span>Swing Low</span>
+              <strong id="swingLow">—</strong>
             </div>
-
 
           </div>
 
         </div>
-
-
-        <!-- =================================================
-             TRADE PLAN
-        ================================================== -->
 
         <div class="plan">
 
-
           <div class="planTitle">
-            CONFIRMED TRADE PLAN
+            5M CONFIRMED TRADE PLAN
           </div>
 
-
           <div class="planRow">
-
-            <span>
-              Entry
-            </span>
-
-            <strong id="entry">
-              —
-            </strong>
-
+            <span>Entry</span>
+            <strong id="entry">—</strong>
           </div>
 
-
           <div class="planRow">
-
-            <span>
-              Stop Loss
-            </span>
-
-            <strong id="sl">
-              —
-            </strong>
-
+            <span>Stop Loss</span>
+            <strong id="sl">—</strong>
           </div>
 
-
           <div class="planRow">
-
-            <span>
-              TP1
-            </span>
-
-            <strong id="tp1">
-              —
-            </strong>
-
+            <span>TP1</span>
+            <strong id="tp1">—</strong>
           </div>
 
-
           <div class="planRow">
-
-            <span>
-              TP2
-            </span>
-
-            <strong id="tp2">
-              —
-            </strong>
-
+            <span>TP2</span>
+            <strong id="tp2">—</strong>
           </div>
 
-
           <div class="planRow">
-
-            <span>
-              TP3
-            </span>
-
-            <strong id="tp3">
-              —
-            </strong>
-
+            <span>TP3</span>
+            <strong id="tp3">—</strong>
           </div>
 
         </div>
 
-
-        <!-- =================================================
-             ENGINE DETAILS
-        ================================================== -->
-
         <div class="section">
-
 
           <div class="sectionTitle">
             Swing Liquidity Engine
           </div>
 
-
           <div class="infoRow">
-
-            <span>
-              15M Liquidity Sweep
-            </span>
-
-            <strong id="sweep15">
-              NONE
-            </strong>
-
+            <span>15M Liquidity Sweep</span>
+            <strong id="sweep15">NONE</strong>
           </div>
 
-
           <div class="infoRow">
-
-            <span>
-              5M Confirmation
-            </span>
-
-            <strong id="confirm5">
-              NONE
-            </strong>
-
+            <span>5M Confirmation</span>
+            <strong id="confirm5">NONE</strong>
           </div>
 
-
           <div class="infoRow">
-
-            <span>
-              Active Liquidity
-            </span>
-
-            <strong id="liquidityLevel">
-              —
-            </strong>
-
+            <span>Active Liquidity</span>
+            <strong id="liquidityLevel">—</strong>
           </div>
 
-
           <div class="infoRow">
-
-            <span>
-              Signal Score
-            </span>
-
-            <strong id="signalScore">
-              0
-            </strong>
-
+            <span>5M Signal Score</span>
+            <strong id="signalScore">0</strong>
           </div>
 
-
           <div class="infoRow">
-
-            <span>
-              ATR
-            </span>
-
-            <strong id="atr">
-              —
-            </strong>
-
+            <span>ATR</span>
+            <strong id="atr">—</strong>
           </div>
-
 
         </div>
 
-
       </section>
-
-
-      <!-- =================================================
-           HISTORY
-      ================================================== -->
 
       <section class="card history">
 
-
         <div class="cardHeader">
 
-          <h2>
-            Signal History
-          </h2>
+          <h2>Signal History</h2>
 
           <small id="historyCount">
             0
@@ -1362,11 +722,7 @@ button{
 
         </div>
 
-
-        <div
-          class="historyBody"
-          id="historyBody"
-        >
+        <div class="historyBody" id="historyBody">
 
           <div class="empty">
             No confirmed signals yet.
@@ -1374,41 +730,19 @@ button{
 
         </div>
 
-
       </section>
-
 
     </aside>
 
-
   </div>
-
 
   <div class="footer">
-
-    Swing Liquidity Strategy •
-    Charting by TradingView Lightweight Charts
-
+    Swing Liquidity Strategy • Charting by TradingView Lightweight Charts
   </div>
-
 
 </main>
 
-
 <script>
-
-/* =========================================================
-   STRATEGY 02 — SWING LIQUIDITY
-
-   Backend:
-       /api/liquidity
-
-   Page 1:
-       /api/market
-
-   This page does NOT use Strong SD Magnet logic.
-========================================================= */
-
 
 /* =========================================================
    STATE
@@ -1416,32 +750,23 @@ button{
 
 const state = {
 
-  symbol:
-    "XAU/USD",
+  symbol:"XAU/USD",
 
-  displayName:
-    "Gold — XAU/USD",
+  displayName:"Gold — XAU/USD",
 
-  category:
-    "Metals",
+  category:"Metals",
 
-  data15:
-    null,
+  data15:null,
 
-  data5:
-    null,
+  data5:null,
 
-  currentSignal:
-    null,
+  currentSignal:null,
 
-  chartTimeframe:
-    "15min",
+  chartTimeframe:"15min",
 
-  lastSignalKey:
-    null,
+  lastSignalKey:null,
 
-  history:
-    loadHistory()
+  history:loadHistory()
 
 };
 
@@ -1450,18 +775,14 @@ const state = {
    DOM
 ========================================================= */
 
-const $ =
-  id =>
-    document.getElementById(id);
-
+const $ = id =>
+  document.getElementById(id);
 
 const chartEl =
   $("chart");
 
-
 const loadingEl =
   $("loading");
-
 
 const errorBox =
   $("errorBox");
@@ -1471,20 +792,15 @@ const errorBox =
    CHART
 ========================================================= */
 
-let chart =
-  null;
+let chart = null;
 
-let candleSeries =
-  null;
+let candleSeries = null;
 
-let volumeSeries =
-  null;
+let volumeSeries = null;
 
-let priceLines =
-  [];
+let priceLines = [];
 
-let markersSeries =
-  null;
+let markersSeries = null;
 
 
 /* =========================================================
@@ -1499,69 +815,41 @@ function createChart(){
       {
 
         layout:{
-
           background:{
             type:"solid",
             color:"#071018"
           },
-
           textColor:"#9eb0bd"
-
         },
 
-
         grid:{
-
           vertLines:{
             color:"#10202b"
           },
-
           horzLines:{
             color:"#10202b"
           }
-
         },
-
 
         rightPriceScale:{
-
-          borderColor:
-            "#203441",
-
+          borderColor:"#203441",
           scaleMargins:{
-
-            top:
-              0.08,
-
-            bottom:
-              0.20
-
+            top:.08,
+            bottom:.20
           }
-
         },
-
 
         timeScale:{
-
-          borderColor:
-            "#203441",
-
-          timeVisible:
-            true,
-
-          secondsVisible:
-            false
-
+          borderColor:"#203441",
+          timeVisible:true,
+          secondsVisible:false
         },
 
-
         crosshair:{
-
           mode:
             LightweightCharts
               .CrosshairMode
               .Normal
-
         }
 
       }
@@ -1573,20 +861,15 @@ function createChart(){
       LightweightCharts.CandlestickSeries,
       {
 
-        upColor:
-          "#69c979",
+        upColor:"#69c979",
 
-        downColor:
-          "#ef6874",
+        downColor:"#ef6874",
 
-        borderVisible:
-          false,
+        borderVisible:false,
 
-        wickUpColor:
-          "#69c979",
+        wickUpColor:"#69c979",
 
-        wickDownColor:
-          "#ef6874"
+        wickDownColor:"#ef6874"
 
       }
     );
@@ -1598,21 +881,14 @@ function createChart(){
       {
 
         priceFormat:{
-          type:
-            "volume"
+          type:"volume"
         },
 
-        priceScaleId:
-          "",
+        priceScaleId:"",
 
         scaleMargins:{
-
-          top:
-            0.88,
-
-          bottom:
-            0
-
+          top:.88,
+          bottom:0
         }
 
       }
@@ -1636,7 +912,6 @@ function resizeChart(){
   if(!chart){
     return;
   }
-
 
   chart.applyOptions({
 
@@ -1673,17 +948,11 @@ async function fetchLiquidity(
     await fetch(
       url,
       {
-        method:
-          "GET",
-
-        cache:
-          "no-store",
-
+        method:"GET",
+        cache:"no-store",
         headers:{
-          "Accept":
-            "application/json"
+          Accept:"application/json"
         }
-
       }
     );
 
@@ -1696,7 +965,8 @@ async function fetchLiquidity(
     json =
       await response.json();
 
-  }catch(error){
+  }
+  catch(error){
 
     throw new Error(
       "Invalid Liquidity API response"
@@ -1740,16 +1010,12 @@ async function fetchLiquidity(
    FORMAT PRICE
 ========================================================= */
 
-function formatPrice(
-  value
-){
+function formatPrice(value){
 
   if(
     value === null ||
     value === undefined ||
-    !Number.isFinite(
-      Number(value)
-    )
+    !Number.isFinite(Number(value))
   ){
 
     return "—";
@@ -1765,16 +1031,13 @@ function formatPrice(
     return n.toFixed(2);
   }
 
-
   if(n >= 100){
     return n.toFixed(3);
   }
 
-
   if(n >= 1){
     return n.toFixed(4);
   }
-
 
   return n.toFixed(6);
 
@@ -1785,33 +1048,49 @@ function formatPrice(
    FORMAT TIME
 ========================================================= */
 
-function formatTime(
-  ts
-){
+function formatTime(ts){
 
   if(!ts){
     return "—";
   }
 
 
+  let value =
+    Number(ts);
+
+
+  if(
+    !Number.isFinite(value)
+  ){
+
+    const parsed =
+      new Date(ts).getTime();
+
+    if(
+      !Number.isFinite(parsed)
+    ){
+
+      return "—";
+
+    }
+
+    value =
+      Math.floor(
+        parsed / 1000
+      );
+
+  }
+
+
   return new Date(
-    Number(ts) * 1000
+    value * 1000
   ).toLocaleString(
     undefined,
     {
-
-      month:
-        "short",
-
-      day:
-        "2-digit",
-
-      hour:
-        "2-digit",
-
-      minute:
-        "2-digit"
-
+      month:"short",
+      day:"2-digit",
+      hour:"2-digit",
+      minute:"2-digit"
     }
   );
 
@@ -1822,9 +1101,7 @@ function formatTime(
    BACKEND SIGNAL
 ========================================================= */
 
-function getSignal(
-  data
-){
+function getSignal(data){
 
   const signal =
     data?.signal;
@@ -1834,26 +1111,19 @@ function getSignal(
 
     return {
 
-      direction:
-        "WAIT",
+      direction:"WAIT",
 
-      probability:
-        0,
+      probability:0,
 
-      score:
-        0,
+      score:0,
 
-      price:
-        null,
+      price:null,
 
-      time:
-        null,
+      time:null,
 
-      sweep:
-        null,
+      sweep:null,
 
-      confirmation:
-        null
+      confirmation:null
 
     };
 
@@ -1900,6 +1170,7 @@ function getSignal(
 
 /* =========================================================
    FINAL SIGNAL
+   15M STRUCTURE + 5M ENTRY ARE INDEPENDENT
 ========================================================= */
 
 function buildFinalSignal(){
@@ -1911,17 +1182,49 @@ function buildFinalSignal(){
 
     return {
 
-      direction:
-        "WAIT",
+      direction:"WAIT",
 
-      probability:
-        0,
+      probability:0,
 
-      score:
-        0,
+      score:0,
 
-      reason:
-        "DATA NOT READY"
+      price:null,
+
+      entry:null,
+
+      sl:null,
+
+      tp1:null,
+
+      tp2:null,
+
+      tp3:null,
+
+      a15:{
+        direction:"WAIT",
+        probability:0,
+        score:0
+      },
+
+      a5:{
+        direction:"WAIT",
+        probability:0,
+        score:0
+      },
+
+      structureDirection:"WAIT",
+
+      entryDirection:"WAIT",
+
+      structureProbability:0,
+
+      entryProbability:0,
+
+      structureScore:0,
+
+      entryScore:0,
+
+      reason:"DATA NOT READY"
 
     };
 
@@ -1940,129 +1243,91 @@ function buildFinalSignal(){
     );
 
 
-  /* =======================================================
-     WAIT IF EITHER TIMEFRAME HAS NO CONFIRMATION
-  ======================================================= */
-
-  if(
-    s15.direction ===
-    "WAIT" ||
-
-    s5.direction ===
-    "WAIT"
-  ){
-
-    return {
-
-      direction:
-        "WAIT",
-
-      probability:
-        Math.max(
-          s15.probability,
-          s5.probability
-        ),
-
-      score:
-        Math.max(
-          s15.score,
-          s5.score
-        ),
-
-      a15:
-        s15,
-
-      a5:
-        s5,
-
-      reason:
-        "Waiting for 15M + 5M confirmation"
-
-    };
-
-  }
-
-
-  /* =======================================================
-     MISMATCH
-  ======================================================= */
-
-  if(
-    s15.direction !==
-    s5.direction
-  ){
-
-    return {
-
-      direction:
-        "WAIT",
-
-      probability:
-        0,
-
-      score:
-        0,
-
-      a15:
-        s15,
-
-      a5:
-        s5,
-
-      reason:
-        "15M / 5M direction mismatch"
-
-    };
-
-  }
-
-
-  /* =======================================================
-     CONFIRMED
-  ======================================================= */
-
-  const direction =
-    s15.direction;
-
+  /*
+   * 5M owns execution.
+   * 15M does NOT need to agree with 5M.
+   */
 
   const tradePlan =
     state.data5?.tradePlan ||
-    state.data15?.tradePlan ||
     null;
 
 
   const price =
-    state.data5?.market?.price ||
-    s5.price ||
-    state.data5
-      ?.candles
-      ?.at(-1)
-      ?.close ||
+    state.data5?.market?.price ??
+    s5.price ??
+    state.data5?.candles?.at(-1)?.close ??
     null;
+
+
+  let reason =
+    "Waiting for independent 15M structure / 5M entry setup";
+
+
+  if(
+    s15.direction === "BUY" ||
+    s15.direction === "SELL"
+  ){
+
+    if(
+      s5.direction === "BUY" ||
+      s5.direction === "SELL"
+    ){
+
+      if(
+        s15.direction === s5.direction
+      ){
+
+        reason =
+          `15M ${s15.direction} structure + 5M ${s5.direction} entry aligned`;
+
+      }
+      else{
+
+        reason =
+          `15M ${s15.direction} structure • 5M ${s5.direction} entry`;
+
+      }
+
+    }
+    else{
+
+      reason =
+        `15M ${s15.direction} structure active • 5M entry waiting`;
+
+    }
+
+  }
+  else if(
+    s5.direction === "BUY" ||
+    s5.direction === "SELL"
+  ){
+
+    reason =
+      `5M ${s5.direction} entry active • 15M structure waiting`;
+
+  }
 
 
   return {
 
-    direction,
+    /*
+     * Primary execution signal
+     */
+    direction:
+      s5.direction,
 
     probability:
-      Math.round(
-        (
-          s15.probability +
-          s5.probability
-        ) / 2
-      ),
+      s5.probability,
 
     score:
-      Math.round(
-        (
-          s15.score +
-          s5.score
-        ) / 2
-      ),
+      s5.score,
 
     price,
 
+    /*
+     * 5M trade plan
+     */
     entry:
       tradePlan?.entry ??
       null,
@@ -2087,21 +1352,48 @@ function buildFinalSignal(){
       tradePlan?.risk ??
       null,
 
+    /*
+     * Independent 15M
+     */
     a15:
       s15,
 
+    /*
+     * Independent 5M
+     */
     a5:
       s5,
 
+    structureDirection:
+      s15.direction,
+
+    entryDirection:
+      s5.direction,
+
+    structureProbability:
+      s15.probability,
+
+    entryProbability:
+      s5.probability,
+
+    structureScore:
+      s15.score,
+
+    entryScore:
+      s5.score,
+
     signalTime:
       s5.time ||
-      state.data5
-        ?.market
-        ?.lastCandleTime ||
+      state.data5?.market?.lastCandleTime ||
       null,
 
-    reason:
-      "15M + 5M liquidity confirmation aligned"
+    timeframe:"5min",
+
+    executionActive:
+      s5.direction === "BUY" ||
+      s5.direction === "SELL",
+
+    reason
 
   };
 
@@ -2119,9 +1411,7 @@ function latestSwing(
 
   const list =
     type === "HIGH"
-
       ? data?.swings?.highs
-
       : data?.swings?.lows;
 
 
@@ -2146,9 +1436,7 @@ function latestSwing(
    LATEST SWEEP
 ========================================================= */
 
-function latestSweep(
-  data
-){
+function latestSweep(data){
 
   const list =
     data?.liquidity?.sweeps;
@@ -2175,9 +1463,7 @@ function latestSweep(
    UPDATE UI
 ========================================================= */
 
-function updateUI(
-  signal
-){
+function updateUI(signal){
 
   const direction =
     $("direction");
@@ -2187,9 +1473,14 @@ function updateUI(
     "direction";
 
 
+  const entryDirection =
+    signal?.entryDirection ||
+    signal?.a5?.direction ||
+    "WAIT";
+
+
   if(
-    signal?.direction ===
-    "BUY"
+    entryDirection === "BUY"
   ){
 
     direction.textContent =
@@ -2201,8 +1492,7 @@ function updateUI(
 
   }
   else if(
-    signal?.direction ===
-    "SELL"
+    entryDirection === "SELL"
   ){
 
     direction.textContent =
@@ -2228,7 +1518,9 @@ function updateUI(
   $("signalProbability")
     .textContent =
       `${Math.round(
-        signal?.probability || 0
+        signal?.entryProbability ??
+        signal?.a5?.probability ??
+        0
       )}%`;
 
 
@@ -2236,11 +1528,9 @@ function updateUI(
     .textContent =
       formatPrice(
 
-        signal?.price ||
+        signal?.price ??
 
-        state.data5
-          ?.market
-          ?.price ||
+        state.data5?.market?.price ??
 
         state.data5
           ?.candles
@@ -2253,20 +1543,58 @@ function updateUI(
   $("signalReason")
     .textContent =
       signal?.reason ||
-      "Waiting for liquidity sweep + confirmation.";
+      "Waiting for independent 15M structure / 5M entry setup";
+
+
+  /*
+   * 15M
+   */
+
+  const structureDirection =
+    signal?.structureDirection ||
+    signal?.a15?.direction ||
+    "WAIT";
 
 
   $("m15Direction")
     .textContent =
-      signal?.a15?.direction ||
-      "WAIT";
+      structureDirection;
+
+
+  $("m15Direction").className =
+    structureDirection === "BUY"
+      ? "buy"
+      : structureDirection === "SELL"
+        ? "sell"
+        : "wait";
+
+
+  /*
+   * 5M
+   */
+
+  const entryDir =
+    signal?.entryDirection ||
+    signal?.a5?.direction ||
+    "WAIT";
 
 
   $("m5Direction")
     .textContent =
-      signal?.a5?.direction ||
-      "WAIT";
+      entryDir;
 
+
+  $("m5Direction").className =
+    entryDir === "BUY"
+      ? "buy"
+      : entryDir === "SELL"
+        ? "sell"
+        : "wait";
+
+
+  /*
+   * Swings
+   */
 
   const high5 =
     latestSwing(
@@ -2312,6 +1640,10 @@ function updateUI(
       );
 
 
+  /*
+   * Sweeps
+   */
+
   const sweep5 =
     latestSweep(
       state.data5
@@ -2330,6 +1662,10 @@ function updateUI(
       sweep15?.type ||
       "NONE";
 
+
+  /*
+   * Volume
+   */
 
   const volumeAvailable =
     state.data5
@@ -2362,6 +1698,10 @@ function updateUI(
       "NONE";
 
 
+  /*
+   * Confirmation
+   */
+
   const confirmation5 =
     state.data5
       ?.signal
@@ -2380,6 +1720,10 @@ function updateUI(
         : "NONE";
 
 
+  /*
+   * Active liquidity
+   */
+
   const activeLevel =
     signal?.a5?.sweep?.level?.price ||
     signal?.a15?.sweep?.level?.price ||
@@ -2393,12 +1737,22 @@ function updateUI(
       );
 
 
+  /*
+   * 5M score
+   */
+
   $("signalScore")
     .textContent =
       String(
-        signal?.score || 0
+        signal?.entryScore ??
+        signal?.a5?.score ??
+        0
       );
 
+
+  /*
+   * ATR
+   */
 
   $("atr")
     .textContent =
@@ -2416,78 +1770,56 @@ function updateUI(
 
 
   /*
-    Trade plan is ONLY populated
-    when 15M + 5M are aligned.
-  */
+   * 5M trade plan
+   */
 
   if(
-    signal?.direction ===
-    "BUY" ||
-
-    signal?.direction ===
-    "SELL"
+    entryDir === "BUY" ||
+    entryDir === "SELL"
   ){
 
     $("entry")
       .textContent =
         formatPrice(
-          signal.entry
+          signal?.entry
         );
 
 
     $("sl")
       .textContent =
         formatPrice(
-          signal.sl
+          signal?.sl
         );
 
 
     $("tp1")
       .textContent =
         formatPrice(
-          signal.tp1
+          signal?.tp1
         );
 
 
     $("tp2")
       .textContent =
         formatPrice(
-          signal.tp2
+          signal?.tp2
         );
 
 
     $("tp3")
       .textContent =
         formatPrice(
-          signal.tp3
+          signal?.tp3
         );
 
   }
   else{
 
-    $("entry")
-      .textContent =
-      "—";
-
-
-    $("sl")
-      .textContent =
-      "—";
-
-
-    $("tp1")
-      .textContent =
-      "—";
-
-
-    $("tp2")
-      .textContent =
-      "—";
-
-
-    $("tp3")
-      .textContent =
-      "—";
+    $("entry").textContent = "—";
+    $("sl").textContent = "—";
+    $("tp1").textContent = "—";
+    $("tp2").textContent = "—";
+    $("tp3").textContent = "—";
 
   }
 
@@ -2500,12 +1832,8 @@ function updateUI(
 
 function clearPriceLines(){
 
-  if(
-    !candleSeries
-  ){
-
+  if(!candleSeries){
     return;
-
   }
 
 
@@ -2519,13 +1847,13 @@ function clearPriceLines(){
         line
       );
 
-    }catch(error){}
+    }
+    catch(error){}
 
   }
 
 
-  priceLines =
-    [];
+  priceLines = [];
 
 }
 
@@ -2555,13 +1883,11 @@ function addPriceLine(
   const line =
     candleSeries.createPriceLine({
 
-      price:
-        Number(price),
+      price:Number(price),
 
       color,
 
-      lineWidth:
-        1,
+      lineWidth:1,
 
       lineStyle:
         style ??
@@ -2569,8 +1895,7 @@ function addPriceLine(
           .LineStyle
           .Dotted,
 
-      axisLabelVisible:
-        true,
+      axisLabelVisible:true,
 
       title
 
@@ -2588,16 +1913,10 @@ function addPriceLine(
    DRAW LIQUIDITY LEVELS
 ========================================================= */
 
-function drawLiquidityLevels(
-  data
-){
+function drawLiquidityLevels(data){
 
-  if(
-    !data?.swings
-  ){
-
+  if(!data?.swings){
     return;
-
   }
 
 
@@ -2616,10 +1935,6 @@ function drawLiquidityLevels(
       ? data.swings.lows
       : [];
 
-
-  /*
-    Only latest 4 highs
-  */
 
   highs
     .slice(-4)
@@ -2643,10 +1958,6 @@ function drawLiquidityLevels(
       }
     );
 
-
-  /*
-    Only latest 4 lows
-  */
 
   lows
     .slice(-4)
@@ -2677,9 +1988,7 @@ function drawLiquidityLevels(
    DRAW SWEEP
 ========================================================= */
 
-function drawActiveSweep(
-  data
-){
+function drawActiveSweep(data){
 
   const sweep =
     latestSweep(
@@ -2752,18 +2061,13 @@ function drawActiveSweep(
    DRAW TRADE PLAN
 ========================================================= */
 
-function drawTradePlan(
-  signal
-){
+function drawTradePlan(signal){
 
   if(
     !signal ||
     (
-      signal.direction !==
-      "BUY" &&
-
-      signal.direction !==
-      "SELL"
+      signal.direction !== "BUY" &&
+      signal.direction !== "SELL"
     )
   ){
 
@@ -2866,21 +2170,14 @@ function drawTradePlan(
 
 function drawMarkers(){
 
-  if(
-    !candleSeries
-  ){
-
+  if(!candleSeries){
     return;
-
   }
 
 
   const data =
-    state.chartTimeframe ===
-    "15min"
-
+    state.chartTimeframe === "15min"
       ? state.data15
-
       : state.data5;
 
 
@@ -2911,20 +2208,15 @@ function drawMarkers(){
 
         markers.push({
 
-          time:
-            swing.time,
+          time:swing.time,
 
-          position:
-            "aboveBar",
+          position:"aboveBar",
 
-          color:
-            "#a9535e",
+          color:"#a9535e",
 
-          shape:
-            "circle",
+          shape:"circle",
 
-          text:
-            "H"
+          text:"H"
 
         });
 
@@ -2947,20 +2239,15 @@ function drawMarkers(){
 
         markers.push({
 
-          time:
-            swing.time,
+          time:swing.time,
 
-          position:
-            "belowBar",
+          position:"belowBar",
 
-          color:
-            "#5ba367",
+          color:"#5ba367",
 
-          shape:
-            "circle",
+          shape:"circle",
 
-          text:
-            "L"
+          text:"L"
 
         });
 
@@ -2982,14 +2269,12 @@ function drawMarkers(){
       sweep => {
 
         const bullish =
-          sweep.type ===
-          "BULLISH";
+          sweep.type === "BULLISH";
 
 
         markers.push({
 
-          time:
-            sweep.time,
+          time:sweep.time,
 
           position:
             bullish
@@ -3006,8 +2291,7 @@ function drawMarkers(){
               ? "arrowUp"
               : "arrowDown",
 
-          text:
-            "SWEEP"
+          text:"SWEEP"
 
         });
 
@@ -3060,9 +2344,7 @@ function drawMarkers(){
 
   try{
 
-    if(
-      !markersSeries
-    ){
+    if(!markersSeries){
 
       markersSeries =
         LightweightCharts
@@ -3080,7 +2362,8 @@ function drawMarkers(){
 
     }
 
-  }catch(error){
+  }
+  catch(error){
 
     console.warn(
       "Marker rendering error:",
@@ -3098,21 +2381,14 @@ function drawMarkers(){
 
 function renderChart(){
 
-  if(
-    !candleSeries
-  ){
-
+  if(!candleSeries){
     return;
-
   }
 
 
   const data =
-    state.chartTimeframe ===
-    "15min"
-
+    state.chartTimeframe === "15min"
       ? state.data15
-
       : state.data5;
 
 
@@ -3130,20 +2406,15 @@ function renderChart(){
     data.candles.map(
       candle => ({
 
-        time:
-          candle.time,
+        time:candle.time,
 
-        open:
-          candle.open,
+        open:candle.open,
 
-        high:
-          candle.high,
+        high:candle.high,
 
-        low:
-          candle.low,
+        low:candle.low,
 
-        close:
-          candle.close
+        close:candle.close
 
       })
     )
@@ -3156,20 +2427,15 @@ function renderChart(){
     data.candles.map(
       candle => ({
 
-        time:
-          candle.time,
+        time:candle.time,
 
-        value:
-          Number(
-            candle.volume || 0
-          ),
+        value:Number(
+          candle.volume || 0
+        ),
 
         color:
-          candle.close >=
-          candle.open
-
+          candle.close >= candle.open
             ? "rgba(105,201,121,.25)"
-
             : "rgba(239,104,116,.25)"
 
       })
@@ -3191,9 +2457,20 @@ function renderChart(){
   );
 
 
-  drawTradePlan(
-    state.currentSignal
-  );
+  /*
+   * Trade plan is 5M execution plan.
+   * Draw it on the 5M chart.
+   */
+
+  if(
+    state.chartTimeframe === "5min"
+  ){
+
+    drawTradePlan(
+      state.currentSignal
+    );
+
+  }
 
 
   drawMarkers();
@@ -3229,13 +2506,12 @@ function loadHistory(){
       JSON.parse(raw);
 
 
-    return Array.isArray(
-      parsed
-    )
+    return Array.isArray(parsed)
       ? parsed
       : [];
 
-  }catch(error){
+  }
+  catch(error){
 
     return [];
 
@@ -3265,7 +2541,8 @@ function saveHistory(){
 
     );
 
-  }catch(error){}
+  }
+  catch(error){}
 
 }
 
@@ -3274,13 +2551,14 @@ function saveHistory(){
    SIGNAL KEY
 ========================================================= */
 
-function signalKey(
-  signal
-){
+function signalKey(signal){
 
   return [
 
     state.symbol,
+
+    signal.timeframe ||
+      "5min",
 
     signal.direction,
 
@@ -3299,18 +2577,13 @@ function signalKey(
    RECORD SIGNAL
 ========================================================= */
 
-function recordSignal(
-  signal
-){
+function recordSignal(signal){
 
   if(
     !signal ||
     (
-      signal.direction !==
-      "BUY" &&
-
-      signal.direction !==
-      "SELL"
+      signal.direction !== "BUY" &&
+      signal.direction !== "SELL"
     )
   ){
 
@@ -3337,8 +2610,7 @@ function recordSignal(
 
 
   if(
-    state.lastSignalKey ===
-    key
+    state.lastSignalKey === key
   ){
 
     return;
@@ -3349,8 +2621,7 @@ function recordSignal(
   const exists =
     state.history.some(
       item =>
-        item.key ===
-        key
+        item.key === key
     );
 
 
@@ -3374,6 +2645,10 @@ function recordSignal(
 
     symbol:
       state.symbol,
+
+    timeframe:
+      signal.timeframe ||
+      "5min",
 
     time:
       signal.signalTime ||
@@ -3405,14 +2680,19 @@ function recordSignal(
     score:
       signal.score,
 
-    status:
-      "OPEN",
+    status:"OPEN",
 
-    result:
-      null,
+    result:null,
 
-    resultTime:
-      null
+    resultTime:null,
+
+    events:[],
+
+    tp1Hit:false,
+
+    tp2Hit:false,
+
+    slHit:false
 
   });
 
@@ -3427,213 +2707,468 @@ function recordSignal(
 /* =========================================================
    UPDATE HISTORY OUTCOMES
 ========================================================= */
+
 function updateHistoryOutcomes(){
-  const candles = state.data5?.candles || [];
-  if(!candles.length || !state.history.length) return;
 
-  let changed = false;
+  const candles =
+    state.data5?.candles || [];
 
-  state.history.forEach(item => {
-    if(item.status !== "OPEN") return;
 
-    // For old history records
-    item.events = Array.isArray(item.events) ? item.events : [];
-    item.tp1Hit = !!item.tp1Hit;
-    item.tp2Hit = !!item.tp2Hit;
-    item.slHit = !!item.slHit;
+  if(
+    !candles.length ||
+    !state.history.length
+  ){
 
-    const signalTime = new Date(item.time).getTime();
+    return;
 
-    const futureCandles = candles
-      .filter(c => new Date(c.time).getTime() > signalTime)
-      .sort((a,b) =>
-        new Date(a.time).getTime() - new Date(b.time).getTime()
-      );
+  }
 
-    for(const candle of futureCandles){
 
-      const high = Number(candle.high);
-      const low  = Number(candle.low);
+  let changed =
+    false;
 
-      if(!Number.isFinite(high) || !Number.isFinite(low)) continue;
 
-      const isBuy = item.direction === "BUY";
+  state.history.forEach(
+    item => {
 
-      /*
-       * =========================================================
-       * BUY
-       * =========================================================
-       */
-      if(isBuy){
+      if(
+        item.status !== "OPEN"
+      ){
 
-        // -------------------------------------------------------
-        // 1. SL HIT = terminal LOSS
-        // -------------------------------------------------------
-        if(low <= Number(item.sl)){
+        return;
 
-          if(!item.slHit){
-            item.slHit = true;
-
-            item.events.push({
-              type: "SL",
-              target: Number(item.sl),
-              hitPrice: low,
-              time: candle.time
-            });
-
-            item.status = "LOSS";
-            item.result = "SL HIT";
-            item.resultPrice = low;
-            item.resultTime = candle.time;
-
-            changed = true;
-          }
-
-          break;
-        }
-
-        // -------------------------------------------------------
-        // 2. TP2 HIT = terminal WIN
-        // -------------------------------------------------------
-        if(high >= Number(item.tp2)){
-
-          if(!item.tp2Hit){
-            item.tp2Hit = true;
-
-            item.events.push({
-              type: "TP2",
-              target: Number(item.tp2),
-              hitPrice: high,
-              time: candle.time
-            });
-
-            item.status = "WIN";
-            item.result = "TP2 HIT";
-            item.resultPrice = high;
-            item.resultTime = candle.time;
-
-            changed = true;
-          }
-
-          break;
-        }
-
-        // -------------------------------------------------------
-        // 3. TP1 HIT = keep signal ACTIVE
-        // -------------------------------------------------------
-        if(high >= Number(item.tp1) && !item.tp1Hit){
-
-          item.tp1Hit = true;
-          item.tp1HitPrice = high;
-          item.tp1HitTime = candle.time;
-
-          item.events.push({
-            type: "TP1",
-            target: Number(item.tp1),
-            hitPrice: high,
-            time: candle.time
-          });
-
-          // IMPORTANT:
-          // TP1 does NOT close the signal.
-          item.status = "OPEN";
-
-          changed = true;
-        }
       }
 
 
-      /*
-       * =========================================================
-       * SELL
-       * =========================================================
-       */
-      else if(item.direction === "SELL"){
+      item.events =
+        Array.isArray(item.events)
+          ? item.events
+          : [];
 
-        // -------------------------------------------------------
-        // 1. SL HIT = terminal LOSS
-        // -------------------------------------------------------
-        if(high >= Number(item.sl)){
 
-          if(!item.slHit){
-            item.slHit = true;
+      item.tp1Hit =
+        !!item.tp1Hit;
 
-            item.events.push({
-              type: "SL",
-              target: Number(item.sl),
-              hitPrice: high,
-              time: candle.time
-            });
 
-            item.status = "LOSS";
-            item.result = "SL HIT";
-            item.resultPrice = high;
-            item.resultTime = candle.time;
+      item.tp2Hit =
+        !!item.tp2Hit;
 
-            changed = true;
+
+      item.slHit =
+        !!item.slHit;
+
+
+      const signalTime =
+        Number(
+          item.time
+        ) * 1000;
+
+
+      const futureCandles =
+        candles
+          .filter(
+            candle => {
+
+              const candleTime =
+                Number(candle.time) * 1000;
+
+              return (
+                Number.isFinite(candleTime) &&
+                candleTime > signalTime
+              );
+
+            }
+          )
+          .sort(
+            (a,b) =>
+              Number(a.time) -
+              Number(b.time)
+          );
+
+
+      for(
+        const candle of futureCandles
+      ){
+
+        const high =
+          Number(candle.high);
+
+
+        const low =
+          Number(candle.low);
+
+
+        if(
+          !Number.isFinite(high) ||
+          !Number.isFinite(low)
+        ){
+
+          continue;
+
+        }
+
+
+        const isBuy =
+          item.direction === "BUY";
+
+
+        /* =================================================
+           BUY
+        ================================================= */
+
+        if(isBuy){
+
+          /*
+           * SL first = LOSS
+           */
+
+          if(
+            low <=
+            Number(item.sl)
+          ){
+
+            if(!item.slHit){
+
+              item.slHit =
+                true;
+
+
+              item.events.push({
+
+                type:"SL",
+
+                target:
+                  Number(item.sl),
+
+                hitPrice:
+                  low,
+
+                time:
+                  candle.time
+
+              });
+
+
+              item.status =
+                "LOSS";
+
+
+              item.result =
+                "SL HIT";
+
+
+              item.resultPrice =
+                low;
+
+
+              item.resultTime =
+                candle.time;
+
+
+              changed =
+                true;
+
+            }
+
+            break;
+
           }
 
-          break;
-        }
 
-        // -------------------------------------------------------
-        // 2. TP2 HIT = terminal WIN
-        // -------------------------------------------------------
-        if(low <= Number(item.tp2)){
+          /*
+           * TP2 = WIN
+           */
 
-          if(!item.tp2Hit){
-            item.tp2Hit = true;
+          if(
+            high >=
+            Number(item.tp2)
+          ){
 
-            item.events.push({
-              type: "TP2",
-              target: Number(item.tp2),
-              hitPrice: low,
-              time: candle.time
-            });
+            if(!item.tp2Hit){
 
-            item.status = "WIN";
-            item.result = "TP2 HIT";
-            item.resultPrice = low;
-            item.resultTime = candle.time;
+              item.tp2Hit =
+                true;
 
-            changed = true;
+
+              item.events.push({
+
+                type:"TP2",
+
+                target:
+                  Number(item.tp2),
+
+                hitPrice:
+                  high,
+
+                time:
+                  candle.time
+
+              });
+
+
+              item.status =
+                "WIN";
+
+
+              item.result =
+                "TP2 HIT";
+
+
+              item.resultPrice =
+                high;
+
+
+              item.resultTime =
+                candle.time;
+
+
+              changed =
+                true;
+
+            }
+
+            break;
+
           }
 
-          break;
+
+          /*
+           * TP1 = remain OPEN
+           */
+
+          if(
+            high >=
+            Number(item.tp1) &&
+            !item.tp1Hit
+          ){
+
+            item.tp1Hit =
+              true;
+
+
+            item.tp1HitPrice =
+              high;
+
+
+            item.tp1HitTime =
+              candle.time;
+
+
+            item.events.push({
+
+              type:"TP1",
+
+              target:
+                Number(item.tp1),
+
+              hitPrice:
+                high,
+
+              time:
+                candle.time
+
+            });
+
+
+            item.status =
+              "OPEN";
+
+
+            changed =
+              true;
+
+          }
+
         }
 
-        // -------------------------------------------------------
-        // 3. TP1 HIT = keep signal ACTIVE
-        // -------------------------------------------------------
-        if(low <= Number(item.tp1) && !item.tp1Hit){
 
-          item.tp1Hit = true;
-          item.tp1HitPrice = low;
-          item.tp1HitTime = candle.time;
+        /* =================================================
+           SELL
+        ================================================= */
 
-          item.events.push({
-            type: "TP1",
-            target: Number(item.tp1),
-            hitPrice: low,
-            time: candle.time
-          });
+        else if(
+          item.direction === "SELL"
+        ){
 
-          // IMPORTANT:
-          // TP1 does NOT close the signal.
-          item.status = "OPEN";
+          /*
+           * SL first = LOSS
+           */
 
-          changed = true;
+          if(
+            high >=
+            Number(item.sl)
+          ){
+
+            if(!item.slHit){
+
+              item.slHit =
+                true;
+
+
+              item.events.push({
+
+                type:"SL",
+
+                target:
+                  Number(item.sl),
+
+                hitPrice:
+                  high,
+
+                time:
+                  candle.time
+
+              });
+
+
+              item.status =
+                "LOSS";
+
+
+              item.result =
+                "SL HIT";
+
+
+              item.resultPrice =
+                high;
+
+
+              item.resultTime =
+                candle.time;
+
+
+              changed =
+                true;
+
+            }
+
+            break;
+
+          }
+
+
+          /*
+           * TP2 = WIN
+           */
+
+          if(
+            low <=
+            Number(item.tp2)
+          ){
+
+            if(!item.tp2Hit){
+
+              item.tp2Hit =
+                true;
+
+
+              item.events.push({
+
+                type:"TP2",
+
+                target:
+                  Number(item.tp2),
+
+                hitPrice:
+                  low,
+
+                time:
+                  candle.time
+
+              });
+
+
+              item.status =
+                "WIN";
+
+
+              item.result =
+                "TP2 HIT";
+
+
+              item.resultPrice =
+                low;
+
+
+              item.resultTime =
+                candle.time;
+
+
+              changed =
+                true;
+
+            }
+
+            break;
+
+          }
+
+
+          /*
+           * TP1 = remain OPEN
+           */
+
+          if(
+            low <=
+            Number(item.tp1) &&
+            !item.tp1Hit
+          ){
+
+            item.tp1Hit =
+              true;
+
+
+            item.tp1HitPrice =
+              low;
+
+
+            item.tp1HitTime =
+              candle.time;
+
+
+            item.events.push({
+
+              type:"TP1",
+
+              target:
+                Number(item.tp1),
+
+              hitPrice:
+                low,
+
+              time:
+                candle.time
+
+            });
+
+
+            item.status =
+              "OPEN";
+
+
+            changed =
+              true;
+
+          }
+
         }
+
       }
+
     }
-  });
+  );
+
 
   if(changed){
+
     saveHistory();
+
     renderHistory();
+
   }
+
 }
-        
+
 
 /* =========================================================
    RENDER HISTORY
@@ -3656,12 +3191,11 @@ function renderHistory(){
     !state.history.length
   ){
 
-    body.innerHTML =
-      `
+    body.innerHTML = `
       <div class="empty">
         No confirmed signals yet.
       </div>
-      `;
+    `;
 
     return;
 
@@ -3675,11 +3209,8 @@ function renderHistory(){
         item => {
 
           const directionClass =
-            item.direction ===
-            "BUY"
-
+            item.direction === "BUY"
               ? "buy"
-
               : "sell";
 
 
@@ -3688,8 +3219,7 @@ function renderHistory(){
 
 
           if(
-            item.status ===
-            "WIN"
+            item.status === "WIN"
           ){
 
             resultClass =
@@ -3699,14 +3229,32 @@ function renderHistory(){
 
 
           if(
-            item.status ===
-            "LOSS"
+            item.status === "LOSS"
           ){
 
             resultClass =
               "sell";
 
           }
+
+
+          const events =
+            Array.isArray(item.events)
+              ? item.events
+              : [];
+
+
+          const eventText =
+            events.length
+
+              ? events
+                  .map(
+                    event =>
+                      `${event.type} @ ${formatPrice(event.hitPrice)}`
+                  )
+                  .join(" → ")
+
+              : "Waiting for outcome...";
 
 
           return `
@@ -3751,6 +3299,11 @@ function renderHistory(){
 
                 ${formatTime(
                   item.time
+                )}
+
+                • ${escapeHtml(
+                  item.timeframe ||
+                  "5min"
                 )}
 
                 • Probability
@@ -3803,26 +3356,31 @@ function renderHistory(){
 
               <div class="historyResult">
 
-                ${
-                  item.result
+                ${escapeHtml(
+                  eventText
+                )}
 
-                    ? escapeHtml(
+              </div>
+
+
+              ${
+                item.result
+                  ? `
+                    <div class="historyMeta">
+                      Final:
+                      ${escapeHtml(
                         item.result
-                      )
-                      +
-                      " • "
-                      +
-                      escapeHtml(
+                      )}
+                      •
+                      ${escapeHtml(
                         formatTime(
                           item.resultTime
                         )
-                      )
-
-                    : "Waiting for outcome..."
-
-                }
-
-              </div>
+                      )}
+                    </div>
+                  `
+                  : ""
+              }
 
             </div>
 
@@ -3839,9 +3397,7 @@ function renderHistory(){
    ESCAPE HTML
 ========================================================= */
 
-function escapeHtml(
-  value
-){
+function escapeHtml(value){
 
   return String(
     value ?? ""
@@ -3879,9 +3435,7 @@ function escapeHtml(
    SHOW ERROR
 ========================================================= */
 
-function showError(
-  message
-){
+function showError(message){
 
   errorBox.textContent =
     message;
@@ -3901,6 +3455,7 @@ function hideError(){
 
   errorBox.textContent =
     "";
+
 
   errorBox.style.display =
     "none";
@@ -3986,8 +3541,7 @@ async function loadMarket(){
     $("assetSubtitle")
       .textContent =
 
-        state.chartTimeframe ===
-        "15min"
+        state.chartTimeframe === "15min"
 
           ? `${state.symbol} • 15M Swing Liquidity Structure`
 
@@ -4001,7 +3555,8 @@ async function loadMarket(){
           .toLocaleTimeString();
 
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
       "Swing Liquidity error:",
@@ -4011,22 +3566,22 @@ async function loadMarket(){
 
     $("refreshText")
       .textContent =
-        "API Error";
+      "API Error";
 
 
     $("direction")
       .textContent =
-        "ERROR";
+      "ERROR";
 
 
     $("direction")
       .className =
-        "direction sell";
+      "direction sell";
 
 
     $("signalProbability")
       .textContent =
-        "—";
+      "—";
 
 
     showError(
@@ -4034,8 +3589,8 @@ async function loadMarket(){
       "Unable to load Swing Liquidity data."
     );
 
-
-  }finally{
+  }
+  finally{
 
     loadingEl
       .classList
@@ -4099,9 +3654,7 @@ $("searchInput")
    SEARCH ASSETS
 ========================================================= */
 
-async function searchAssets(
-  q
-){
+async function searchAssets(q){
 
   try{
 
@@ -4112,8 +3665,7 @@ async function searchAssets(
         encodeURIComponent(q),
 
         {
-          cache:
-            "no-store"
+          cache:"no-store"
         }
 
       );
@@ -4146,12 +3698,11 @@ async function searchAssets(
     ){
 
       $("searchResults")
-        .innerHTML =
-          `
+        .innerHTML = `
           <div class="empty">
             No result
           </div>
-          `;
+        `;
 
 
       $("searchResults")
@@ -4209,13 +3760,10 @@ async function searchAssets(
                 >
 
                   <strong>
-
                     ${escapeHtml(
                       symbol
                     )}
-
                   </strong>
-
 
                   <span>
 
@@ -4295,7 +3843,8 @@ async function searchAssets(
       );
 
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
       "Search error:",
@@ -4304,12 +3853,11 @@ async function searchAssets(
 
 
     $("searchResults")
-      .innerHTML =
-        `
+      .innerHTML = `
         <div class="empty">
           Search error
         </div>
-        `;
+      `;
 
 
     $("searchResults")
@@ -4386,7 +3934,7 @@ document
 
 
 /* =========================================================
-   15M
+   15M CHART
 ========================================================= */
 
 $("tf15")
@@ -4424,7 +3972,7 @@ $("tf15")
 
 
 /* =========================================================
-   5M
+   5M CHART
 ========================================================= */
 
 $("tf5")
@@ -4488,4 +4036,4 @@ loadMarket();
 </script>
 
 </body>
-</html>
+  </html>
