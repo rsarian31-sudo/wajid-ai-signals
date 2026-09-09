@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Owajid & Bokul — Swing Liquidity</title>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>
+  Owajid & Bokul — Swing Liquidity
+</title>
 
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
-*{box-sizing:border-box}
 
-html,body{
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
   margin:0;
   padding:0;
   background:#071018;
@@ -18,10 +30,23 @@ html,body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
-body{min-height:100vh}
+body{
+  min-height:100vh;
+}
 
-button,input{font:inherit}
-button{cursor:pointer}
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
 
 .topbar{
   position:sticky;
@@ -86,11 +111,21 @@ button{cursor:pointer}
   font-weight:800;
 }
 
+
+/* =========================================================
+   MAIN
+========================================================= */
+
 .wrap{
   max-width:1500px;
   margin:auto;
   padding:16px;
 }
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
 
 .controls{
   display:flex;
@@ -115,7 +150,9 @@ button{cursor:pointer}
   outline:none;
 }
 
-.search input:focus{border-color:#5d899f}
+.search input:focus{
+  border-color:#5d899f;
+}
 
 .searchResults{
   position:absolute;
@@ -136,7 +173,9 @@ button{cursor:pointer}
   cursor:pointer;
 }
 
-.searchItem:hover{background:#132531}
+.searchItem:hover{
+  background:#132531;
+}
 
 .searchItem strong{
   display:block;
@@ -169,6 +208,11 @@ button{cursor:pointer}
   color:#9ee5a0;
 }
 
+
+/* =========================================================
+   TIMEFRAMES
+========================================================= */
+
 .timeframes{
   display:flex;
   gap:7px;
@@ -189,6 +233,11 @@ button{cursor:pointer}
   border-color:#4d8b5c;
 }
 
+
+/* =========================================================
+   ERROR
+========================================================= */
+
 .errorBox{
   display:none;
   margin-bottom:12px;
@@ -199,6 +248,11 @@ button{cursor:pointer}
   border-radius:10px;
   font-size:12px;
 }
+
+
+/* =========================================================
+   GRID
+========================================================= */
 
 .grid{
   display:grid;
@@ -212,6 +266,11 @@ button{cursor:pointer}
   border-radius:14px;
   overflow:hidden;
 }
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
 
 .cardHeader{
   padding:13px 15px;
@@ -227,7 +286,14 @@ button{cursor:pointer}
   font-size:14px;
 }
 
-.cardHeader small{color:#738898}
+.cardHeader small{
+  color:#738898;
+}
+
+
+/* =========================================================
+   CHART
+========================================================= */
 
 .chartWrap{
   position:relative;
@@ -251,9 +317,18 @@ button{cursor:pointer}
   color:#9db0c0;
 }
 
-.hidden{display:none!important}
+.hidden{
+  display:none!important;
+}
 
-.signalCard{padding:14px}
+
+/* =========================================================
+   SIGNAL CARD
+========================================================= */
+
+.signalCard{
+  padding:14px;
+}
 
 .signalStatus{
   border:1px solid #263846;
@@ -283,11 +358,21 @@ button{cursor:pointer}
   margin-top:7px;
 }
 
-.wait{color:#91a2b0}
-.buy{color:#79dc8a}
-.sell{color:#ff7884}
+.wait{
+  color:#91a2b0;
+}
 
-.confidenceBox{text-align:right}
+.buy{
+  color:#79dc8a;
+}
+
+.sell{
+  color:#ff7884;
+}
+
+.confidenceBox{
+  text-align:right;
+}
 
 .confidenceLabel{
   color:#718594;
@@ -319,6 +404,71 @@ button{cursor:pointer}
   line-height:1.4;
 }
 
+
+/* =========================================================
+   INDEPENDENT 15M + 5M SIGNAL CARDS
+========================================================= */
+
+.independentSignals{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+
+.independentSignal{
+  background:#0e1c27;
+  border:1px solid #1e303d;
+  border-radius:11px;
+  padding:12px;
+}
+
+.independentLabel{
+  color:#718594;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+
+.independentDirection{
+  margin-top:7px;
+  font-size:25px;
+  line-height:1;
+  font-weight:900;
+}
+
+.independentConfidence{
+  margin-top:7px;
+  color:#9db0c0;
+  font-size:10px;
+}
+
+.independentScore{
+  margin-top:3px;
+  color:#718594;
+  font-size:9px;
+}
+
+.structureBuy,
+.entryBuy{
+  color:#79dc8a;
+}
+
+.structureSell,
+.entrySell{
+  color:#ff7884;
+}
+
+.structureWait,
+.entryWait{
+  color:#91a2b0;
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
 .metrics{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -347,6 +497,11 @@ button{cursor:pointer}
   font-size:13px;
 }
 
+
+/* =========================================================
+   TRADE PLAN
+========================================================= */
+
 .plan{
   margin-top:12px;
   border:1px solid #1e303d;
@@ -370,10 +525,22 @@ button{cursor:pointer}
   font-size:12px;
 }
 
-.planRow span{color:#738898}
-.planRow strong{font-family:monospace}
+.planRow span{
+  color:#738898;
+}
 
-.section{margin-top:13px}
+.planRow strong{
+  font-family:monospace;
+}
+
+
+/* =========================================================
+   ENGINE
+========================================================= */
+
+.section{
+  margin-top:13px;
+}
 
 .sectionTitle{
   color:#718594;
@@ -391,10 +558,22 @@ button{cursor:pointer}
   font-size:12px;
 }
 
-.infoRow span{color:#738898}
-.infoRow strong{text-align:right}
+.infoRow span{
+  color:#738898;
+}
 
-.history{margin-top:14px}
+.infoRow strong{
+  text-align:right;
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+.history{
+  margin-top:14px;
+}
 
 .historyBody{
   padding:10px;
@@ -436,6 +615,11 @@ button{cursor:pointer}
   font-size:12px;
 }
 
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
 .footer{
   padding:18px 5px 30px;
   color:#536875;
@@ -443,32 +627,86 @@ button{cursor:pointer}
   font-size:10px;
 }
 
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
 @media(max-width:1050px){
-  .grid{grid-template-columns:1fr}
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
 }
 
 @media(max-width:650px){
-  .wrap{padding:10px}
-  .chartWrap{height:470px}
-  .brand h1{font-size:15px}
-  .brand p{font-size:11px}
-  .direction{font-size:30px}
+
+  .wrap{
+    padding:10px;
+  }
+
+  .chartWrap{
+    height:470px;
+  }
+
+  .brand h1{
+    font-size:15px;
+  }
+
+  .brand p{
+    font-size:11px;
+  }
+
+  .direction{
+    font-size:30px;
+  }
+
+  .independentSignals{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .independentSignal{
+    padding:11px;
+  }
+
+  .independentDirection{
+    font-size:22px;
+  }
+
 }
+
 </style>
+
 </head>
 
+
 <body>
+
 
 <header class="topbar">
 
   <div class="brand">
-    <div class="logo">O&B</div>
+
+    <div class="logo">
+      O&B
+    </div>
 
     <div>
-      <h1>Owajid & Bokul Trading Assistant</h1>
-      <p>Strategy 02 — Swing Liquidity</p>
+
+      <h1>
+        Owajid & Bokul Trading Assistant
+      </h1>
+
+      <p>
+        Strategy 02 — Swing Liquidity
+      </p>
+
     </div>
+
   </div>
+
 
   <div class="strategybar">
 
@@ -476,7 +714,10 @@ button{cursor:pointer}
       🧲 Strong SD Magnet
     </a>
 
-    <a href="/liquidity.html" class="active">
+    <a
+      href="/liquidity.html"
+      class="active"
+    >
       💧 Swing Liquidity
     </a>
 
@@ -484,7 +725,13 @@ button{cursor:pointer}
 
 </header>
 
+
 <main class="wrap">
+
+
+  <!-- =====================================================
+       CONTROLS
+  ====================================================== -->
 
   <div class="controls">
 
@@ -496,39 +743,113 @@ button{cursor:pointer}
         autocomplete="off"
       >
 
-      <div id="searchResults" class="searchResults"></div>
+      <div
+        id="searchResults"
+        class="searchResults"
+      ></div>
 
     </div>
 
+
     <div class="categories">
 
-      <button class="cat active" data-cat="All">All</button>
-      <button class="cat" data-cat="Crypto">Crypto</button>
-      <button class="cat" data-cat="Forex">Forex</button>
-      <button class="cat" data-cat="Metals">Metals</button>
-      <button class="cat" data-cat="Energy">Energy</button>
-      <button class="cat" data-cat="Stocks">Stocks</button>
-      <button class="cat" data-cat="ETF">ETF</button>
+      <button
+        class="cat active"
+        data-cat="All"
+      >
+        All
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Crypto"
+      >
+        Crypto
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Forex"
+      >
+        Forex
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Metals"
+      >
+        Metals
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Energy"
+      >
+        Energy
+      </button>
+
+      <button
+        class="cat"
+        data-cat="Stocks"
+      >
+        Stocks
+      </button>
+
+      <button
+        class="cat"
+        data-cat="ETF"
+      >
+        ETF
+      </button>
 
     </div>
 
   </div>
 
+
+  <!-- =====================================================
+       TIMEFRAME
+  ====================================================== -->
+
   <div class="timeframes">
 
-    <button class="tf active" id="tf15">
+    <button
+      class="tf active"
+      id="tf15"
+    >
       15M STRUCTURE
     </button>
 
-    <button class="tf" id="tf5">
+    <button
+      class="tf"
+      id="tf5"
+    >
       5M ENTRY
     </button>
 
   </div>
 
-  <div id="errorBox" class="errorBox"></div>
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  <div
+    id="errorBox"
+    class="errorBox"
+  ></div>
+
+
+  <!-- =====================================================
+       GRID
+  ====================================================== -->
 
   <div class="grid">
+
+
+    <!-- ===================================================
+         CHART
+    ==================================================== -->
 
     <section class="card">
 
@@ -546,17 +867,23 @@ button{cursor:pointer}
 
         </div>
 
+
         <small id="refreshText">
           Updating...
         </small>
 
       </div>
 
+
       <div class="chartWrap">
 
         <div id="chart"></div>
 
-        <div class="loading" id="loading">
+
+        <div
+          class="loading"
+          id="loading"
+        >
           Loading market data...
         </div>
 
@@ -564,13 +891,26 @@ button{cursor:pointer}
 
     </section>
 
+
+    <!-- ===================================================
+         SIGNAL PANEL
+    ==================================================== -->
+
     <aside>
+
 
       <section class="card signalCard">
 
+
+        <!-- =================================================
+             CURRENT 5M SIGNAL
+        ================================================== -->
+
         <div class="signalStatus">
 
+
           <div class="signalHeader">
+
 
             <div>
 
@@ -578,11 +918,16 @@ button{cursor:pointer}
                 Current 5M Entry Signal
               </div>
 
-              <div id="direction" class="direction wait">
+
+              <div
+                id="direction"
+                class="direction wait"
+              >
                 WAIT
               </div>
 
             </div>
+
 
             <div class="confidenceBox">
 
@@ -590,57 +935,181 @@ button{cursor:pointer}
                 Entry Confidence
               </div>
 
-              <div id="signalProbability" class="confidenceValue">
+              <div
+                id="signalProbability"
+                class="confidenceValue"
+              >
                 0%
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+          <div
+            id="currentPrice"
+            class="price"
+          >
+            —
+          </div>
+
+
+          <div
+            id="signalReason"
+            class="signalReason"
+          >
+            Waiting for independent 15M structure / 5M entry setup.
+          </div>
+
+
+          <!-- =================================================
+               INDEPENDENT SIGNALS
+          ================================================== -->
+
+          <div class="independentSignals">
+
+
+            <!-- 15M -->
+
+            <div class="independentSignal">
+
+              <div class="independentLabel">
+                15M Structure
+              </div>
+
+
+              <div
+                id="m15Direction"
+                class="independentDirection structureWait"
+              >
+                WAIT
+              </div>
+
+
+              <div
+                id="m15Confidence"
+                class="independentConfidence"
+              >
+                Confidence: 0%
+              </div>
+
+
+              <div
+                id="m15Score"
+                class="independentScore"
+              >
+                Score: 0
+              </div>
+
+            </div>
+
+
+            <!-- 5M -->
+
+            <div class="independentSignal">
+
+              <div class="independentLabel">
+                5M Entry
+              </div>
+
+
+              <div
+                id="m5Direction"
+                class="independentDirection entryWait"
+              >
+                WAIT
+              </div>
+
+
+              <div
+                id="m5Confidence"
+                class="independentConfidence"
+              >
+                Confidence: 0%
+              </div>
+
+
+              <div
+                id="m5Score"
+                class="independentScore"
+              >
+                Score: 0
               </div>
 
             </div>
 
           </div>
 
-          <div id="currentPrice" class="price">
-            —
-          </div>
 
-          <div id="signalReason" class="signalReason">
-            Waiting for independent 15M structure / 5M entry setup.
-          </div>
+          <!-- =================================================
+               OTHER METRICS
+          ================================================== -->
 
           <div class="metrics">
 
-            <div class="metric">
-              <span>15M Structure</span>
-              <strong id="m15Direction">WAIT</strong>
-            </div>
 
             <div class="metric">
-              <span>5M Entry</span>
-              <strong id="m5Direction">WAIT</strong>
+
+              <span>
+                Liquidity
+              </span>
+
+              <strong id="liquidityState">
+                NONE
+              </strong>
+
             </div>
 
-            <div class="metric">
-              <span>Liquidity</span>
-              <strong id="liquidityState">NONE</strong>
-            </div>
 
             <div class="metric">
-              <span>Volume</span>
-              <strong id="volumeState">N/A</strong>
+
+              <span>
+                Volume
+              </span>
+
+              <strong id="volumeState">
+                N/A
+              </strong>
+
             </div>
 
-            <div class="metric">
-              <span>Swing High</span>
-              <strong id="swingHigh">—</strong>
-            </div>
 
             <div class="metric">
-              <span>Swing Low</span>
-              <strong id="swingLow">—</strong>
+
+              <span>
+                Swing High
+              </span>
+
+              <strong id="swingHigh">
+                —
+              </strong>
+
             </div>
+
+
+            <div class="metric">
+
+              <span>
+                Swing Low
+              </span>
+
+              <strong id="swingLow">
+                —
+              </strong>
+
+            </div>
+
 
           </div>
 
         </div>
+
+
+        <!-- =================================================
+             TRADE PLAN
+        ================================================== -->
 
         <div class="plan">
 
@@ -648,73 +1117,169 @@ button{cursor:pointer}
             5M CONFIRMED TRADE PLAN
           </div>
 
-          <div class="planRow">
-            <span>Entry</span>
-            <strong id="entry">—</strong>
-          </div>
 
           <div class="planRow">
-            <span>Stop Loss</span>
-            <strong id="sl">—</strong>
+
+            <span>
+              Entry
+            </span>
+
+            <strong id="entry">
+              —
+            </strong>
+
           </div>
 
-          <div class="planRow">
-            <span>TP1</span>
-            <strong id="tp1">—</strong>
-          </div>
 
           <div class="planRow">
-            <span>TP2</span>
-            <strong id="tp2">—</strong>
+
+            <span>
+              Stop Loss
+            </span>
+
+            <strong id="sl">
+              —
+            </strong>
+
           </div>
 
+
           <div class="planRow">
-            <span>TP3</span>
-            <strong id="tp3">—</strong>
+
+            <span>
+              TP1
+            </span>
+
+            <strong id="tp1">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="planRow">
+
+            <span>
+              TP2
+            </span>
+
+            <strong id="tp2">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="planRow">
+
+            <span>
+              TP3
+            </span>
+
+            <strong id="tp3">
+              —
+            </strong>
+
           </div>
 
         </div>
 
+
+        <!-- =================================================
+             ENGINE DETAILS
+        ================================================== -->
+
         <div class="section">
+
 
           <div class="sectionTitle">
             Swing Liquidity Engine
           </div>
 
-          <div class="infoRow">
-            <span>15M Liquidity Sweep</span>
-            <strong id="sweep15">NONE</strong>
-          </div>
 
           <div class="infoRow">
-            <span>5M Confirmation</span>
-            <strong id="confirm5">NONE</strong>
+
+            <span>
+              15M Liquidity Sweep
+            </span>
+
+            <strong id="sweep15">
+              NONE
+            </strong>
+
           </div>
 
-          <div class="infoRow">
-            <span>Active Liquidity</span>
-            <strong id="liquidityLevel">—</strong>
-          </div>
 
           <div class="infoRow">
-            <span>5M Signal Score</span>
-            <strong id="signalScore">0</strong>
+
+            <span>
+              5M Confirmation
+            </span>
+
+            <strong id="confirm5">
+              NONE
+            </strong>
+
           </div>
 
+
           <div class="infoRow">
-            <span>ATR</span>
-            <strong id="atr">—</strong>
+
+            <span>
+              Active Liquidity
+            </span>
+
+            <strong id="liquidityLevel">
+              —
+            </strong>
+
           </div>
+
+
+          <div class="infoRow">
+
+            <span>
+              5M Signal Score
+            </span>
+
+            <strong id="signalScore">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="infoRow">
+
+            <span>
+              ATR
+            </span>
+
+            <strong id="atr">
+              —
+            </strong>
+
+          </div>
+
 
         </div>
 
+
       </section>
+
+
+      <!-- =================================================
+           HISTORY
+      ================================================== -->
 
       <section class="card history">
 
+
         <div class="cardHeader">
 
-          <h2>Signal History</h2>
+          <h2>
+            Signal History
+          </h2>
 
           <small id="historyCount">
             0
@@ -722,7 +1287,11 @@ button{cursor:pointer}
 
         </div>
 
-        <div class="historyBody" id="historyBody">
+
+        <div
+          class="historyBody"
+          id="historyBody"
+        >
 
           <div class="empty">
             No confirmed signals yet.
@@ -730,17 +1299,26 @@ button{cursor:pointer}
 
         </div>
 
+
       </section>
+
 
     </aside>
 
+
   </div>
+
 
   <div class="footer">
-    Swing Liquidity Strategy • Charting by TradingView Lightweight Charts
+
+    Swing Liquidity Strategy •
+    Charting by TradingView Lightweight Charts
+
   </div>
 
+
 </main>
+
 
 <script>
 
@@ -750,23 +1328,32 @@ button{cursor:pointer}
 
 const state = {
 
-  symbol:"XAU/USD",
+  symbol:
+    "XAU/USD",
 
-  displayName:"Gold — XAU/USD",
+  displayName:
+    "Gold — XAU/USD",
 
-  category:"Metals",
+  category:
+    "Metals",
 
-  data15:null,
+  data15:
+    null,
 
-  data5:null,
+  data5:
+    null,
 
-  currentSignal:null,
+  currentSignal:
+    null,
 
-  chartTimeframe:"15min",
+  chartTimeframe:
+    "15min",
 
-  lastSignalKey:null,
+  lastSignalKey:
+    null,
 
-  history:loadHistory()
+  history:
+    loadHistory()
 
 };
 
@@ -775,14 +1362,18 @@ const state = {
    DOM
 ========================================================= */
 
-const $ = id =>
-  document.getElementById(id);
+const $ =
+  id =>
+    document.getElementById(id);
+
 
 const chartEl =
   $("chart");
 
+
 const loadingEl =
   $("loading");
+
 
 const errorBox =
   $("errorBox");
@@ -792,15 +1383,20 @@ const errorBox =
    CHART
 ========================================================= */
 
-let chart = null;
+let chart =
+  null;
 
-let candleSeries = null;
+let candleSeries =
+  null;
 
-let volumeSeries = null;
+let volumeSeries =
+  null;
 
-let priceLines = [];
+let priceLines =
+  [];
 
-let markersSeries = null;
+let markersSeries =
+  null;
 
 
 /* =========================================================
@@ -815,41 +1411,69 @@ function createChart(){
       {
 
         layout:{
+
           background:{
             type:"solid",
             color:"#071018"
           },
+
           textColor:"#9eb0bd"
+
         },
 
+
         grid:{
+
           vertLines:{
             color:"#10202b"
           },
+
           horzLines:{
             color:"#10202b"
           }
+
         },
+
 
         rightPriceScale:{
-          borderColor:"#203441",
+
+          borderColor:
+            "#203441",
+
           scaleMargins:{
-            top:.08,
-            bottom:.20
+
+            top:
+              0.08,
+
+            bottom:
+              0.20
+
           }
+
         },
+
 
         timeScale:{
-          borderColor:"#203441",
-          timeVisible:true,
-          secondsVisible:false
+
+          borderColor:
+            "#203441",
+
+          timeVisible:
+            true,
+
+          secondsVisible:
+            false
+
         },
 
+
         crosshair:{
+
           mode:
             LightweightCharts
               .CrosshairMode
               .Normal
+
         }
 
       }
@@ -861,15 +1485,20 @@ function createChart(){
       LightweightCharts.CandlestickSeries,
       {
 
-        upColor:"#69c979",
+        upColor:
+          "#69c979",
 
-        downColor:"#ef6874",
+        downColor:
+          "#ef6874",
 
-        borderVisible:false,
+        borderVisible:
+          false,
 
-        wickUpColor:"#69c979",
+        wickUpColor:
+          "#69c979",
 
-        wickDownColor:"#ef6874"
+        wickDownColor:
+          "#ef6874"
 
       }
     );
@@ -881,14 +1510,21 @@ function createChart(){
       {
 
         priceFormat:{
-          type:"volume"
+          type:
+            "volume"
         },
 
-        priceScaleId:"",
+        priceScaleId:
+          "",
 
         scaleMargins:{
-          top:.88,
-          bottom:0
+
+          top:
+            0.88,
+
+          bottom:
+            0
+
         }
 
       }
@@ -912,6 +1548,7 @@ function resizeChart(){
   if(!chart){
     return;
   }
+
 
   chart.applyOptions({
 
@@ -948,11 +1585,17 @@ async function fetchLiquidity(
     await fetch(
       url,
       {
-        method:"GET",
-        cache:"no-store",
+        method:
+          "GET",
+
+        cache:
+          "no-store",
+
         headers:{
-          Accept:"application/json"
+          "Accept":
+            "application/json"
         }
+
       }
     );
 
@@ -1010,12 +1653,16 @@ async function fetchLiquidity(
    FORMAT PRICE
 ========================================================= */
 
-function formatPrice(value){
+function formatPrice(
+  value
+){
 
   if(
     value === null ||
     value === undefined ||
-    !Number.isFinite(Number(value))
+    !Number.isFinite(
+      Number(value)
+    )
   ){
 
     return "—";
@@ -1031,13 +1678,16 @@ function formatPrice(value){
     return n.toFixed(2);
   }
 
+
   if(n >= 100){
     return n.toFixed(3);
   }
 
+
   if(n >= 1){
     return n.toFixed(4);
   }
+
 
   return n.toFixed(6);
 
@@ -1048,7 +1698,9 @@ function formatPrice(value){
    FORMAT TIME
 ========================================================= */
 
-function formatTime(ts){
+function formatTime(
+  ts
+){
 
   if(!ts){
     return "—";
@@ -1066,6 +1718,7 @@ function formatTime(ts){
     const parsed =
       new Date(ts).getTime();
 
+
     if(
       !Number.isFinite(parsed)
     ){
@@ -1073,6 +1726,7 @@ function formatTime(ts){
       return "—";
 
     }
+
 
     value =
       Math.floor(
@@ -1087,10 +1741,19 @@ function formatTime(ts){
   ).toLocaleString(
     undefined,
     {
-      month:"short",
-      day:"2-digit",
-      hour:"2-digit",
-      minute:"2-digit"
+
+      month:
+        "short",
+
+      day:
+        "2-digit",
+
+      hour:
+        "2-digit",
+
+      minute:
+        "2-digit"
+
     }
   );
 
@@ -1101,7 +1764,9 @@ function formatTime(ts){
    BACKEND SIGNAL
 ========================================================= */
 
-function getSignal(data){
+function getSignal(
+  data
+){
 
   const signal =
     data?.signal;
@@ -1111,19 +1776,26 @@ function getSignal(data){
 
     return {
 
-      direction:"WAIT",
+      direction:
+        "WAIT",
 
-      probability:0,
+      probability:
+        0,
 
-      score:0,
+      score:
+        0,
 
-      price:null,
+      price:
+        null,
 
-      time:null,
+      time:
+        null,
 
-      sweep:null,
+      sweep:
+        null,
 
-      confirmation:null
+      confirmation:
+        null
 
     };
 
@@ -1182,49 +1854,75 @@ function buildFinalSignal(){
 
     return {
 
-      direction:"WAIT",
+      direction:
+        "WAIT",
 
-      probability:0,
+      probability:
+        0,
 
-      score:0,
+      score:
+        0,
 
-      price:null,
+      price:
+        null,
 
-      entry:null,
+      entry:
+        null,
 
-      sl:null,
+      sl:
+        null,
 
-      tp1:null,
+      tp1:
+        null,
 
-      tp2:null,
+      tp2:
+        null,
 
-      tp3:null,
+      tp3:
+        null,
 
       a15:{
-        direction:"WAIT",
-        probability:0,
-        score:0
+        direction:
+          "WAIT",
+
+        probability:
+          0,
+
+        score:
+          0
       },
 
       a5:{
-        direction:"WAIT",
-        probability:0,
-        score:0
+        direction:
+          "WAIT",
+
+        probability:
+          0,
+
+        score:
+          0
       },
 
-      structureDirection:"WAIT",
+      structureDirection:
+        "WAIT",
 
-      entryDirection:"WAIT",
+      entryDirection:
+        "WAIT",
 
-      structureProbability:0,
+      structureProbability:
+        0,
 
-      entryProbability:0,
+      entryProbability:
+        0,
 
-      structureScore:0,
+      structureScore:
+        0,
 
-      entryScore:0,
+      entryScore:
+        0,
 
-      reason:"DATA NOT READY"
+      reason:
+        "DATA NOT READY"
 
     };
 
@@ -1244,9 +1942,14 @@ function buildFinalSignal(){
 
 
   /*
-   * 5M owns execution.
-   * 15M does NOT need to agree with 5M.
+   * 15M and 5M are completely independent.
+   *
+   * 15M = STRUCTURE
+   * 5M  = ENTRY / EXECUTION
+   *
+   * They do NOT need to agree.
    */
+
 
   const tradePlan =
     state.data5?.tradePlan ||
@@ -1256,7 +1959,10 @@ function buildFinalSignal(){
   const price =
     state.data5?.market?.price ??
     s5.price ??
-    state.data5?.candles?.at(-1)?.close ??
+    state.data5
+      ?.candles
+      ?.at(-1)
+      ?.close ??
     null;
 
 
@@ -1264,43 +1970,48 @@ function buildFinalSignal(){
     "Waiting for independent 15M structure / 5M entry setup";
 
 
-  if(
+  const structureActive =
     s15.direction === "BUY" ||
-    s15.direction === "SELL"
+    s15.direction === "SELL";
+
+
+  const entryActive =
+    s5.direction === "BUY" ||
+    s5.direction === "SELL";
+
+
+  if(
+    structureActive &&
+    entryActive
   ){
 
     if(
-      s5.direction === "BUY" ||
-      s5.direction === "SELL"
+      s15.direction ===
+      s5.direction
     ){
 
-      if(
-        s15.direction === s5.direction
-      ){
-
-        reason =
-          `15M ${s15.direction} structure + 5M ${s5.direction} entry aligned`;
-
-      }
-      else{
-
-        reason =
-          `15M ${s15.direction} structure • 5M ${s5.direction} entry`;
-
-      }
+      reason =
+        `15M ${s15.direction} structure + 5M ${s5.direction} entry aligned`;
 
     }
     else{
 
       reason =
-        `15M ${s15.direction} structure active • 5M entry waiting`;
+        `15M ${s15.direction} structure • 5M ${s5.direction} entry`;
 
     }
 
   }
   else if(
-    s5.direction === "BUY" ||
-    s5.direction === "SELL"
+    structureActive
+  ){
+
+    reason =
+      `15M ${s15.direction} structure active • 5M entry waiting`;
+
+  }
+  else if(
+    entryActive
   ){
 
     reason =
@@ -1312,86 +2023,114 @@ function buildFinalSignal(){
   return {
 
     /*
-     * Primary execution signal
+     * 5M remains the execution signal.
+     * This preserves existing history and trade-plan logic.
      */
+
     direction:
       s5.direction,
+
 
     probability:
       s5.probability,
 
+
     score:
       s5.score,
 
+
     price,
 
+
     /*
-     * 5M trade plan
+     * Trade plan belongs to 5M.
      */
+
     entry:
       tradePlan?.entry ??
       null,
+
 
     sl:
       tradePlan?.stopLoss ??
       null,
 
+
     tp1:
       tradePlan?.tp1 ??
       null,
+
 
     tp2:
       tradePlan?.tp2 ??
       null,
 
+
     tp3:
       tradePlan?.tp3 ??
       null,
+
 
     risk:
       tradePlan?.risk ??
       null,
 
+
     /*
-     * Independent 15M
+     * Independent 15M signal
      */
+
     a15:
       s15,
 
+
     /*
-     * Independent 5M
+     * Independent 5M signal
      */
+
     a5:
       s5,
+
 
     structureDirection:
       s15.direction,
 
+
     entryDirection:
       s5.direction,
+
 
     structureProbability:
       s15.probability,
 
+
     entryProbability:
       s5.probability,
+
 
     structureScore:
       s15.score,
 
+
     entryScore:
       s5.score,
 
+
     signalTime:
       s5.time ||
-      state.data5?.market?.lastCandleTime ||
+      state.data5
+        ?.market
+        ?.lastCandleTime ||
       null,
 
-    timeframe:"5min",
+
+    timeframe:
+      "5min",
+
 
     executionActive:
-      s5.direction === "BUY" ||
-      s5.direction === "SELL",
+      entryActive,
+
 
     reason
 
@@ -1411,7 +2150,9 @@ function latestSwing(
 
   const list =
     type === "HIGH"
+
       ? data?.swings?.highs
+
       : data?.swings?.lows;
 
 
@@ -1436,7 +2177,9 @@ function latestSwing(
    LATEST SWEEP
 ========================================================= */
 
-function latestSweep(data){
+function latestSweep(
+  data
+){
 
   const list =
     data?.liquidity?.sweeps;
@@ -1463,7 +2206,15 @@ function latestSweep(data){
    UPDATE UI
 ========================================================= */
 
-function updateUI(signal){
+function updateUI(
+  signal
+){
+
+  /*
+   * =======================================================
+   * CURRENT 5M ENTRY SIGNAL
+   * =======================================================
+   */
 
   const direction =
     $("direction");
@@ -1480,7 +2231,8 @@ function updateUI(signal){
 
 
   if(
-    entryDirection === "BUY"
+    entryDirection ===
+    "BUY"
   ){
 
     direction.textContent =
@@ -1492,7 +2244,8 @@ function updateUI(signal){
 
   }
   else if(
-    entryDirection === "SELL"
+    entryDirection ===
+    "SELL"
   ){
 
     direction.textContent =
@@ -1515,6 +2268,12 @@ function updateUI(signal){
   }
 
 
+  /*
+   * =======================================================
+   * 5M CONFIDENCE
+   * =======================================================
+   */
+
   $("signalProbability")
     .textContent =
       `${Math.round(
@@ -1524,13 +2283,21 @@ function updateUI(signal){
       )}%`;
 
 
+  /*
+   * =======================================================
+   * CURRENT PRICE
+   * =======================================================
+   */
+
   $("currentPrice")
     .textContent =
       formatPrice(
 
         signal?.price ??
 
-        state.data5?.market?.price ??
+        state.data5
+          ?.market
+          ?.price ??
 
         state.data5
           ?.candles
@@ -1540,6 +2307,12 @@ function updateUI(signal){
       );
 
 
+  /*
+   * =======================================================
+   * MAIN REASON
+   * =======================================================
+   */
+
   $("signalReason")
     .textContent =
       signal?.reason ||
@@ -1547,7 +2320,9 @@ function updateUI(signal){
 
 
   /*
-   * 15M
+   * =======================================================
+   * 15M STRUCTURE
+   * =======================================================
    */
 
   const structureDirection =
@@ -1556,21 +2331,79 @@ function updateUI(signal){
     "WAIT";
 
 
-  $("m15Direction")
+  const structureProbability =
+    Number(
+      signal?.structureProbability ??
+      signal?.a15?.probability ??
+      0
+    );
+
+
+  const structureScore =
+    Number(
+      signal?.structureScore ??
+      signal?.a15?.score ??
+      0
+    );
+
+
+  const m15 =
+    $("m15Direction");
+
+
+  m15.textContent =
+    structureDirection;
+
+
+  m15.className =
+    "independentDirection";
+
+
+  if(
+    structureDirection ===
+    "BUY"
+  ){
+
+    m15.classList.add(
+      "structureBuy"
+    );
+
+  }
+  else if(
+    structureDirection ===
+    "SELL"
+  ){
+
+    m15.classList.add(
+      "structureSell"
+    );
+
+  }
+  else{
+
+    m15.classList.add(
+      "structureWait"
+    );
+
+  }
+
+
+  $("m15Confidence")
     .textContent =
-      structureDirection;
+      `Confidence: ${Math.round(
+        structureProbability
+      )}%`;
 
 
-  $("m15Direction").className =
-    structureDirection === "BUY"
-      ? "buy"
-      : structureDirection === "SELL"
-        ? "sell"
-        : "wait";
+  $("m15Score")
+    .textContent =
+      `Score: ${structureScore}`;
 
 
   /*
-   * 5M
+   * =======================================================
+   * 5M ENTRY
+   * =======================================================
    */
 
   const entryDir =
@@ -1579,21 +2412,79 @@ function updateUI(signal){
     "WAIT";
 
 
-  $("m5Direction")
+  const entryProbability =
+    Number(
+      signal?.entryProbability ??
+      signal?.a5?.probability ??
+      0
+    );
+
+
+  const entryScore =
+    Number(
+      signal?.entryScore ??
+      signal?.a5?.score ??
+      0
+    );
+
+
+  const m5 =
+    $("m5Direction");
+
+
+  m5.textContent =
+    entryDir;
+
+
+  m5.className =
+    "independentDirection";
+
+
+  if(
+    entryDir ===
+    "BUY"
+  ){
+
+    m5.classList.add(
+      "entryBuy"
+    );
+
+  }
+  else if(
+    entryDir ===
+    "SELL"
+  ){
+
+    m5.classList.add(
+      "entrySell"
+    );
+
+  }
+  else{
+
+    m5.classList.add(
+      "entryWait"
+    );
+
+  }
+
+
+  $("m5Confidence")
     .textContent =
-      entryDir;
+      `Confidence: ${Math.round(
+        entryProbability
+      )}%`;
 
 
-  $("m5Direction").className =
-    entryDir === "BUY"
-      ? "buy"
-      : entryDir === "SELL"
-        ? "sell"
-        : "wait";
+  $("m5Score")
+    .textContent =
+      `Score: ${entryScore}`;
 
 
   /*
-   * Swings
+   * =======================================================
+   * SWINGS
+   * =======================================================
    */
 
   const high5 =
@@ -1641,7 +2532,9 @@ function updateUI(signal){
 
 
   /*
-   * Sweeps
+   * =======================================================
+   * SWEEPS
+   * =======================================================
    */
 
   const sweep5 =
@@ -1664,7 +2557,9 @@ function updateUI(signal){
 
 
   /*
-   * Volume
+   * =======================================================
+   * VOLUME
+   * =======================================================
    */
 
   const volumeAvailable =
@@ -1692,6 +2587,12 @@ function updateUI(signal){
         : "N/A";
 
 
+  /*
+   * =======================================================
+   * 15M SWEEP
+   * =======================================================
+   */
+
   $("sweep15")
     .textContent =
       sweep15?.type ||
@@ -1699,7 +2600,9 @@ function updateUI(signal){
 
 
   /*
-   * Confirmation
+   * =======================================================
+   * 5M CONFIRMATION
+   * =======================================================
    */
 
   const confirmation5 =
@@ -1721,12 +2624,16 @@ function updateUI(signal){
 
 
   /*
-   * Active liquidity
+   * =======================================================
+   * ACTIVE LIQUIDITY
+   * =======================================================
    */
 
   const activeLevel =
     signal?.a5?.sweep?.level?.price ||
+
     signal?.a15?.sweep?.level?.price ||
+
     null;
 
 
@@ -1738,20 +2645,22 @@ function updateUI(signal){
 
 
   /*
-   * 5M score
+   * =======================================================
+   * 5M SCORE
+   * =======================================================
    */
 
   $("signalScore")
     .textContent =
       String(
-        signal?.entryScore ??
-        signal?.a5?.score ??
-        0
+        entryScore
       );
 
 
   /*
+   * =======================================================
    * ATR
+   * =======================================================
    */
 
   $("atr")
@@ -1770,12 +2679,19 @@ function updateUI(signal){
 
 
   /*
-   * 5M trade plan
+   * =======================================================
+   * 5M TRADE PLAN
+   *
+   * 15M DOES NOT NEED TO AGREE.
+   * =======================================================
    */
 
   if(
-    entryDir === "BUY" ||
-    entryDir === "SELL"
+    entryDir ===
+    "BUY" ||
+
+    entryDir ===
+    "SELL"
   ){
 
     $("entry")
@@ -1815,11 +2731,29 @@ function updateUI(signal){
   }
   else{
 
-    $("entry").textContent = "—";
-    $("sl").textContent = "—";
-    $("tp1").textContent = "—";
-    $("tp2").textContent = "—";
-    $("tp3").textContent = "—";
+    $("entry")
+      .textContent =
+        "—";
+
+
+    $("sl")
+      .textContent =
+        "—";
+
+
+    $("tp1")
+      .textContent =
+        "—";
+
+
+    $("tp2")
+      .textContent =
+        "—";
+
+
+    $("tp3")
+      .textContent =
+        "—";
 
   }
 
@@ -1832,8 +2766,12 @@ function updateUI(signal){
 
 function clearPriceLines(){
 
-  if(!candleSeries){
+  if(
+    !candleSeries
+  ){
+
     return;
+
   }
 
 
@@ -1853,7 +2791,8 @@ function clearPriceLines(){
   }
 
 
-  priceLines = [];
+  priceLines =
+    [];
 
 }
 
@@ -1883,11 +2822,13 @@ function addPriceLine(
   const line =
     candleSeries.createPriceLine({
 
-      price:Number(price),
+      price:
+        Number(price),
 
       color,
 
-      lineWidth:1,
+      lineWidth:
+        1,
 
       lineStyle:
         style ??
@@ -1895,7 +2836,8 @@ function addPriceLine(
           .LineStyle
           .Dotted,
 
-      axisLabelVisible:true,
+      axisLabelVisible:
+        true,
 
       title
 
@@ -1913,10 +2855,16 @@ function addPriceLine(
    DRAW LIQUIDITY LEVELS
 ========================================================= */
 
-function drawLiquidityLevels(data){
+function drawLiquidityLevels(
+  data
+){
 
-  if(!data?.swings){
+  if(
+    !data?.swings
+  ){
+
     return;
+
   }
 
 
@@ -1988,7 +2936,9 @@ function drawLiquidityLevels(data){
    DRAW SWEEP
 ========================================================= */
 
-function drawActiveSweep(data){
+function drawActiveSweep(
+  data
+){
 
   const sweep =
     latestSweep(
@@ -2061,13 +3011,18 @@ function drawActiveSweep(data){
    DRAW TRADE PLAN
 ========================================================= */
 
-function drawTradePlan(signal){
+function drawTradePlan(
+  signal
+){
 
   if(
     !signal ||
     (
-      signal.direction !== "BUY" &&
-      signal.direction !== "SELL"
+      signal.direction !==
+      "BUY" &&
+
+      signal.direction !==
+      "SELL"
     )
   ){
 
@@ -2170,14 +3125,21 @@ function drawTradePlan(signal){
 
 function drawMarkers(){
 
-  if(!candleSeries){
+  if(
+    !candleSeries
+  ){
+
     return;
+
   }
 
 
   const data =
-    state.chartTimeframe === "15min"
+    state.chartTimeframe ===
+    "15min"
+
       ? state.data15
+
       : state.data5;
 
 
@@ -2208,15 +3170,20 @@ function drawMarkers(){
 
         markers.push({
 
-          time:swing.time,
+          time:
+            swing.time,
 
-          position:"aboveBar",
+          position:
+            "aboveBar",
 
-          color:"#a9535e",
+          color:
+            "#a9535e",
 
-          shape:"circle",
+          shape:
+            "circle",
 
-          text:"H"
+          text:
+            "H"
 
         });
 
@@ -2239,15 +3206,20 @@ function drawMarkers(){
 
         markers.push({
 
-          time:swing.time,
+          time:
+            swing.time,
 
-          position:"belowBar",
+          position:
+            "belowBar",
 
-          color:"#5ba367",
+          color:
+            "#5ba367",
 
-          shape:"circle",
+          shape:
+            "circle",
 
-          text:"L"
+          text:
+            "L"
 
         });
 
@@ -2269,12 +3241,14 @@ function drawMarkers(){
       sweep => {
 
         const bullish =
-          sweep.type === "BULLISH";
+          sweep.type ===
+          "BULLISH";
 
 
         markers.push({
 
-          time:sweep.time,
+          time:
+            sweep.time,
 
           position:
             bullish
@@ -2291,7 +3265,8 @@ function drawMarkers(){
               ? "arrowUp"
               : "arrowDown",
 
-          text:"SWEEP"
+          text:
+            "SWEEP"
 
         });
 
@@ -2344,7 +3319,9 @@ function drawMarkers(){
 
   try{
 
-    if(!markersSeries){
+    if(
+      !markersSeries
+    ){
 
       markersSeries =
         LightweightCharts
@@ -2381,14 +3358,21 @@ function drawMarkers(){
 
 function renderChart(){
 
-  if(!candleSeries){
+  if(
+    !candleSeries
+  ){
+
     return;
+
   }
 
 
   const data =
-    state.chartTimeframe === "15min"
+    state.chartTimeframe ===
+    "15min"
+
       ? state.data15
+
       : state.data5;
 
 
@@ -2406,15 +3390,20 @@ function renderChart(){
     data.candles.map(
       candle => ({
 
-        time:candle.time,
+        time:
+          candle.time,
 
-        open:candle.open,
+        open:
+          candle.open,
 
-        high:candle.high,
+        high:
+          candle.high,
 
-        low:candle.low,
+        low:
+          candle.low,
 
-        close:candle.close
+        close:
+          candle.close
 
       })
     )
@@ -2427,15 +3416,20 @@ function renderChart(){
     data.candles.map(
       candle => ({
 
-        time:candle.time,
+        time:
+          candle.time,
 
-        value:Number(
-          candle.volume || 0
-        ),
+        value:
+          Number(
+            candle.volume || 0
+          ),
 
         color:
-          candle.close >= candle.open
+          candle.close >=
+          candle.open
+
             ? "rgba(105,201,121,.25)"
+
             : "rgba(239,104,116,.25)"
 
       })
@@ -2458,12 +3452,13 @@ function renderChart(){
 
 
   /*
-   * Trade plan is 5M execution plan.
-   * Draw it on the 5M chart.
+   * Trade plan belongs to 5M.
+   * Therefore draw it when viewing 5M chart.
    */
 
   if(
-    state.chartTimeframe === "5min"
+    state.chartTimeframe ===
+    "5min"
   ){
 
     drawTradePlan(
@@ -2506,7 +3501,9 @@ function loadHistory(){
       JSON.parse(raw);
 
 
-    return Array.isArray(parsed)
+    return Array.isArray(
+      parsed
+    )
       ? parsed
       : [];
 
@@ -2551,7 +3548,9 @@ function saveHistory(){
    SIGNAL KEY
 ========================================================= */
 
-function signalKey(signal){
+function signalKey(
+  signal
+){
 
   return [
 
@@ -2577,13 +3576,18 @@ function signalKey(signal){
    RECORD SIGNAL
 ========================================================= */
 
-function recordSignal(signal){
+function recordSignal(
+  signal
+){
 
   if(
     !signal ||
     (
-      signal.direction !== "BUY" &&
-      signal.direction !== "SELL"
+      signal.direction !==
+      "BUY" &&
+
+      signal.direction !==
+      "SELL"
     )
   ){
 
@@ -2610,7 +3614,8 @@ function recordSignal(signal){
 
 
   if(
-    state.lastSignalKey === key
+    state.lastSignalKey ===
+    key
   ){
 
     return;
@@ -2621,7 +3626,8 @@ function recordSignal(signal){
   const exists =
     state.history.some(
       item =>
-        item.key === key
+        item.key ===
+        key
     );
 
 
@@ -2680,19 +3686,26 @@ function recordSignal(signal){
     score:
       signal.score,
 
-    status:"OPEN",
+    status:
+      "OPEN",
 
-    result:null,
+    result:
+      null,
 
-    resultTime:null,
+    resultTime:
+      null,
 
-    events:[],
+    events:
+      [],
 
-    tp1Hit:false,
+    tp1Hit:
+      false,
 
-    tp2Hit:false,
+    tp2Hit:
+      false,
 
-    slHit:false
+    slHit:
+      false
 
   });
 
@@ -2706,6 +3719,12 @@ function recordSignal(signal){
 
 /* =========================================================
    UPDATE HISTORY OUTCOMES
+
+   TP1 = stays OPEN
+   TP2 = WIN
+   SL  = LOSS
+
+   TP3 is NOT terminal.
 ========================================================= */
 
 function updateHistoryOutcomes(){
@@ -2732,7 +3751,8 @@ function updateHistoryOutcomes(){
     item => {
 
       if(
-        item.status !== "OPEN"
+        item.status !==
+        "OPEN"
       ){
 
         return;
@@ -2741,7 +3761,9 @@ function updateHistoryOutcomes(){
 
 
       item.events =
-        Array.isArray(item.events)
+        Array.isArray(
+          item.events
+        )
           ? item.events
           : [];
 
@@ -2758,10 +3780,12 @@ function updateHistoryOutcomes(){
         !!item.slHit;
 
 
+      /*
+       * Signal time is stored in UNIX seconds.
+       */
+
       const signalTime =
-        Number(
-          item.time
-        ) * 1000;
+        Number(item.time) * 1000;
 
 
       const futureCandles =
@@ -2772,9 +3796,13 @@ function updateHistoryOutcomes(){
               const candleTime =
                 Number(candle.time) * 1000;
 
+
               return (
-                Number.isFinite(candleTime) &&
-                candleTime > signalTime
+                Number.isFinite(
+                  candleTime
+                ) &&
+                candleTime >
+                  signalTime
               );
 
             }
@@ -2791,11 +3819,15 @@ function updateHistoryOutcomes(){
       ){
 
         const high =
-          Number(candle.high);
+          Number(
+            candle.high
+          );
 
 
         const low =
-          Number(candle.low);
+          Number(
+            candle.low
+          );
 
 
         if(
@@ -2809,7 +3841,8 @@ function updateHistoryOutcomes(){
 
 
         const isBuy =
-          item.direction === "BUY";
+          item.direction ===
+          "BUY";
 
 
         /* =================================================
@@ -2819,7 +3852,7 @@ function updateHistoryOutcomes(){
         if(isBuy){
 
           /*
-           * SL first = LOSS
+           * SL = LOSS
            */
 
           if(
@@ -2827,7 +3860,9 @@ function updateHistoryOutcomes(){
             Number(item.sl)
           ){
 
-            if(!item.slHit){
+            if(
+              !item.slHit
+            ){
 
               item.slHit =
                 true;
@@ -2835,10 +3870,13 @@ function updateHistoryOutcomes(){
 
               item.events.push({
 
-                type:"SL",
+                type:
+                  "SL",
 
                 target:
-                  Number(item.sl),
+                  Number(
+                    item.sl
+                  ),
 
                 hitPrice:
                   low,
@@ -2884,7 +3922,9 @@ function updateHistoryOutcomes(){
             Number(item.tp2)
           ){
 
-            if(!item.tp2Hit){
+            if(
+              !item.tp2Hit
+            ){
 
               item.tp2Hit =
                 true;
@@ -2892,10 +3932,13 @@ function updateHistoryOutcomes(){
 
               item.events.push({
 
-                type:"TP2",
+                type:
+                  "TP2",
 
                 target:
-                  Number(item.tp2),
+                  Number(
+                    item.tp2
+                  ),
 
                 hitPrice:
                   high,
@@ -2933,7 +3976,7 @@ function updateHistoryOutcomes(){
 
 
           /*
-           * TP1 = remain OPEN
+           * TP1 = OPEN
            */
 
           if(
@@ -2956,10 +3999,13 @@ function updateHistoryOutcomes(){
 
             item.events.push({
 
-              type:"TP1",
+              type:
+                "TP1",
 
               target:
-                Number(item.tp1),
+                Number(
+                  item.tp1
+                ),
 
               hitPrice:
                 high,
@@ -2987,11 +4033,12 @@ function updateHistoryOutcomes(){
         ================================================= */
 
         else if(
-          item.direction === "SELL"
+          item.direction ===
+          "SELL"
         ){
 
           /*
-           * SL first = LOSS
+           * SL = LOSS
            */
 
           if(
@@ -2999,7 +4046,9 @@ function updateHistoryOutcomes(){
             Number(item.sl)
           ){
 
-            if(!item.slHit){
+            if(
+              !item.slHit
+            ){
 
               item.slHit =
                 true;
@@ -3007,10 +4056,13 @@ function updateHistoryOutcomes(){
 
               item.events.push({
 
-                type:"SL",
+                type:
+                  "SL",
 
                 target:
-                  Number(item.sl),
+                  Number(
+                    item.sl
+                  ),
 
                 hitPrice:
                   high,
@@ -3056,7 +4108,9 @@ function updateHistoryOutcomes(){
             Number(item.tp2)
           ){
 
-            if(!item.tp2Hit){
+            if(
+              !item.tp2Hit
+            ){
 
               item.tp2Hit =
                 true;
@@ -3064,10 +4118,13 @@ function updateHistoryOutcomes(){
 
               item.events.push({
 
-                type:"TP2",
+                type:
+                  "TP2",
 
                 target:
-                  Number(item.tp2),
+                  Number(
+                    item.tp2
+                  ),
 
                 hitPrice:
                   low,
@@ -3105,7 +4162,7 @@ function updateHistoryOutcomes(){
 
 
           /*
-           * TP1 = remain OPEN
+           * TP1 = OPEN
            */
 
           if(
@@ -3128,10 +4185,13 @@ function updateHistoryOutcomes(){
 
             item.events.push({
 
-              type:"TP1",
+              type:
+                "TP1",
 
               target:
-                Number(item.tp1),
+                Number(
+                  item.tp1
+                ),
 
               hitPrice:
                 low,
@@ -3191,11 +4251,12 @@ function renderHistory(){
     !state.history.length
   ){
 
-    body.innerHTML = `
+    body.innerHTML =
+      `
       <div class="empty">
         No confirmed signals yet.
       </div>
-    `;
+      `;
 
     return;
 
@@ -3209,8 +4270,11 @@ function renderHistory(){
         item => {
 
           const directionClass =
-            item.direction === "BUY"
+            item.direction ===
+            "BUY"
+
               ? "buy"
+
               : "sell";
 
 
@@ -3219,7 +4283,8 @@ function renderHistory(){
 
 
           if(
-            item.status === "WIN"
+            item.status ===
+            "WIN"
           ){
 
             resultClass =
@@ -3229,7 +4294,8 @@ function renderHistory(){
 
 
           if(
-            item.status === "LOSS"
+            item.status ===
+            "LOSS"
           ){
 
             resultClass =
@@ -3239,7 +4305,9 @@ function renderHistory(){
 
 
           const events =
-            Array.isArray(item.events)
+            Array.isArray(
+              item.events
+            )
               ? item.events
               : [];
 
@@ -3308,12 +4376,14 @@ function renderHistory(){
 
                 • Probability
                 ${escapeHtml(
-                  item.probability || 0
+                  item.probability ||
+                  0
                 )}%
 
                 • Score
                 ${escapeHtml(
-                  item.score || 0
+                  item.score ||
+                  0
                 )}
 
               </div>
@@ -3365,21 +4435,30 @@ function renderHistory(){
 
               ${
                 item.result
+
                   ? `
+
                     <div class="historyMeta">
+
                       Final:
                       ${escapeHtml(
                         item.result
                       )}
+
                       •
+
                       ${escapeHtml(
                         formatTime(
                           item.resultTime
                         )
                       )}
+
                     </div>
+
                   `
+
                   : ""
+
               }
 
             </div>
@@ -3397,7 +4476,9 @@ function renderHistory(){
    ESCAPE HTML
 ========================================================= */
 
-function escapeHtml(value){
+function escapeHtml(
+  value
+){
 
   return String(
     value ?? ""
@@ -3435,7 +4516,9 @@ function escapeHtml(value){
    SHOW ERROR
 ========================================================= */
 
-function showError(message){
+function showError(
+  message
+){
 
   errorBox.textContent =
     message;
@@ -3513,22 +4596,43 @@ async function loadMarket(){
       data5;
 
 
+    /*
+     * Build independent 15M + 5M signal state.
+     */
+
     state.currentSignal =
       buildFinalSignal();
 
+
+    /*
+     * Update interface.
+     */
 
     updateUI(
       state.currentSignal
     );
 
 
+    /*
+     * Render chart.
+
+     */
+
     renderChart();
 
+
+    /*
+     * Record 5M execution signals.
+     */
 
     recordSignal(
       state.currentSignal
     );
 
+
+    /*
+     * Check TP1 / TP2 / SL.
+     */
 
     updateHistoryOutcomes();
 
@@ -3541,7 +4645,8 @@ async function loadMarket(){
     $("assetSubtitle")
       .textContent =
 
-        state.chartTimeframe === "15min"
+        state.chartTimeframe ===
+        "15min"
 
           ? `${state.symbol} • 15M Swing Liquidity Structure`
 
@@ -3632,7 +4737,7 @@ $("searchInput")
 
         $("searchResults")
           .style.display =
-            "none";
+          "none";
 
         return;
 
@@ -3654,7 +4759,9 @@ $("searchInput")
    SEARCH ASSETS
 ========================================================= */
 
-async function searchAssets(q){
+async function searchAssets(
+  q
+){
 
   try{
 
@@ -3665,7 +4772,8 @@ async function searchAssets(q){
         encodeURIComponent(q),
 
         {
-          cache:"no-store"
+          cache:
+            "no-store"
         }
 
       );
@@ -3698,11 +4806,12 @@ async function searchAssets(q){
     ){
 
       $("searchResults")
-        .innerHTML = `
+        .innerHTML =
+          `
           <div class="empty">
             No result
           </div>
-        `;
+          `;
 
 
       $("searchResults")
@@ -3760,10 +4869,13 @@ async function searchAssets(q){
                 >
 
                   <strong>
+
                     ${escapeHtml(
                       symbol
                     )}
+
                   </strong>
+
 
                   <span>
 
@@ -3773,10 +4885,12 @@ async function searchAssets(q){
 
                     ${
                       category
+
                         ? " • " +
                           escapeHtml(
                             category
                           )
+
                         : ""
                     }
 
@@ -3831,7 +4945,7 @@ async function searchAssets(q){
 
               $("searchResults")
                 .style.display =
-                  "none";
+                "none";
 
 
               loadMarket();
@@ -3853,11 +4967,12 @@ async function searchAssets(q){
 
 
     $("searchResults")
-      .innerHTML = `
+      .innerHTML =
+        `
         <div class="empty">
           Search error
         </div>
-      `;
+        `;
 
 
     $("searchResults")
@@ -3885,7 +5000,7 @@ document.addEventListener(
 
       $("searchResults")
         .style.display =
-          "none";
+        "none";
 
     }
 
