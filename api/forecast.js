@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const interval = String(req.query.interval || "15min");
 
     const outputsize = Math.min(
-      Math.max(Number(req.query.outputsize || 250), 80),
+      Math.max(Number(req.query.outputsize || 300), 120),
       500
     );
 
@@ -68,7 +68,10 @@ export default async function handler(req, res) {
 
     url.searchParams.set("symbol", symbol);
     url.searchParams.set("interval", interval);
-    url.searchParams.set("outputsize", String(outputsize));
+    url.searchParams.set(
+      "outputsize",
+      String(outputsize)
+    );
     url.searchParams.set("apikey", apiKey);
     url.searchParams.set("format", "JSON");
 
@@ -91,7 +94,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Twelve Data returns newest -> oldest.
+    // Twelve Data = newest -> oldest
     // Convert to oldest -> newest.
 
     const candles = data.values
@@ -119,17 +122,22 @@ export default async function handler(req, res) {
     // MINIMUM CANDLES
     // =====================================================
 
-    if (candles.length < 60) {
+    if (candles.length < 100) {
       return res.status(200).json({
         success: true,
+
         symbol,
         interval,
-        count: candles.length,
+
+        count:
+          candles.length,
+
         candles,
 
         engine: {
           status: "WAIT",
-          reason: "Not enough candles"
+          reason:
+            "Not enough candles"
         }
       });
     }
@@ -137,11 +145,11 @@ export default async function handler(req, res) {
     // =====================================================
     // EXECUTION MODEL
     //
-    // Last candle = next/current entry candle
-    // Previous candles = completed candles
+    // Latest candle = current / next entry candle
+    // All forecast calculations use completed candles only.
     //
-    // Forecast is calculated from COMPLETED candles.
-    // Entry = OPEN of next candle.
+    // Entry remains:
+    // NEXT CANDLE OPEN
     // =====================================================
 
     const closed =
@@ -154,7 +162,7 @@ export default async function handler(req, res) {
       closed[closed.length - 1];
 
     // =====================================================
-    // FORECAST
+    // SWING FORECAST
     // =====================================================
 
     const forecast =
@@ -162,22 +170,49 @@ export default async function handler(req, res) {
         closed,
         {
           swingLen:
-            Number(
-              req.query.swingLen || 16
+            clampInt(
+              req.query.swingLen,
+              16,
+              3,
+              100
             ),
 
           samples:
-            Number(
-              req.query.samples || 20
+            clampInt(
+              req.query.samples,
+              20,
+              3,
+              100
             ),
 
           method:
-            String(
+            normalizeMethod(
               req.query.method ||
               "Weighted"
             ),
 
-          atrPeriod: 200
+          atrPeriod:
+            200,
+
+          forecastBars:
+            clampInt(
+              req.query.forecastBars,
+              5,
+              1,
+              20
+            ),
+
+          minForecastPct:
+            0.30,
+
+          minValidConfidence:
+            45,
+
+          minStrongConfidence:
+            60,
+
+          minAtrMultiple:
+            0.75
         }
       );
 
@@ -256,235 +291,52 @@ function calculateSwingForecast(
     swingLen,
     samples,
     method,
-    atrPeriod
+    atrPeriod,
+    forecastBars,
+    minForecastPct,
+    minValidConfidence,
+    minStrongConfidence,
+    minAtrMultiple
   } = options;
 
-  const high =
-    candles.map(
-      c => c.high
-    );
-
-  const low =
-    candles.map(
-      c => c.low
-    );
-
-  let dir = false;
-  let prevDir = false;
-
-  let hi = {
-    price: null,
-    idx: null
-  };
-
-  let lo = {
-    price: null,
-    idx: null
-  };
-
-  const pcts = [];
-  const durs = [];
-  const swings = [];
-
-  // =====================================================
-  // SWING DETECTION
-  // =====================================================
-
-  for (
-    let i = swingLen;
-    i < candles.length;
-    i++
+  if (
+    !Array.isArray(candles) ||
+    candles.length <
+      swingLen + 10
   ) {
 
-    prevDir = dir;
+    return {
+      valid: false,
 
-    const highest =
-      Math.max(
-        ...high.slice(
-          i - swingLen + 1,
-          i + 1
-        )
-      );
+      signalTriggered:
+        false,
 
-    const lowest =
-      Math.min(
-        ...low.slice(
-          i - swingLen + 1,
-          i + 1
-        )
-      );
+      quality:
+        "WAIT",
 
-    // New high
-    if (
-      high[i] === highest
-    ) {
-      dir = true;
-    }
+      reason:
+        "Not enough completed candles",
 
-    // New low
-    if (
-      low[i] === lowest
-    ) {
-      dir = false;
-    }
+      direction:
+        "WAIT",
 
-    // ===================================================
-    // PREVIOUS SWING
-    // ===================================================
-
-    if (i > 0) {
-
-      const prevHighest =
-        Math.max(
-          ...high.slice(
-            i - swingLen,
-            i
-          )
-        );
-
-      const prevLowest =
-        Math.min(
-          ...low.slice(
-            i - swingLen,
-            i
-          )
-        );
-
-      // Swing high
-      if (
-        high[i - 1] ===
-          prevHighest &&
-        high[i] < highest
-      ) {
-
-        hi = {
-          price:
-            high[i - 1],
-
-          idx:
-            i - 1
-        };
-      }
-
-      // Swing low
-      if (
-        low[i - 1] ===
-          prevLowest &&
-        low[i] > lowest
-      ) {
-
-        lo = {
-          price:
-            low[i - 1],
-
-          idx:
-            i - 1
-        };
-      }
-    }
-
-    // ===================================================
-    // CONFIRMED SWING
-    // ===================================================
-
-    if (
-      dir !== prevDir &&
-      hi.price !== null &&
-      lo.price !== null
-    ) {
-
-      const pct =
-        !dir
-
-          ? (
-              (
-                hi.price -
-                lo.price
-              ) /
-              lo.price
-            ) * 100
-
-          : (
-              (
-                lo.price -
-                hi.price
-              ) /
-              hi.price
-            ) * 100;
-
-      const bars =
-        Math.abs(
-          hi.idx -
-          lo.idx
-        );
-
-      if (
-        Number.isFinite(pct) &&
-        pct !== 0 &&
-        Number.isFinite(bars)
-      ) {
-
-        pcts.push(
-          Math.abs(pct)
-        );
-
-        durs.push(
-          bars
-        );
-
-        swings.push({
-
-          percentage:
-            Math.abs(pct),
-
-          duration:
-            bars,
-
-          direction:
-            dir
-              ? "BULLISH"
-              : "BEARISH",
-
-          high:
-            hi.price,
-
-          low:
-            lo.price,
-
-          highIndex:
-            hi.idx,
-
-          lowIndex:
-            lo.idx,
-
-          confirmationIndex:
-            i
-        });
-      }
-    }
+      swingCount:
+        0
+    };
   }
 
   // =====================================================
-  // RECENT SWINGS
+  // CONFIRMED PIVOTS
   // =====================================================
 
-  const recent =
-    swings.slice(
-      -Math.max(
-        2,
-        Math.min(
-          samples,
-          20
-        )
-      )
+  const pivots =
+    detectConfirmedPivots(
+      candles,
+      swingLen
     );
 
-  // =====================================================
-  // NOT ENOUGH HISTORY
-  // =====================================================
-
   if (
-    recent.length < 2
+    pivots.length < 3
   ) {
 
     return {
@@ -501,206 +353,252 @@ function calculateSwingForecast(
         "Not enough confirmed swing history",
 
       direction:
-        dir
-          ? "BULLISH"
-          : "BEARISH",
+        pivots.length
+
+          ? pivots[
+              pivots.length - 1
+            ].type === "LOW"
+
+              ? "BULLISH"
+
+              : "BEARISH"
+
+          : "WAIT",
 
       swingCount:
-        recent.length
+        0,
+
+      pivots
     };
   }
 
-  const rp =
-    pcts.slice(
-      -recent.length
-    );
-
-  const rd =
-    durs.slice(
-      -recent.length
-    );
-
   // =====================================================
-  // FORECAST METHOD
+  // COMPLETED SWING LEGS
   // =====================================================
 
-  let fPct;
-  let fBars;
+  const allSwings = [];
 
-  // Median
-  if (
-    method === "Median"
+  for (
+    let i = 1;
+    i < pivots.length;
+    i++
   ) {
 
-    fPct =
-      median(rp);
+    const from =
+      pivots[i - 1];
 
-    fBars =
-      median(rd);
+    const to =
+      pivots[i];
 
-  }
-
-  // Average
-  else if (
-    method === "Average"
-  ) {
-
-    fPct =
-      avg(rp);
-
-    fBars =
-      avg(rd);
-
-  }
-
-  // Weighted
-  else {
-
-    let wp = 0;
-    let wb = 0;
-    let tw = 0;
-
-    for (
-      let i = 0;
-      i < rp.length;
-      i++
+    if (
+      from.type ===
+      to.type
     ) {
-
-      const w =
-        i + 1;
-
-      wp +=
-        rp[i] * w;
-
-      wb +=
-        rd[i] * w;
-
-      tw += w;
+      continue;
     }
 
-    fPct =
-      wp / tw;
+    const move =
+      Math.abs(
+        to.price -
+        from.price
+      );
 
-    fBars =
-      wb / tw;
+    const pct =
+      (
+        move /
+        from.price
+      ) * 100;
+
+    const duration =
+      Math.abs(
+        to.index -
+        from.index
+      );
+
+    if (
+      !Number.isFinite(pct) ||
+      pct <= 0 ||
+      !Number.isFinite(duration) ||
+      duration <= 0
+    ) {
+      continue;
+    }
+
+    allSwings.push({
+
+      percentage:
+        pct,
+
+      duration:
+        duration,
+
+      direction:
+        from.type === "LOW" &&
+        to.type === "HIGH"
+
+          ? "BULLISH"
+
+          : "BEARISH",
+
+      fromType:
+        from.type,
+
+      toType:
+        to.type,
+
+      fromPrice:
+        from.price,
+
+      toPrice:
+        to.price,
+
+      fromIndex:
+        from.index,
+
+      toIndex:
+        to.index,
+
+      confirmationIndex:
+        to.confirmationIndex
+    });
   }
 
   // =====================================================
-  // STANDARD DEVIATION
+  // RECENT SAMPLE
   // =====================================================
 
-  const variance =
-    rp.reduce(
-      (
-        sum,
-        value
-      ) => {
-
-        return (
-          sum +
-          Math.pow(
-            value - fPct,
-            2
-          )
-        );
-
-      },
-      0
-    ) / recent.length;
-
-  const stdDev =
-    Math.sqrt(
-      variance
+  const recent =
+    allSwings.slice(
+      -samples
     );
 
+  const latestPivot =
+    pivots[
+      pivots.length - 1
+    ];
+
+  if (
+    recent.length < 2 ||
+    !latestPivot
+  ) {
+
+    return {
+
+      valid: false,
+
+      signalTriggered:
+        false,
+
+      quality:
+        "WAIT",
+
+      reason:
+        "Not enough completed swing history",
+
+      direction:
+        latestPivot
+
+          ? latestPivot.type ===
+            "LOW"
+
+              ? "BULLISH"
+
+              : "BEARISH"
+
+          : "WAIT",
+
+      swingCount:
+        recent.length,
+
+      pivots
+    };
+  }
+
   // =====================================================
-  // CURRENT DIRECTION
+  // CURRENT FORECAST DIRECTION
+  //
+  // Latest confirmed LOW
+  //     -> forecast BULLISH
+  //
+  // Latest confirmed HIGH
+  //     -> forecast BEARISH
   // =====================================================
 
-  const isBear =
-    !dir;
+  const isBullish =
+    latestPivot.type ===
+    "LOW";
+
+  const direction =
+    isBullish
+      ? "BULLISH"
+      : "BEARISH";
 
   // =====================================================
-  // ORIGIN
+  // IMPORTANT:
+  // TRADINGVIEW-STYLE FORECAST ORIGIN
+  //
+  // The forecast starts from the latest
+  // confirmed structural pivot.
   // =====================================================
 
   const origin =
-    isBear
-      ? hi.price
-      : lo.price;
+    latestPivot.price;
 
-  const originIdx =
-    isBear
-      ? hi.idx
-      : lo.idx;
+  const originIndex =
+    latestPivot.index;
+
+  const percentages =
+    recent.map(
+      s =>
+        s.percentage
+    );
+
+  const durations =
+    recent.map(
+      s =>
+        s.duration
+    );
 
   // =====================================================
-  // TARGET
+  // STATISTICAL FORECAST
+  // =====================================================
+
+  const fPct =
+    aggregate(
+      percentages,
+      method
+    );
+
+  const fBars =
+    aggregate(
+      durations,
+      method
+    );
+
+  const stdDev =
+    standardDeviation(
+      percentages,
+      method
+    );
+
+  // =====================================================
+  // FORECAST TARGET
   // =====================================================
 
   const target =
-    isBear
+    isBullish
 
       ? origin *
         (
-          1 -
+          1 +
           fPct / 100
         )
 
       : origin *
         (
-          1 +
+          1 -
           fPct / 100
         );
-
-  // =====================================================
-  // UNCERTAINTY
-  // =====================================================
-
-  const uncertainty =
-    fPct > 0
-
-      ? (
-          stdDev /
-          fPct
-        ) * 100
-
-      : 100;
-
-  // =====================================================
-  // CONFIDENCE
-  // =====================================================
-
-  let confidence =
-    (
-      (
-        100 -
-        uncertainty
-      ) * 0.8
-    )
-
-    +
-
-    (
-      recent.length /
-      Math.max(
-        samples,
-        1
-      )
-    ) *
-    100 *
-    0.2;
-
-  confidence =
-    Math.round(
-      Math.max(
-        0,
-        Math.min(
-          100,
-          confidence
-        )
-      )
-    );
 
   // =====================================================
   // ATR
@@ -723,28 +621,70 @@ function calculateSwingForecast(
 
   const atrMultiple =
     atr > 0
+
       ? targetDistance /
         atr
+
       : 0;
 
   // =====================================================
-  // SIGNAL FILTERS
+  // UNCERTAINTY
   // =====================================================
 
-  const minForecastPct =
-    0.30;
+  const uncertainty =
+    fPct > 0
 
-  const minValidConfidence =
-    45;
+      ? (
+          stdDev /
+          fPct
+        ) * 100
 
-  const minStrongConfidence =
-    60;
-
-  const minAtrMultiple =
-    1.5;
+      : 100;
 
   // =====================================================
-  // QUALITY CHECK
+  // CONFIDENCE
+  // =====================================================
+
+  const sampleScore =
+    Math.min(
+      1,
+      recent.length /
+        samples
+    );
+
+  const consistencyScore =
+    Math.max(
+      0,
+      Math.min(
+        1,
+        1 -
+        uncertainty / 100
+      )
+    );
+
+  let confidence =
+    Math.round(
+      (
+        consistencyScore *
+        0.75
+      +
+
+        sampleScore *
+        0.25
+      ) * 100
+    );
+
+  confidence =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        confidence
+      )
+    );
+
+  // =====================================================
+  // QUALITY FILTERS
   // =====================================================
 
   const forecastPass =
@@ -758,10 +698,6 @@ function calculateSwingForecast(
   const atrPass =
     atrMultiple >=
     minAtrMultiple;
-
-  // =====================================================
-  // VALID SIGNAL
-  // =====================================================
 
   const qualityEligible =
     forecastPass &&
@@ -785,19 +721,13 @@ function calculateSwingForecast(
     qualityEligible
   ) {
 
-    if (
+    quality =
       confidence >=
       minStrongConfidence
-    ) {
 
-      quality =
-        "STRONG";
+        ? "STRONG"
 
-    } else {
-
-      quality =
-        "VALID";
-    }
+        : "VALID";
   }
 
   // =====================================================
@@ -810,9 +740,13 @@ function calculateSwingForecast(
     ];
 
   const newSwing =
-    latestSwing &&
-    latestSwing.confirmationIndex ===
-      candles.length - 1;
+    latestPivot.confirmationIndex ===
+      candles.length - 1
+
+      ||
+
+    latestPivot.confirmationIndex ===
+      candles.length - 2;
 
   // =====================================================
   // REASON
@@ -840,7 +774,7 @@ function calculateSwingForecast(
   ) {
 
     reason =
-      "ATR multiple below minimum";
+      "Forecast distance below ATR minimum";
 
   } else {
 
@@ -854,7 +788,7 @@ function calculateSwingForecast(
   }
 
   // =====================================================
-  // RETURN FORECAST
+  // RETURN
   // =====================================================
 
   return {
@@ -873,22 +807,43 @@ function calculateSwingForecast(
         ? "NEW_SWING"
         : "FORECAST_QUALITY",
 
-    direction:
-      isBear
-        ? "BEARISH"
-        : "BULLISH",
+    direction,
+
+    // ===================================================
+    // FORECAST ORIGIN
+    // ===================================================
+
+    origin:
+      round(origin),
+
+    originIndex:
+      originIndex,
+
+    originTime:
+      candles[
+        originIndex
+      ]?.time || null,
+
+    pivotType:
+      latestPivot.type,
+
+    pivotConfirmationIndex:
+      latestPivot.confirmationIndex,
+
+    pivotConfirmationTime:
+      candles[
+        latestPivot.confirmationIndex
+      ]?.time || null,
+
+    // ===================================================
+    // FORECAST
+    // ===================================================
 
     forecastPercent:
       round(fPct),
 
     forecastBars:
       round(fBars),
-
-    origin:
-      round(origin),
-
-    originIndex:
-      originIdx,
 
     target:
       round(target),
@@ -910,10 +865,36 @@ function calculateSwingForecast(
     swingCount:
       recent.length,
 
+    pivots:
+      pivots.slice(
+        -Math.max(
+          samples + 2,
+          12
+        )
+      ),
+
     latestSwing,
 
     swings:
       recent,
+
+    // ===================================================
+    // PARAMETERS
+    // ===================================================
+
+    parameters: {
+
+      swingLength:
+        swingLen,
+
+      samples,
+
+      method,
+
+      atrPeriod,
+
+      forecastBars
+    },
 
     filters: {
 
@@ -943,6 +924,413 @@ function calculateSwingForecast(
 
 
 // =========================================================
+// CONFIRMED PIVOT DETECTION
+// =========================================================
+
+function detectConfirmedPivots(
+  candles,
+  swingLen
+) {
+
+  const pivots = [];
+
+  /*
+   * A candidate pivot at i-1 becomes confirmed
+   * when candle i moves away from that extreme.
+   *
+   * This uses completed candles only.
+   */
+
+  for (
+    let i = swingLen;
+    i < candles.length;
+    i++
+  ) {
+
+    const candidateIndex =
+      i - 1;
+
+    const start =
+      Math.max(
+        0,
+        i - swingLen
+      );
+
+    const end =
+      i;
+
+    let highest =
+      -Infinity;
+
+    let lowest =
+      Infinity;
+
+    for (
+      let j = start;
+      j < end;
+      j++
+    ) {
+
+      highest =
+        Math.max(
+          highest,
+          candles[j].high
+        );
+
+      lowest =
+        Math.min(
+          lowest,
+          candles[j].low
+        );
+    }
+
+    const candidate =
+      candles[
+        candidateIndex
+      ];
+
+    const current =
+      candles[i];
+
+    const isHigh =
+      candidate.high >=
+        highest &&
+
+      current.high <
+        candidate.high;
+
+    const isLow =
+      candidate.low <=
+        lowest &&
+
+      current.low >
+        candidate.low;
+
+    let type =
+      null;
+
+    // Rare candle that qualifies for both.
+    if (
+      isHigh &&
+      isLow
+    ) {
+
+      const downMove =
+        candidate.high -
+        current.close;
+
+      const upMove =
+        current.close -
+        candidate.low;
+
+      type =
+        downMove >= upMove
+          ? "HIGH"
+          : "LOW";
+
+    } else if (
+      isHigh
+    ) {
+
+      type =
+        "HIGH";
+
+    } else if (
+      isLow
+    ) {
+
+      type =
+        "LOW";
+    }
+
+    if (!type) {
+      continue;
+    }
+
+    const price =
+      type === "HIGH"
+        ? candidate.high
+        : candidate.low;
+
+    const last =
+      pivots[
+        pivots.length - 1
+      ];
+
+    // ===================================================
+    // FIRST PIVOT
+    // ===================================================
+
+    if (!last) {
+
+      pivots.push({
+
+        type,
+
+        price,
+
+        index:
+          candidateIndex,
+
+        confirmationIndex:
+          i
+      });
+
+      continue;
+    }
+
+    // ===================================================
+    // SAME TYPE
+    //
+    // Keep the more extreme pivot.
+    // ===================================================
+
+    if (
+      last.type ===
+      type
+    ) {
+
+      const moreExtreme =
+        type === "HIGH"
+
+          ? price >
+            last.price
+
+          : price <
+            last.price;
+
+      if (
+        moreExtreme
+      ) {
+
+        pivots[
+          pivots.length - 1
+        ] = {
+
+          type,
+
+          price,
+
+          index:
+            candidateIndex,
+
+          confirmationIndex:
+            i
+        };
+      }
+
+      continue;
+    }
+
+    // ===================================================
+    // OPPOSITE PIVOT
+    //
+    // This completes the previous swing leg.
+    // ===================================================
+
+    pivots.push({
+
+      type,
+
+      price,
+
+      index:
+        candidateIndex,
+
+      confirmationIndex:
+        i
+    });
+  }
+
+  return pivots;
+}
+
+
+// =========================================================
+// STATISTICAL AGGREGATION
+// =========================================================
+
+function aggregate(
+  values,
+  method
+) {
+
+  if (
+    !values.length
+  ) {
+    return 0;
+  }
+
+  if (
+    method ===
+    "Median"
+  ) {
+
+    return median(
+      values
+    );
+  }
+
+  if (
+    method ===
+    "Average"
+  ) {
+
+    return avg(
+      values
+    );
+  }
+
+  // =====================================================
+  // WEIGHTED
+  //
+  // Oldest = 1
+  // Newest = N
+  // =====================================================
+
+  let weightedSum =
+    0;
+
+  let totalWeight =
+    0;
+
+  for (
+    let i = 0;
+    i < values.length;
+    i++
+  ) {
+
+    const weight =
+      i + 1;
+
+    weightedSum +=
+      values[i] *
+      weight;
+
+    totalWeight +=
+      weight;
+  }
+
+  return totalWeight
+    ? weightedSum /
+      totalWeight
+
+    : 0;
+}
+
+
+// =========================================================
+// STANDARD DEVIATION
+// =========================================================
+
+function standardDeviation(
+  values,
+  method
+) {
+
+  if (
+    !values.length
+  ) {
+    return 0;
+  }
+
+  // Weighted standard deviation
+  if (
+    method ===
+    "Weighted"
+  ) {
+
+    let weightedMean =
+      0;
+
+    let totalWeight =
+      0;
+
+    for (
+      let i = 0;
+      i < values.length;
+      i++
+    ) {
+
+      const weight =
+        i + 1;
+
+      weightedMean +=
+        values[i] *
+        weight;
+
+      totalWeight +=
+        weight;
+    }
+
+    weightedMean =
+      totalWeight
+        ? weightedMean /
+          totalWeight
+
+        : 0;
+
+    let variance =
+      0;
+
+    for (
+      let i = 0;
+      i < values.length;
+      i++
+    ) {
+
+      const weight =
+        i + 1;
+
+      variance +=
+        weight *
+        Math.pow(
+          values[i] -
+            weightedMean,
+          2
+        );
+    }
+
+    return totalWeight
+      ? Math.sqrt(
+          variance /
+          totalWeight
+        )
+
+      : 0;
+  }
+
+  // Average / Median mode
+  const mean =
+    avg(values);
+
+  const variance =
+    values.reduce(
+      (
+        sum,
+        value
+      ) => {
+
+        return (
+          sum +
+          Math.pow(
+            value - mean,
+            2
+          )
+        );
+
+      },
+      0
+    ) /
+    values.length;
+
+  return Math.sqrt(
+    variance
+  );
+}
+
+
+// =========================================================
 // BUILD SIGNAL
 // =========================================================
 
@@ -953,10 +1341,6 @@ function buildSignal(
   entryCandleTime
 ) {
 
-  // =====================================================
-  // RISK
-  // =====================================================
-
   const risk =
     Math.max(
 
@@ -966,7 +1350,8 @@ function buildSignal(
       Math.abs(
         entry -
         forecast.origin
-      ) * 0.15
+      ) *
+      0.15
     );
 
   const bullish =
@@ -979,11 +1364,13 @@ function buildSignal(
 
   const stopLoss =
     bullish
+
       ? entry - risk
+
       : entry + risk;
 
   // =====================================================
-  // TAKE PROFIT 1
+  // TP1
   // =====================================================
 
   const tp1 =
@@ -996,7 +1383,7 @@ function buildSignal(
         risk * 1.5;
 
   // =====================================================
-  // TAKE PROFIT 2
+  // TP2
   // =====================================================
 
   const tp2 =
@@ -1025,8 +1412,37 @@ function buildSignal(
     confidence:
       forecast.confidence,
 
+    // ===================================================
+    // EXECUTION ENTRY
+    //
+    // Still NEXT CANDLE OPEN.
+    // ===================================================
+
     entry:
       round(entry),
+
+    // ===================================================
+    // STRUCTURAL FORECAST ORIGIN
+    //
+    // This is the important new value.
+    // Example: 4341.xx
+    // ===================================================
+
+    forecastOrigin:
+      forecast.origin,
+
+    forecastOriginTime:
+      forecast.originTime,
+
+    forecastPivotType:
+      forecast.pivotType,
+
+    forecastPivotConfirmationTime:
+      forecast.pivotConfirmationTime,
+
+    // ===================================================
+    // RISK
+    // ===================================================
 
     stopLoss:
       round(stopLoss),
@@ -1037,11 +1453,18 @@ function buildSignal(
     tp2:
       round(tp2),
 
+    // ===================================================
+    // FORECAST
+    // ===================================================
+
     forecastTarget:
       forecast.target,
 
     forecastPercent:
       forecast.forecastPercent,
+
+    forecastBars:
+      forecast.forecastBars,
 
     uncertaintyPercent:
       forecast.uncertaintyPercent,
@@ -1050,15 +1473,11 @@ function buildSignal(
       forecast.atrMultiple,
 
     // ===================================================
-    // SIGNAL CANDLE
+    // CANDLES
     // ===================================================
 
     signalCandleTime:
       signalCandle.time,
-
-    // ===================================================
-    // ENTRY CANDLE
-    // ===================================================
 
     entryCandleTime:
       entryCandleTime,
@@ -1085,6 +1504,12 @@ function calculateATR(
   period
 ) {
 
+  if (
+    !candles.length
+  ) {
+    return 0;
+  }
+
   const tr = [];
 
   for (
@@ -1110,7 +1535,8 @@ function calculateATR(
       const p =
         candles[i - 1];
 
-      const trueRange =
+      tr.push(
+
         Math.max(
 
           c.high -
@@ -1125,10 +1551,7 @@ function calculateATR(
             c.low -
             p.close
           )
-        );
-
-      tr.push(
-        trueRange
+        )
       );
     }
   }
@@ -1211,9 +1634,75 @@ function median(arr) {
   }
 
   return (
-    sorted[middle - 1] +
-    sorted[middle]
+    sorted[
+      middle - 1
+    ] +
+
+    sorted[
+      middle
+    ]
   ) / 2;
+}
+
+
+// =========================================================
+// METHOD
+// =========================================================
+
+function normalizeMethod(
+  value
+) {
+
+  const v =
+    String(
+      value ||
+      "Weighted"
+    ).toLowerCase();
+
+  if (
+    v === "median"
+  ) {
+    return "Median";
+  }
+
+  if (
+    v === "average" ||
+    v === "avg"
+  ) {
+    return "Average";
+  }
+
+  return "Weighted";
+}
+
+
+// =========================================================
+// INTEGER CLAMP
+// =========================================================
+
+function clampInt(
+  value,
+  fallback,
+  min,
+  max
+) {
+
+  const n =
+    Number(value);
+
+  if (
+    !Number.isFinite(n)
+  ) {
+    return fallback;
+  }
+
+  return Math.min(
+    max,
+    Math.max(
+      min,
+      Math.round(n)
+    )
+  );
 }
 
 
@@ -1221,7 +1710,9 @@ function median(arr) {
 // ROUND
 // =========================================================
 
-function round(value) {
+function round(
+  value
+) {
 
   return Number.isFinite(
     value
@@ -1232,4 +1723,4 @@ function round(value) {
       )
 
     : null;
-}
+      }
