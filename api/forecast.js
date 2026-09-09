@@ -59,7 +59,7 @@ export default async function handler(req, res) {
     }
 
     // =====================================================
-    // GET MARKET DATA
+    // MARKET DATA
     // =====================================================
 
     const url = new URL(
@@ -91,11 +91,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // Twelve Data:
-    // newest -> oldest
-    //
-    // Convert:
-    // oldest -> newest
+    // Twelve Data returns newest -> oldest.
+    // Convert to oldest -> newest.
 
     const candles = data.values
       .map(c => ({
@@ -119,7 +116,7 @@ export default async function handler(req, res) {
       .reverse();
 
     // =====================================================
-    // MINIMUM DATA CHECK
+    // MINIMUM CANDLES
     // =====================================================
 
     if (candles.length < 60) {
@@ -138,20 +135,17 @@ export default async function handler(req, res) {
     }
 
     // =====================================================
-    // IMPORTANT EXECUTION MODEL
+    // EXECUTION MODEL
     //
-    // candles[candles.length - 1]
-    // = current/new candle
+    // Last candle = next/current entry candle
+    // Previous candles = completed candles
     //
-    // candles.slice(0, -1)
-    // = completed candles
-    //
-    // Forecast is calculated ONLY from completed candles.
-    //
-    // Entry = OPEN of next/current candle.
+    // Forecast is calculated from COMPLETED candles.
+    // Entry = OPEN of next candle.
     // =====================================================
 
-    const closed = candles.slice(0, -1);
+    const closed =
+      candles.slice(0, -1);
 
     const nextCandle =
       candles[candles.length - 1];
@@ -160,24 +154,28 @@ export default async function handler(req, res) {
       closed[closed.length - 1];
 
     // =====================================================
-    // CALCULATE FORECAST
+    // FORECAST
     // =====================================================
 
     const forecast =
       calculateSwingForecast(
         closed,
         {
-          swingLen: Number(
-            req.query.swingLen || 16
-          ),
+          swingLen:
+            Number(
+              req.query.swingLen || 16
+            ),
 
-          samples: Number(
-            req.query.samples || 20
-          ),
+          samples:
+            Number(
+              req.query.samples || 20
+            ),
 
-          method: String(
-            req.query.method || "Weighted"
-          ),
+          method:
+            String(
+              req.query.method ||
+              "Weighted"
+            ),
 
           atrPeriod: 200
         }
@@ -185,24 +183,23 @@ export default async function handler(req, res) {
 
     // =====================================================
     // BUILD SIGNAL
-    //
-    // Signal is generated from completed candle.
-    // Entry is next candle OPEN.
     // =====================================================
 
     const signal =
       forecast.signalTriggered &&
       nextCandle
+
         ? buildSignal(
             forecast,
             lastClosed,
             nextCandle.open,
             nextCandle.time
           )
+
         : null;
 
     // =====================================================
-    // RESPONSE
+    // FINAL RESPONSE
     // =====================================================
 
     return res.status(200).json({
@@ -211,7 +208,8 @@ export default async function handler(req, res) {
       symbol,
       interval,
 
-      count: candles.length,
+      count:
+        candles.length,
 
       candles,
 
@@ -221,9 +219,10 @@ export default async function handler(req, res) {
       nextCandle,
 
       engine: {
-        status: signal
-          ? signal.direction
-          : "WAIT",
+        status:
+          signal
+            ? signal.direction
+            : "WAIT",
 
         signal,
 
@@ -245,7 +244,7 @@ export default async function handler(req, res) {
 
 
 // =========================================================
-// SWING STRUCTURE FORECAST
+// SWING STRUCTURE FORECAST ENGINE
 // =========================================================
 
 function calculateSwingForecast(
@@ -261,13 +260,16 @@ function calculateSwingForecast(
   } = options;
 
   const high =
-    candles.map(c => c.high);
+    candles.map(
+      c => c.high
+    );
 
   const low =
-    candles.map(c => c.low);
+    candles.map(
+      c => c.low
+    );
 
   let dir = false;
-
   let prevDir = false;
 
   let hi = {
@@ -281,9 +283,7 @@ function calculateSwingForecast(
   };
 
   const pcts = [];
-
   const durs = [];
-
   const swings = [];
 
   // =====================================================
@@ -314,18 +314,22 @@ function calculateSwingForecast(
         )
       );
 
-    // New high direction
-    if (high[i] === highest) {
+    // New high
+    if (
+      high[i] === highest
+    ) {
       dir = true;
     }
 
-    // New low direction
-    if (low[i] === lowest) {
+    // New low
+    if (
+      low[i] === lowest
+    ) {
       dir = false;
     }
 
     // ===================================================
-    // PREVIOUS SWING DETECTION
+    // PREVIOUS SWING
     // ===================================================
 
     if (i > 0) {
@@ -348,25 +352,33 @@ function calculateSwingForecast(
 
       // Swing high
       if (
-        high[i - 1] === prevHighest &&
+        high[i - 1] ===
+          prevHighest &&
         high[i] < highest
       ) {
 
         hi = {
-          price: high[i - 1],
-          idx: i - 1
+          price:
+            high[i - 1],
+
+          idx:
+            i - 1
         };
       }
 
       // Swing low
       if (
-        low[i - 1] === prevLowest &&
+        low[i - 1] ===
+          prevLowest &&
         low[i] > lowest
       ) {
 
         lo = {
-          price: low[i - 1],
-          idx: i - 1
+          price:
+            low[i - 1],
+
+          idx:
+            i - 1
         };
       }
     }
@@ -381,20 +393,29 @@ function calculateSwingForecast(
       lo.price !== null
     ) {
 
-      const pct = !dir
-        ? (
-            (hi.price - lo.price) /
-            lo.price
-          ) * 100
+      const pct =
+        !dir
 
-        : (
-            (lo.price - hi.price) /
-            hi.price
-          ) * 100;
+          ? (
+              (
+                hi.price -
+                lo.price
+              ) /
+              lo.price
+            ) * 100
+
+          : (
+              (
+                lo.price -
+                hi.price
+              ) /
+              hi.price
+            ) * 100;
 
       const bars =
         Math.abs(
-          hi.idx - lo.idx
+          hi.idx -
+          lo.idx
         );
 
       if (
@@ -462,13 +483,19 @@ function calculateSwingForecast(
   // NOT ENOUGH HISTORY
   // =====================================================
 
-  if (recent.length < 2) {
+  if (
+    recent.length < 2
+  ) {
 
     return {
 
       valid: false,
 
-      signalTriggered: false,
+      signalTriggered:
+        false,
+
+      quality:
+        "WAIT",
 
       reason:
         "Not enough confirmed swing history",
@@ -498,11 +525,12 @@ function calculateSwingForecast(
   // =====================================================
 
   let fPct;
-
   let fBars;
 
-  // MEDIAN
-  if (method === "Median") {
+  // Median
+  if (
+    method === "Median"
+  ) {
 
     fPct =
       median(rp);
@@ -512,8 +540,10 @@ function calculateSwingForecast(
 
   }
 
-  // AVERAGE
-  else if (method === "Average") {
+  // Average
+  else if (
+    method === "Average"
+  ) {
 
     fPct =
       avg(rp);
@@ -523,13 +553,11 @@ function calculateSwingForecast(
 
   }
 
-  // WEIGHTED
+  // Weighted
   else {
 
     let wp = 0;
-
     let wb = 0;
-
     let tw = 0;
 
     for (
@@ -538,7 +566,8 @@ function calculateSwingForecast(
       i++
     ) {
 
-      const w = i + 1;
+      const w =
+        i + 1;
 
       wp +=
         rp[i] * w;
@@ -562,7 +591,10 @@ function calculateSwingForecast(
 
   const variance =
     rp.reduce(
-      (sum, value) => {
+      (
+        sum,
+        value
+      ) => {
 
         return (
           sum +
@@ -582,14 +614,14 @@ function calculateSwingForecast(
     );
 
   // =====================================================
-  // DIRECTION
+  // CURRENT DIRECTION
   // =====================================================
 
   const isBear =
     !dir;
 
   // =====================================================
-  // FORECAST ORIGIN
+  // ORIGIN
   // =====================================================
 
   const origin =
@@ -603,11 +635,12 @@ function calculateSwingForecast(
       : lo.idx;
 
   // =====================================================
-  // FORECAST TARGET
+  // TARGET
   // =====================================================
 
   const target =
     isBear
+
       ? origin *
         (
           1 -
@@ -626,6 +659,7 @@ function calculateSwingForecast(
 
   const uncertainty =
     fPct > 0
+
       ? (
           stdDev /
           fPct
@@ -639,9 +673,13 @@ function calculateSwingForecast(
 
   let confidence =
     (
-      (100 - uncertainty) *
-      0.8
-    ) +
+      (
+        100 -
+        uncertainty
+      ) * 0.8
+    )
+
+    +
 
     (
       recent.length /
@@ -679,45 +717,88 @@ function calculateSwingForecast(
 
   const targetDistance =
     Math.abs(
-      target - origin
+      target -
+      origin
     );
 
   const atrMultiple =
     atr > 0
-      ? targetDistance / atr
+      ? targetDistance /
+        atr
       : 0;
 
   // =====================================================
-  // SIGNAL QUALITY
-  //
-  // Minimum forecast:
-  // 0.30%
-  //
-  // Minimum confidence:
-  // 60%
-  //
-  // We DO NOT require a fresh swing
-  // for every signal.
+  // SIGNAL FILTERS
   // =====================================================
 
   const minForecastPct =
     0.30;
 
-  const minConfidence =
+  const minValidConfidence =
+    45;
+
+  const minStrongConfidence =
     60;
 
+  const minAtrMultiple =
+    1.5;
+
+  // =====================================================
+  // QUALITY CHECK
+  // =====================================================
+
+  const forecastPass =
+    fPct >=
+    minForecastPct;
+
+  const confidencePass =
+    confidence >=
+    minValidConfidence;
+
+  const atrPass =
+    atrMultiple >=
+    minAtrMultiple;
+
+  // =====================================================
+  // VALID SIGNAL
+  // =====================================================
+
   const qualityEligible =
-    fPct >= minForecastPct &&
-
-    confidence >= minConfidence &&
-
+    forecastPass &&
+    confidencePass &&
+    atrPass &&
     Number.isFinite(
       origin
     ) &&
-
     Number.isFinite(
       target
     );
+
+  // =====================================================
+  // QUALITY LEVEL
+  // =====================================================
+
+  let quality =
+    "WAIT";
+
+  if (
+    qualityEligible
+  ) {
+
+    if (
+      confidence >=
+      minStrongConfidence
+    ) {
+
+      quality =
+        "STRONG";
+
+    } else {
+
+      quality =
+        "VALID";
+    }
+  }
 
   // =====================================================
   // LATEST SWING
@@ -734,27 +815,63 @@ function calculateSwingForecast(
       candles.length - 1;
 
   // =====================================================
-  // FINAL FORECAST
+  // REASON
+  // =====================================================
+
+  let reason =
+    "Waiting for setup";
+
+  if (
+    !forecastPass
+  ) {
+
+    reason =
+      "Forecast move below minimum";
+
+  } else if (
+    !confidencePass
+  ) {
+
+    reason =
+      "Confidence below minimum";
+
+  } else if (
+    !atrPass
+  ) {
+
+    reason =
+      "ATR multiple below minimum";
+
+  } else {
+
+    reason =
+      quality ===
+      "STRONG"
+
+        ? "Strong forecast setup"
+
+        : "Valid forecast setup";
+  }
+
+  // =====================================================
+  // RETURN FORECAST
   // =====================================================
 
   return {
 
     valid: true,
 
-    // Main signal trigger
     signalTriggered:
       qualityEligible,
 
-    // Trigger type
+    quality,
+
+    reason,
+
     triggerType:
       newSwing
         ? "NEW_SWING"
         : "FORECAST_QUALITY",
-
-    reason:
-      qualityEligible
-        ? "Forecast quality passed"
-        : "Waiting for forecast quality",
 
     direction:
       isBear
@@ -782,9 +899,7 @@ function calculateSwingForecast(
     uncertaintyPercent:
       round(uncertainty),
 
-    confidence:
-
-      confidence,
+    confidence,
 
     atr:
       round(atr),
@@ -800,20 +915,35 @@ function calculateSwingForecast(
     swings:
       recent,
 
+    filters: {
+
+      forecastPass,
+
+      confidencePass,
+
+      atrPass
+    },
+
     thresholds: {
 
       minForecastPercent:
         minForecastPct,
 
-      minConfidence:
-        minConfidence
+      minValidConfidence:
+        minValidConfidence,
+
+      minStrongConfidence:
+        minStrongConfidence,
+
+      minAtrMultiple:
+        minAtrMultiple
     }
   };
 }
 
 
 // =========================================================
-// BUILD TRADING SIGNAL
+// BUILD SIGNAL
 // =========================================================
 
 function buildSignal(
@@ -824,13 +954,14 @@ function buildSignal(
 ) {
 
   // =====================================================
-  // RISK CALCULATION
+  // RISK
   // =====================================================
 
   const risk =
     Math.max(
 
-      forecast.atr * 0.8,
+      forecast.atr *
+      0.8,
 
       Math.abs(
         entry -
@@ -857,6 +988,7 @@ function buildSignal(
 
   const tp1 =
     bullish
+
       ? entry +
         risk * 1.5
 
@@ -869,6 +1001,7 @@ function buildSignal(
 
   const tp2 =
     bullish
+
       ? entry +
         risk * 2.5
 
@@ -886,14 +1019,11 @@ function buildSignal(
         ? "BUY"
         : "SELL",
 
+    quality:
+      forecast.quality,
+
     confidence:
       forecast.confidence,
-
-    // ===================================================
-    // ENTRY
-    //
-    // NEXT CANDLE OPEN
-    // ===================================================
 
     entry:
       round(entry),
@@ -913,15 +1043,30 @@ function buildSignal(
     forecastPercent:
       forecast.forecastPercent,
 
-    // Candle that generated signal
+    uncertaintyPercent:
+      forecast.uncertaintyPercent,
+
+    atrMultiple:
+      forecast.atrMultiple,
+
+    // ===================================================
+    // SIGNAL CANDLE
+    // ===================================================
+
     signalCandleTime:
       signalCandle.time,
 
-    // Candle where trade enters
+    // ===================================================
+    // ENTRY CANDLE
+    // ===================================================
+
     entryCandleTime:
       entryCandleTime,
 
-    // Execution rule
+    // ===================================================
+    // EXECUTION RULE
+    // ===================================================
+
     entryRule:
       "NEXT_CANDLE_OPEN",
 
@@ -932,7 +1077,7 @@ function buildSignal(
 
 
 // =========================================================
-// ATR CALCULATION
+// ATR
 // =========================================================
 
 function calculateATR(
@@ -948,18 +1093,16 @@ function calculateATR(
     i++
   ) {
 
-    // First candle
-    if (i === 0) {
+    if (
+      i === 0
+    ) {
 
       tr.push(
         candles[i].high -
         candles[i].low
       );
 
-    }
-
-    // Remaining candles
-    else {
+    } else {
 
       const c =
         candles[i];
@@ -995,7 +1138,9 @@ function calculateATR(
       -period
     );
 
-  if (!slice.length) {
+  if (
+    !slice.length
+  ) {
     return 0;
   }
 
@@ -1016,7 +1161,9 @@ function calculateATR(
 
 function avg(arr) {
 
-  if (!arr.length) {
+  if (
+    !arr.length
+  ) {
     return 0;
   }
 
@@ -1037,7 +1184,9 @@ function avg(arr) {
 
 function median(arr) {
 
-  if (!arr.length) {
+  if (
+    !arr.length
+  ) {
     return 0;
   }
 
@@ -1074,7 +1223,9 @@ function median(arr) {
 
 function round(value) {
 
-  return Number.isFinite(value)
+  return Number.isFinite(
+    value
+  )
 
     ? Number(
         value.toFixed(5)
