@@ -5364,3 +5364,1727 @@ startOverlayRefresh();
 
 </body>
 </html>
+<script>
+/* =========================================================
+   STRONG SD MAGNET — HISTORY V2 FIX
+
+   TP1 = OPEN EVENT
+   TP2 = WIN / TERMINAL
+   SL  = LOSS / TERMINAL
+   TP3 = INFORMATION ONLY
+
+   Conservative same-candle rule:
+   SL is checked before TP.
+========================================================= */
+
+(function(){
+
+  function historyTimeMs(value){
+
+    if(value === null || value === undefined){
+      return NaN;
+    }
+
+    if(typeof value === "number"){
+      return value < 1e12
+        ? value * 1000
+        : value;
+    }
+
+    const n = Number(value);
+
+    if(Number.isFinite(n)){
+      return n < 1e12
+        ? n * 1000
+        : n;
+    }
+
+    const text =
+      String(value)
+        .trim()
+        .replace(" ","T");
+
+    const direct =
+      Date.parse(text);
+
+    if(Number.isFinite(direct)){
+      return direct;
+    }
+
+    const utc =
+      Date.parse(text + "Z");
+
+    return Number.isFinite(utc)
+      ? utc
+      : NaN;
+  }
+
+
+  function addHistoryEvent(
+    item,
+    type,
+    target,
+    hitPrice,
+    time
+  ){
+
+    item.events =
+      Array.isArray(item.events)
+        ? item.events
+        : [];
+
+    const already =
+      item.events.some(
+        e =>
+          e.type === type &&
+          String(e.time) === String(time)
+      );
+
+    if(already){
+      return false;
+    }
+
+    item.events.push({
+
+      type,
+
+      target:
+        Number(target),
+
+      hitPrice:
+        Number(hitPrice),
+
+      time
+
+    });
+
+    return true;
+  }
+
+
+  /* =======================================================
+     CREATE NEW HISTORY RECORD
+  ======================================================= */
+
+  createHistoryRecord = function(){
+
+    const signal =
+      getFinalSignal();
+
+    if(!signal){
+      return null;
+    }
+
+    const e15 =
+      market15?.engine || {};
+
+    const magnet =
+      signal.magnet ||
+      e15.magnets?.[0] ||
+      null;
+
+    const signalTime =
+      e15.signalTime ||
+      new Date().toISOString();
+
+    const signalKey =
+      e15.signalKey ||
+      getFinalSignalKey();
+
+    return {
+
+      id:
+        signalKey,
+
+      symbol:
+        currentSymbol,
+
+      name:
+        currentName,
+
+      timeframe:
+        "15M + 5M",
+
+      direction:
+        signal.direction,
+
+      signalTime,
+
+      entryLow:
+        Number(
+          signal.entry?.low
+        ),
+
+      entryHigh:
+        Number(
+          signal.entry?.high
+        ),
+
+      stopLoss:
+        Number(
+          signal.stopLoss
+        ),
+
+      tp1:
+        Number(
+          signal.tp1
+        ),
+
+      tp2:
+        Number(
+          signal.tp2
+        ),
+
+      tp3:
+        Number(
+          signal.tp3
+        ),
+
+      probability:
+        Number(
+          signal.probability || 0
+        ),
+
+      confidence:
+        Number(
+          signal.confidence || 0
+        ),
+
+      sourceScore:
+        Number(
+          signal.sourceScore || 0
+        ),
+
+      sourceTouches:
+        Number(
+          signal.sourceTouches || 0
+        ),
+
+      magnetDirection:
+        magnet?.direction ||
+        (
+          signal.direction === "BUY"
+            ? "UP"
+            : "DOWN"
+        ),
+
+      pullScore:
+        Number(
+          magnet?.pullScore || 0
+        ),
+
+      status:
+        "OPEN",
+
+      result:
+        null,
+
+      resultTime:
+        null,
+
+      resultPrice:
+        null,
+
+      hitTP1:
+        false,
+
+      hitTP2:
+        false,
+
+      hitTP3:
+        false,
+
+      hitSL:
+        false,
+
+      tp1HitPrice:
+        null,
+
+      tp1HitTime:
+        null,
+
+      events:
+        [],
+
+      createdAt:
+        new Date().toISOString(),
+
+      lastCheckedAt:
+        new Date().toISOString()
+
+    };
+
+  };
+
+
+  /* =======================================================
+     OUTCOME ENGINE
+  ======================================================= */
+
+  evaluateHistory = function(){
+
+    let history =
+      loadHistory();
+
+    if(!history.length){
+      return;
+    }
+
+    let changed =
+      false;
+
+    for(
+      const item of history
+    ){
+
+      /*
+       * Old TP3-WIN records are migrated
+       * back to OPEN and recalculated.
+       */
+      if(
+        item.status === "WIN" &&
+        item.result === "TP3"
+      ){
+
+        item.status =
+          "OPEN";
+
+        item.result =
+          null;
+
+        item.resultTime =
+          null;
+
+        item.resultPrice =
+          null;
+
+        item.hitTP3 =
+          false;
+
+        changed =
+          true;
+
+      }
+
+
+      if(
+        item.status !== "OPEN"
+      ){
+
+        continue;
+
+      }
+
+
+      item.events =
+        Array.isArray(item.events)
+          ? item.events
+          : [];
+
+      item.hitTP1 =
+        !!item.hitTP1;
+
+      item.hitTP2 =
+        !!item.hitTP2;
+
+      item.hitTP3 =
+        !!item.hitTP3;
+
+      item.hitSL =
+        !!item.hitSL;
+
+
+      const signalTime =
+        historyTimeMs(
+          item.signalTime
+        );
+
+      if(
+        !Number.isFinite(
+          signalTime
+        )
+      ){
+
+        continue;
+
+      }
+
+
+      const candles =
+        market5?.candles || [];
+
+      if(
+        !Array.isArray(candles) ||
+        !candles.length
+      ){
+
+        continue;
+
+      }
+
+
+      const futureCandles =
+        candles
+          .filter(
+            candle =>
+              historyTimeMs(
+                candle.time
+              ) > signalTime
+          )
+          .sort(
+            (a,b) =>
+              historyTimeMs(a.time) -
+              historyTimeMs(b.time)
+          );
+
+
+      for(
+        const candle of futureCandles
+      ){
+
+        const high =
+          Number(candle.high);
+
+        const low =
+          Number(candle.low);
+
+        if(
+          !Number.isFinite(high) ||
+          !Number.isFinite(low)
+        ){
+
+          continue;
+
+        }
+
+
+        const isBuy =
+          item.direction === "BUY";
+
+
+        const sl =
+          Number(item.stopLoss);
+
+        const tp1 =
+          Number(item.tp1);
+
+        const tp2 =
+          Number(item.tp2);
+
+
+        /* =================================================
+           BUY
+        ================================================= */
+
+        if(isBuy){
+
+          /*
+           * SL = terminal LOSS
+           */
+          if(
+            Number.isFinite(sl) &&
+            low <= sl
+          ){
+
+            item.hitSL =
+              true;
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              low,
+              candle.time
+            );
+
+            item.status =
+              "LOSS";
+
+            item.result =
+              "SL HIT";
+
+            item.resultPrice =
+              low;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /*
+           * TP2 = terminal WIN
+           */
+          if(
+            Number.isFinite(tp2) &&
+            high >= tp2
+          ){
+
+            /*
+             * If TP1 wasn't recorded yet,
+             * record it first because TP2
+             * necessarily passes TP1.
+             */
+            if(!item.hitTP1){
+
+              item.hitTP1 =
+                true;
+
+              item.tp1HitPrice =
+                high;
+
+              item.tp1HitTime =
+                candle.time;
+
+              addHistoryEvent(
+                item,
+                "TP1",
+                tp1,
+                high,
+                candle.time
+              );
+
+            }
+
+
+            item.hitTP2 =
+              true;
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              high,
+              candle.time
+            );
+
+            item.status =
+              "WIN";
+
+            item.result =
+              "TP2 HIT";
+
+            item.resultPrice =
+              high;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /*
+           * TP1 = OPEN EVENT
+           */
+          if(
+            Number.isFinite(tp1) &&
+            high >= tp1 &&
+            !item.hitTP1
+          ){
+
+            item.hitTP1 =
+              true;
+
+            item.tp1HitPrice =
+              high;
+
+            item.tp1HitTime =
+              candle.time;
+
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              high,
+              candle.time
+            );
+
+            changed =
+              true;
+
+          }
+
+        }
+
+
+        /* =================================================
+           SELL
+        ================================================= */
+
+        else if(
+          item.direction === "SELL"
+        ){
+
+          /*
+           * SL = terminal LOSS
+           */
+          if(
+            Number.isFinite(sl) &&
+            high >= sl
+          ){
+
+            item.hitSL =
+              true;
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              high,
+              candle.time
+            );
+
+            item.status =
+              "LOSS";
+
+            item.result =
+              "SL HIT";
+
+            item.resultPrice =
+              high;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /*
+           * TP2 = terminal WIN
+           */
+          if(
+            Number.isFinite(tp2) &&
+            low <= tp2
+          ){
+
+            if(!item.hitTP1){
+
+              item.hitTP1 =
+                true;
+
+              item.tp1HitPrice =
+                low;
+
+              item.tp1HitTime =
+                candle.time;
+
+              addHistoryEvent(
+                item,
+                "TP1",
+                tp1,
+                low,
+                candle.time
+              );
+
+            }
+
+
+            item.hitTP2 =
+              true;
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              low,
+              candle.time
+            );
+
+            item.status =
+              "WIN";
+
+            item.result =
+              "TP2 HIT";
+
+            item.resultPrice =
+              low;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /*
+           * TP1 = OPEN EVENT
+           */
+          if(
+            Number.isFinite(tp1) &&
+            low <= tp1 &&
+            !item.hitTP1
+          ){
+
+            item.hitTP1 =
+              true;
+
+            item.tp1HitPrice =
+              low;
+
+            item.tp1HitTime =
+              candle.time;
+
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              low,
+              candle.time
+            );
+
+            changed =
+              true;
+
+          }
+
+        }
+
+
+        item.lastCheckedAt =
+          new Date().toISOString();
+
+      }
+
+    }
+
+
+    if(changed){
+
+      saveHistory(
+        history
+      );
+
+    }
+
+
+    renderHistory();
+
+  };
+
+
+  /* =======================================================
+     RESULT TEXT
+  ======================================================= */
+
+  getHistoryResult = function(
+    item
+  ){
+
+    if(
+      item.status === "WIN"
+    ){
+
+      return {
+
+        className:
+          "win",
+
+        text:
+          "🏆 TP2 HIT • WIN"
+
+      };
+
+    }
+
+
+    if(
+      item.status === "LOSS"
+    ){
+
+      return {
+
+        className:
+          "loss",
+
+        text:
+          "🔴 SL HIT • LOSS"
+
+      };
+
+    }
+
+
+    if(
+      item.hitTP1
+    ){
+
+      return {
+
+        className:
+          "open",
+
+        text:
+          "🟢 TP1 HIT • STILL OPEN • waiting for TP2 or SL"
+
+      };
+
+    }
+
+
+    return {
+
+      className:
+        "open",
+
+      text:
+        "🟡 OPEN • WAITING FOR TP1 / TP2 / SL"
+
+    };
+
+  };
+
+
+  /* =======================================================
+     HISTORY RENDER
+  ======================================================= */
+
+  renderHistory = function(){
+
+    const list =
+      $("historyList");
+
+    if(!list){
+      return;
+    }
+
+
+    const history =
+      loadHistory();
+
+
+    const total =
+      history.length;
+
+    const wins =
+      history.filter(
+        x => x.status === "WIN"
+      ).length;
+
+    const losses =
+      history.filter(
+        x => x.status === "LOSS"
+      ).length;
+
+    const open =
+      history.filter(
+        x => x.status === "OPEN"
+      ).length;
+
+
+    const closed =
+      wins + losses;
+
+    const winRate =
+      closed > 0
+        ? (
+            wins /
+            closed *
+            100
+          ).toFixed(1) + "%"
+        : "—";
+
+
+    $("historyTotal").textContent =
+      total;
+
+    $("historyWins").textContent =
+      wins;
+
+    $("historyLosses").textContent =
+      losses;
+
+    $("historyWinRate").textContent =
+      winRate;
+
+    $("historyOpenCount").textContent =
+      `Open: ${open}`;
+
+    $("historyCount").textContent =
+      `${total} signal${total === 1 ? "" : "s"}`;
+
+
+    let filtered =
+      history;
+
+
+    if(
+      historyFilter === "WIN"
+    ){
+
+      filtered =
+        history.filter(
+          x => x.status === "WIN"
+        );
+
+    }
+
+
+    if(
+      historyFilter === "LOSS"
+    ){
+
+      filtered =
+        history.filter(
+          x => x.status === "LOSS"
+        );
+
+    }
+
+
+    if(
+      historyFilter === "OPEN"
+    ){
+
+      filtered =
+        history.filter(
+          x => x.status === "OPEN"
+        );
+
+    }
+
+
+    if(!filtered.length){
+
+      list.innerHTML =
+        `<div class="history-empty">
+          No signals found.
+        </div>`;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      filtered
+        .map(
+          item => {
+
+            const direction =
+              item.direction === "BUY"
+                ? "buy"
+                : "sell";
+
+
+            const result =
+              getHistoryResult(
+                item
+              );
+
+
+            const events =
+              Array.isArray(
+                item.events
+              )
+                ? item.events
+                : [];
+
+
+            const eventHtml =
+              events
+                .map(
+                  event => {
+
+                    const label =
+                      event.type === "TP1"
+                        ? "🟢 TP1 HIT"
+                        : event.type === "TP2"
+                          ? "🏆 TP2 HIT • WIN"
+                          : "🔴 SL HIT • LOSS";
+
+
+                    return `
+                      <div
+                        class="history-meta"
+                        style="
+                          margin-top:6px;
+                          padding:7px;
+                          border-radius:7px;
+                          background:#071018;
+                          color:${
+                            event.type === "SL"
+                              ? "#ff6370"
+                              : event.type === "TP2"
+                                ? "#19d19a"
+                                : "#e4a94b"
+                          };
+                        "
+                      >
+                        ${label}
+                        • ${formatPrice(event.hitPrice)}
+                        • ${escapeHtml(
+                            formatHistoryTime(
+                              event.time
+                            )
+                          )}
+                      </div>
+                    `;
+
+                  }
+                )
+                .join("");
+
+
+            return `
+
+              <div
+                class="history-item ${direction}"
+              >
+
+                <div class="history-head">
+
+                  <div class="history-symbol">
+                    ${escapeHtml(
+                      item.symbol
+                    )}
+                  </div>
+
+                  <div
+                    class="history-direction ${direction}"
+                  >
+                    ${escapeHtml(
+                      item.direction
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="history-time">
+
+                  ${escapeHtml(
+                    formatHistoryTime(
+                      item.signalTime
+                    )
+                  )}
+
+                  • ${escapeHtml(
+                    item.timeframe ||
+                    "15M + 5M"
+                  )}
+
+                </div>
+
+
+                <div class="history-grid">
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      ENTRY
+                    </div>
+
+                    <div class="history-price-value">
+                      ${formatPrice(
+                        item.entryLow
+                      )}
+                      –
+                      ${formatPrice(
+                        item.entryHigh
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      SL
+                    </div>
+
+                    <div class="history-price-value">
+                      ${formatPrice(
+                        item.stopLoss
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      TP1
+                    </div>
+
+                    <div class="history-price-value">
+                      ${formatPrice(
+                        item.tp1
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      TP2
+                    </div>
+
+                    <div class="history-price-value">
+                      ${formatPrice(
+                        item.tp2
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      FORECAST
+                    </div>
+
+                    <div class="history-price-value">
+                      ${formatPrice(
+                        item.forecastTarget
+                      )}
+                    </div>
+
+                  </div>
+
+
+                  <div class="history-price">
+
+                    <div class="history-price-label">
+                      CONFIDENCE
+                    </div>
+
+                    <div class="history-price-value">
+                      ${Number(
+                        item.confidence || 0
+                      )}%
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div
+                  class="history-result ${result.className}"
+                >
+                  ${result.text}
+                </div>
+
+
+                ${eventHtml}
+
+
+                <div class="history-meta">
+
+                  <span>
+                    Forecast Origin:
+                    ${formatPrice(
+                      item.forecastOrigin
+                    )}
+                  </span>
+
+                  <span>
+                    ${item.interval || "15min"}
+                  </span>
+
+                </div>
+
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+  };
+
+
+  /* =======================================================
+     FORECAST OUTCOME CHECK
+  ======================================================= */
+
+  async function fixForecastHistory(){
+
+    try{
+
+      const symbol =
+        $("symbol")
+          .value
+          .trim() ||
+        "XAU/USD";
+
+
+      const interval =
+        $("interval")
+          .value;
+
+
+      const response =
+        await fetch(
+          `/api/forecast?symbol=${
+            encodeURIComponent(symbol)
+          }&interval=${
+            encodeURIComponent(interval)
+          }&outputsize=250`,
+          {
+            cache:
+              "no-store"
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if(
+        !response.ok ||
+        !data.success
+      ){
+
+        return;
+
+      }
+
+
+      const candles =
+        Array.isArray(
+          data.candles
+        )
+          ? data.candles
+          : [];
+
+
+      const signal =
+        data.engine?.signal ||
+        null;
+
+
+      const forecast =
+        data.engine?.forecast ||
+        {};
+
+
+      let history =
+        loadHistory();
+
+
+      let changed =
+        false;
+
+
+      /*
+       * If current API has a signal,
+       * create or complete its history record.
+       */
+
+      if(signal){
+
+        const key =
+          `${symbol}|${interval}|` +
+          `${signal.direction}|` +
+          `${signal.signalCandleTime}|` +
+          `${signal.entry}`;
+
+
+        let item =
+          history.find(
+            x => x.key === key
+          );
+
+
+        if(!item){
+
+          item = {
+
+            key,
+
+            symbol,
+
+            interval,
+
+            timeframe:
+              interval,
+
+            direction:
+              signal.direction,
+
+            signalTime:
+              signal.signalCandleTime,
+
+            time:
+              signal.signalCandleTime,
+
+            entry:
+              Number(signal.entry),
+
+            entryLow:
+              Number(signal.entry),
+
+            entryHigh:
+              Number(signal.entry),
+
+            stopLoss:
+              Number(signal.stopLoss),
+
+            tp1:
+              Number(signal.tp1),
+
+            tp2:
+              Number(signal.tp2),
+
+            forecastTarget:
+              Number(forecast.target),
+
+            forecastOrigin:
+              Number(
+                signal.forecastOrigin ??
+                forecast.origin
+              ),
+
+            confidence:
+              Number(
+                signal.confidence ||
+                forecast.confidence ||
+                0
+              ),
+
+            status:
+              "OPEN",
+
+            result:
+              null,
+
+            resultPrice:
+              null,
+
+            resultTime:
+              null,
+
+            events:
+              [],
+
+            tp1Hit:
+              false,
+
+            tp2Hit:
+              false,
+
+            slHit:
+              false
+
+          };
+
+
+          history.unshift(
+            item
+          );
+
+
+          changed =
+            true;
+
+        }
+        else{
+
+          item.signalTime =
+            item.signalTime ||
+            signal.signalCandleTime;
+
+          item.time =
+            item.time ||
+            signal.signalCandleTime;
+
+          item.stopLoss =
+            Number(
+              item.stopLoss ??
+              signal.stopLoss
+            );
+
+          item.tp1 =
+            Number(
+              item.tp1 ??
+              signal.tp1
+            );
+
+          item.tp2 =
+            Number(
+              item.tp2 ??
+              signal.tp2
+            );
+
+          item.forecastTarget =
+            Number(
+              item.forecastTarget ??
+              forecast.target
+            );
+
+          item.forecastOrigin =
+            Number(
+              item.forecastOrigin ??
+              signal.forecastOrigin ??
+              forecast.origin
+            );
+
+          item.confidence =
+            Number(
+              item.confidence ??
+              signal.confidence ??
+              forecast.confidence ??
+              0
+            );
+
+          item.events =
+            Array.isArray(item.events)
+              ? item.events
+              : [];
+
+          item.tp1Hit =
+            !!item.tp1Hit;
+
+          item.tp2Hit =
+            !!item.tp2Hit;
+
+          item.slHit =
+            !!item.slHit;
+
+        }
+
+      }
+
+
+      /*
+       * Evaluate all OPEN records for this
+       * symbol + interval.
+       */
+
+      for(
+        const item of history
+      ){
+
+        if(
+          item.status !== "OPEN"
+        ){
+
+          continue;
+
+        }
+
+
+        if(
+          item.symbol !== symbol ||
+          item.interval !== interval
+        ){
+
+          continue;
+
+        }
+
+
+        const signalMs =
+          historyTimeMs(
+            item.signalTime ||
+            item.time
+          );
+
+
+        if(
+          !Number.isFinite(
+            signalMs
+          )
+        ){
+
+          continue;
+
+        }
+
+
+        const future =
+          candles
+            .filter(
+              candle =>
+                historyTimeMs(
+                  candle.time
+                ) > signalMs
+            )
+            .sort(
+              (a,b) =>
+                historyTimeMs(a.time) -
+                historyTimeMs(b.time)
+            );
+
+
+        for(
+          const candle of future
+        ){
+
+          const high =
+            Number(candle.high);
+
+          const low =
+            Number(candle.low);
+
+          if(
+            !Number.isFinite(high) ||
+            !Number.isFinite(low)
+          ){
+
+            continue;
+
+          }
+
+
+          const isBuy =
+            item.direction === "BUY";
+
+
+          const sl =
+            Number(item.stopLoss);
+
+          const tp1 =
+            Number(item.tp1);
+
+          const tp2 =
+            Number(item.tp2);
+
+
+          item.events =
+            Array.isArray(item.events)
+              ? item.events
+              : [];
+
+
+          /* SL = terminal LOSS */
+
+          if(
+            isBuy
+              ? low <= sl
+              : high >= sl
+          ){
+
+            item.slHit =
+              true;
+
+            item.events.push({
+
+              type:
+                "SL",
+
+              target:
+                sl,
+
+              hitPrice:
+                isBuy
+                  ? low
+                  : high,
+
+              time:
+                candle.time
+
+            });
+
+
+            item.status =
+              "LOSS";
+
+            item.result =
+              "SL HIT";
+
+            item.resultPrice =
+              isBuy
+                ? low
+                : high;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /* TP2 = terminal WIN */
+
+          if(
+            isBuy
+              ? high >= tp2
+              : low <= tp2
+          ){
+
+            if(!item.tp1Hit){
+
+              item.tp1Hit =
+                true;
+
+              item.events.push({
+
+                type:
+                  "TP1",
+
+                target:
+                  tp1,
+
+                hitPrice:
+                  isBuy
+                    ? high
+                    : low,
+
+                time:
+                  candle.time
+
+              });
+
+            }
+
+
+            item.tp2Hit =
+              true;
+
+            item.events.push({
+
+              type:
+                "TP2",
+
+              target:
+                tp2,
+
+              hitPrice:
+                isBuy
+                  ? high
+                  : low,
+
+              time:
+                candle.time
+
+            });
+
+
+            item.status =
+              "WIN";
+
+            item.result =
+              "TP2 HIT";
+
+            item.resultPrice =
+              isBuy
+                ? high
+                : low;
+
+            item.resultTime =
+              candle.time;
+
+            changed =
+              true;
+
+            break;
+
+          }
+
+
+          /* TP1 = OPEN */
+
+          if(
+            !item.tp1Hit &&
+            (
+              isBuy
+                ? high >= tp1
+                : low <= tp1
+            )
+          ){
+
+            item.tp1Hit =
+              true;
+
+            item.events.push({
+
+              type:
+                "TP1",
+
+              target:
+                tp1,
+
+              hitPrice:
+                isBuy
+                  ? high
+                  : low,
+
+              time:
+                candle.time
+
+            });
+
+
+            changed =
+              true;
+
+          }
+
+        }
+
+      }
+
+
+      if(changed){
+
+        saveHistory(
+          history
+        );
+
+      }
+
+
+      renderHistory();
+
+    }catch(error){
+
+      console.warn(
+        "Forecast history update:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /*
+   * Run immediately.
+   */
+  fixForecastHistory();
+
+
+  /*
+   * Keep outcome tracking alive.
+   */
+  setInterval(
+    fixForecastHistory,
+    30000
+  );
+
+
+})();
+</script>
