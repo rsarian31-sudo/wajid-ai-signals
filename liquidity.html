@@ -4070,29 +4070,517 @@ function updateHistoryOutcomes(){
                 time:
                   candle.time
 
-              });
+/* =========================================================
+   UPDATE HISTORY OUTCOMES — FIXED LIFECYCLE
+
+   Rules:
+   TP1 = signal remains OPEN
+   TP2 = WIN / terminal
+   SL  = LOSS / terminal
+
+   IMPORTANT:
+   Candle time + signal time are normalized to Unix seconds.
+========================================================= */
+
+function toUnixSeconds(value){
+
+  if(
+    value === null ||
+    value === undefined
+  ){
+    return null;
+  }
+
+  if(
+    typeof value === "number" &&
+    Number.isFinite(value)
+  ){
+
+    /*
+      If timestamp is milliseconds,
+      convert to seconds.
+    */
+
+    if(value > 100000000000){
+      return Math.floor(value / 1000);
+    }
+
+    return Math.floor(value);
+  }
+
+  const numeric =
+    Number(value);
+
+  if(
+    Number.isFinite(numeric)
+  ){
+
+    if(numeric > 100000000000){
+      return Math.floor(numeric / 1000);
+    }
+
+    return Math.floor(numeric);
+  }
+
+  const parsed =
+    Date.parse(value);
+
+  if(
+    Number.isFinite(parsed)
+  ){
+
+    return Math.floor(
+      parsed / 1000
+    );
+
+  }
+
+  return null;
+}
 
 
-              item.status =
-                "LOSS";
+/* =========================================================
+   ADD HISTORY EVENT
+========================================================= */
+
+function addHistoryEvent(
+  item,
+  type,
+  target,
+  hitPrice,
+  time
+){
+
+  item.events =
+    Array.isArray(item.events)
+      ? item.events
+      : [];
 
 
-              item.result =
-                "SL HIT";
+  /*
+    Prevent duplicate event.
+  */
+
+  const exists =
+    item.events.some(
+      event =>
+        event.type === type &&
+        Number(
+          event.time
+        ) === Number(time)
+    );
 
 
-              item.resultPrice =
+  if(exists){
+    return false;
+  }
+
+
+  item.events.push({
+
+    type,
+
+    target:
+      Number(target),
+
+    hitPrice:
+      Number(hitPrice),
+
+    time
+
+  });
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   UPDATE HISTORY OUTCOMES
+========================================================= */
+
+function updateHistoryOutcomes(){
+
+  const candles =
+    state.data5?.candles || [];
+
+
+  if(
+    !candles.length ||
+    !state.history.length
+  ){
+
+    return;
+
+  }
+
+
+  let changed =
+    false;
+
+
+  /*
+    Normalize candles once.
+  */
+
+  const normalizedCandles =
+    candles
+      .map(
+        candle => ({
+
+          ...candle,
+
+          _time:
+            toUnixSeconds(
+              candle.time
+            )
+
+        })
+      )
+      .filter(
+        candle =>
+          Number.isFinite(
+            candle._time
+          )
+      )
+      .sort(
+        (a,b) =>
+          a._time -
+          b._time
+      );
+
+
+  state.history.forEach(
+    item => {
+
+      /*
+        Only OPEN signals
+        can receive new outcomes.
+      */
+
+      if(
+        item.status !== "OPEN"
+      ){
+
+        return;
+
+      }
+
+
+      const signalTime =
+        toUnixSeconds(
+          item.time
+        );
+
+
+      if(
+        !Number.isFinite(
+          signalTime
+        )
+      ){
+
+        return;
+
+      }
+
+
+      const entry =
+        Number(item.entry);
+
+
+      const sl =
+        Number(item.sl);
+
+
+      const tp1 =
+        Number(item.tp1);
+
+
+      const tp2 =
+        Number(item.tp2);
+
+
+      /*
+        Invalid trade plan:
+        cannot calculate outcome.
+      */
+
+      if(
+        !Number.isFinite(entry) ||
+        !Number.isFinite(sl) ||
+        !Number.isFinite(tp1) ||
+        !Number.isFinite(tp2)
+      ){
+
+        return;
+
+      }
+
+
+      /*
+        Make sure event storage exists.
+      */
+
+      item.events =
+        Array.isArray(item.events)
+          ? item.events
+          : [];
+
+
+      item.tp1Hit =
+        !!item.tp1Hit;
+
+
+      item.tp2Hit =
+        !!item.tp2Hit;
+
+
+      item.slHit =
+        !!item.slHit;
+
+
+      /*
+        Recalculate old incorrect
+        TP1-terminal records.
+
+        Example:
+
+        WIN
+        TP1 HIT
+
+        This is NOT terminal anymore.
+      */
+
+      if(
+        item.status === "WIN" &&
+        item.result === "TP1 HIT"
+      ){
+
+        item.status =
+          "OPEN";
+
+        item.result =
+          null;
+
+        item.resultPrice =
+          null;
+
+        item.resultTime =
+          null;
+
+        item.tp2Hit =
+          false;
+
+        item.slHit =
+          false;
+
+        changed =
+          true;
+
+      }
+
+
+      /*
+        Future candles only.
+      */
+
+      const futureCandles =
+        normalizedCandles.filter(
+          candle =>
+            candle._time >
+            signalTime
+        );
+
+
+      const isBuy =
+        item.direction === "BUY";
+
+
+      const isSell =
+        item.direction === "SELL";
+
+
+      if(
+        !isBuy &&
+        !isSell
+      ){
+
+        return;
+
+      }
+
+
+      /*
+        =====================================================
+        WALK FORWARD CANDLE BY CANDLE
+        =====================================================
+      */
+
+      for(
+        const candle of futureCandles
+      ){
+
+        const high =
+          Number(
+            candle.high
+          );
+
+
+        const low =
+          Number(
+            candle.low
+          );
+
+
+        if(
+          !Number.isFinite(high) ||
+          !Number.isFinite(low)
+        ){
+
+          continue;
+
+        }
+
+
+        /*
+          ===================================================
+          BUY
+          ===================================================
+        */
+
+        if(isBuy){
+
+          /*
+            -----------------------------------------------
+            SL FIRST
+            -----------------------------------------------
+            Conservative rule when one candle touches
+            both SL and TP.
+          */
+
+          if(
+            low <= sl &&
+            !item.slHit
+          ){
+
+            item.slHit =
+              true;
+
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              low,
+              candle.time
+            );
+
+
+            item.status =
+              "LOSS";
+
+
+            item.result =
+              "SL HIT";
+
+
+            item.resultPrice =
+              low;
+
+
+            item.resultTime =
+              candle.time;
+
+
+            changed =
+              true;
+
+
+            break;
+
+          }
+
+
+          /*
+            -----------------------------------------------
+            TP2 = WIN
+            -----------------------------------------------
+          */
+
+          if(
+            high >= tp2 &&
+            !item.tp2Hit
+          ){
+
+            /*
+              If TP1 was not recorded yet but
+              price reached TP2, TP1 was necessarily
+              crossed for a normal continuous move.
+
+              Record TP1 first.
+            */
+
+            if(
+              !item.tp1Hit &&
+              high >= tp1
+            ){
+
+              item.tp1Hit =
+                true;
+
+
+              item.tp1HitPrice =
                 high;
 
 
-              item.resultTime =
+              item.tp1HitTime =
                 candle.time;
 
 
-              changed =
-                true;
+              addHistoryEvent(
+                item,
+                "TP1",
+                tp1,
+                high,
+                candle.time
+              );
 
             }
+
+
+            item.tp2Hit =
+              true;
+
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              high,
+              candle.time
+            );
+
+
+            item.status =
+              "WIN";
+
+
+            item.result =
+              "TP2 HIT";
+
+
+            item.resultPrice =
+              high;
+
+
+            item.resultTime =
+              candle.time;
+
+
+            changed =
+              true;
+
 
             break;
 
@@ -4100,61 +4588,188 @@ function updateHistoryOutcomes(){
 
 
           /*
-           * TP2 = WIN
-           */
+            -----------------------------------------------
+            TP1 = OPEN
+            -----------------------------------------------
+          */
 
           if(
-            low <=
-            Number(item.tp2)
+            high >= tp1 &&
+            !item.tp1Hit
           ){
 
+            item.tp1Hit =
+              true;
+
+
+            item.tp1HitPrice =
+              high;
+
+
+            item.tp1HitTime =
+              candle.time;
+
+
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              high,
+              candle.time
+            );
+
+
+            item.status =
+              "OPEN";
+
+
+            /*
+              Important:
+              DO NOT break.
+              Continue looking for TP2 or SL.
+            */
+
+            changed =
+              true;
+
+          }
+
+        }
+
+
+        /*
+          ===================================================
+          SELL
+          ===================================================
+        */
+
+        else if(isSell){
+
+          /*
+            -----------------------------------------------
+            SL FIRST
+            -----------------------------------------------
+          */
+
+          if(
+            high >= sl &&
+            !item.slHit
+          ){
+
+            item.slHit =
+              true;
+
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              high,
+              candle.time
+            );
+
+
+            item.status =
+              "LOSS";
+
+
+            item.result =
+              "SL HIT";
+
+
+            item.resultPrice =
+              high;
+
+
+            item.resultTime =
+              candle.time;
+
+
+            changed =
+              true;
+
+
+            break;
+
+          }
+
+
+          /*
+            -----------------------------------------------
+            TP2 = WIN
+            -----------------------------------------------
+          */
+
+          if(
+            low <= tp2 &&
+            !item.tp2Hit
+          ){
+
+            /*
+              Record TP1 before TP2
+              when both are crossed.
+            */
+
             if(
-              !item.tp2Hit
+              !item.tp1Hit &&
+              low <= tp1
             ){
 
-              item.tp2Hit =
+              item.tp1Hit =
                 true;
 
 
-              item.events.push({
-
-                type:
-                  "TP2",
-
-                target:
-                  Number(
-                    item.tp2
-                  ),
-
-                hitPrice:
-                  low,
-
-                time:
-                  candle.time
-
-              });
-
-
-              item.status =
-                "WIN";
-
-
-              item.result =
-                "TP2 HIT";
-
-
-              item.resultPrice =
+              item.tp1HitPrice =
                 low;
 
 
-              item.resultTime =
+              item.tp1HitTime =
                 candle.time;
 
 
-              changed =
-                true;
+              addHistoryEvent(
+                item,
+                "TP1",
+                tp1,
+                low,
+                candle.time
+              );
 
             }
+
+
+            item.tp2Hit =
+              true;
+
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              low,
+              candle.time
+            );
+
+
+            item.status =
+              "WIN";
+
+
+            item.result =
+              "TP2 HIT";
+
+
+            item.resultPrice =
+              low;
+
+
+            item.resultTime =
+              candle.time;
+
+
+            changed =
+              true;
+
 
             break;
 
@@ -4162,12 +4777,13 @@ function updateHistoryOutcomes(){
 
 
           /*
-           * TP1 = OPEN
-           */
+            -----------------------------------------------
+            TP1 = OPEN
+            -----------------------------------------------
+          */
 
           if(
-            low <=
-            Number(item.tp1) &&
+            low <= tp1 &&
             !item.tp1Hit
           ){
 
@@ -4183,28 +4799,23 @@ function updateHistoryOutcomes(){
               candle.time;
 
 
-            item.events.push({
-
-              type:
-                "TP1",
-
-              target:
-                Number(
-                  item.tp1
-                ),
-
-              hitPrice:
-                low,
-
-              time:
-                candle.time
-
-            });
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              low,
+              candle.time
+            );
 
 
             item.status =
               "OPEN";
 
+
+            /*
+              IMPORTANT:
+              TP1 does NOT end the signal.
+            */
 
             changed =
               true;
@@ -4219,6 +4830,10 @@ function updateHistoryOutcomes(){
   );
 
 
+  /*
+    Save only when something changed.
+  */
+
   if(changed){
 
     saveHistory();
@@ -4228,7 +4843,6 @@ function updateHistoryOutcomes(){
   }
 
 }
-
 
 /* =========================================================
    RENDER HISTORY
