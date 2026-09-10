@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
 <title>Owajid AI — Swing Forecast</title>
+
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
+
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
   background:#061019;
   color:#e9f2f8;
-  font-family:Arial,sans-serif
+  font-family:Arial,sans-serif;
 }
 
 .wrap{
   max-width:1400px;
   margin:auto;
-  padding:14px
+  padding:14px;
 }
 
 .top{
   position:sticky;
   top:0;
-  z-index:5;
+  z-index:10;
   background:#091721;
   border-bottom:1px solid #1b2b38;
-  padding:12px 14px
+  padding:12px 14px;
 }
 
 .brand{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px
+  gap:12px;
 }
 
 .logo{
   font-weight:900;
-  font-size:20px
+  font-size:20px;
 }
 
 .muted{
   color:#8296a6;
-  font-size:12px
+  font-size:12px;
 }
 
 .nav{
   display:flex;
   gap:8px;
   overflow:auto;
-  margin-top:10px
+  margin-top:10px;
 }
 
 .nav a{
@@ -62,20 +73,20 @@ body{
   border-radius:9px;
   padding:9px 12px;
   white-space:nowrap;
-  font-size:12px
+  font-size:12px;
 }
 
 .nav a.active{
   background:#3da8ff;
   color:#fff;
-  border-color:#3da8ff
+  border-color:#3da8ff;
 }
 
 .controls{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
-  margin:14px 0
+  margin:14px 0;
 }
 
 .controls input,
@@ -85,41 +96,46 @@ body{
   color:#fff;
   border:1px solid #233a49;
   border-radius:10px;
-  padding:12px
+  padding:12px;
 }
 
 .controls input{
   flex:1;
-  min-width:200px
+  min-width:200px;
 }
 
 .controls button{
   cursor:pointer;
   font-weight:800;
-  background:#1677d8
+  background:#1677d8;
+}
+
+.controls button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
 .grid{
   display:grid;
   grid-template-columns:minmax(0,2fr) minmax(300px,1fr);
-  gap:14px
+  gap:14px;
 }
 
 .card{
   background:#091722;
   border:1px solid #1b303e;
   border-radius:14px;
-  padding:14px
+  padding:14px;
 }
 
 .title{
   font-weight:800;
-  font-size:18px
+  font-size:18px;
 }
 
 .chart{
   height:520px;
-  margin-top:12px
+  margin-top:12px;
 }
 
 .signal{
@@ -127,36 +143,36 @@ body{
   border-radius:12px;
   padding:18px;
   margin:10px 0;
-  background:#0d202b
+  background:#0d202b;
 }
 
 .signal.buy{
-  border:1px solid #26c77a
+  border:1px solid #26c77a;
 }
 
 .signal.sell{
-  border:1px solid #ff5264
+  border:1px solid #ff5264;
 }
 
 .signal.wait{
-  border:1px solid #536775
+  border:1px solid #536775;
 }
 
 .dir{
   font-size:34px;
-  font-weight:900
+  font-weight:900;
 }
 
 .buy .dir{
-  color:#35dc8a
+  color:#35dc8a;
 }
 
 .sell .dir{
-  color:#ff6575
+  color:#ff6575;
 }
 
 .wait .dir{
-  color:#aab9c4
+  color:#aab9c4;
 }
 
 .metric{
@@ -165,35 +181,286 @@ body{
   border-bottom:1px solid #18303d;
   padding:11px 0;
   font-size:13px;
-  gap:15px
+  gap:15px;
 }
 
 .metric:last-child{
-  border-bottom:0
+  border-bottom:0;
 }
 
 .history{
-  margin-top:14px
+  margin-top:14px;
 }
 
-.row{
+.history-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.history-stats{
   display:grid;
-  grid-template-columns:1fr 80px 90px 100px;
+  grid-template-columns:repeat(5,1fr);
   gap:8px;
-  padding:10px 0;
-  border-bottom:1px solid #18303d;
-  font-size:12px
+  margin-top:12px;
 }
 
-.status{
-  font-weight:800
+.history-stat{
+  background:#07141d;
+  border:1px solid #1b303e;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+}
+
+.history-stat-label{
+  color:#8296a6;
+  font-size:10px;
+  font-weight:800;
+}
+
+.history-stat-value{
+  margin-top:5px;
+  font-size:17px;
+  font-weight:900;
+}
+
+.history-filters{
+  display:flex;
+  gap:6px;
+  overflow:auto;
+  margin-top:12px;
+}
+
+.history-filter{
+  border:1px solid #263d4a;
+  background:#0b1a24;
+  color:#9db1c0;
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.history-filter.active{
+  background:#1677d8;
+  border-color:#1677d8;
+  color:#fff;
+}
+
+.clear-history{
+  border:1px solid #5a2730;
+  background:#241017;
+  color:#ff7784;
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.history-list{
+  margin-top:12px;
+}
+
+.history-item{
+  background:#08151f;
+  border:1px solid #203746;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.history-item.buy{
+  border-left:3px solid #26c77a;
+}
+
+.history-item.sell{
+  border-left:3px solid #ff5264;
+}
+
+.history-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+
+.history-symbol{
+  font-size:15px;
+  font-weight:900;
+}
+
+.history-direction{
+  font-size:13px;
+  font-weight:900;
+}
+
+.history-direction.buy{
+  color:#35dc8a;
+}
+
+.history-direction.sell{
+  color:#ff6575;
+}
+
+.history-time{
+  color:#8296a6;
+  font-size:11px;
+  margin-top:5px;
+}
+
+.status-badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.status-open{
+  background:#332e16;
+  color:#ffd85c;
+}
+
+.status-tp1{
+  background:#183b4d;
+  color:#5cc9ff;
+}
+
+.status-win{
+  background:#123d2d;
+  color:#49e39a;
+}
+
+.status-loss{
+  background:#431b24;
+  color:#ff7180;
+}
+
+.history-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.history-price{
+  background:#071018;
+  border-radius:8px;
+  padding:9px;
+  border:1px solid #142b37;
+}
+
+.history-price-label{
+  color:#728897;
+  font-size:9px;
+  font-weight:900;
+}
+
+.history-price-value{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.history-result{
+  margin-top:10px;
+  padding:9px 10px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.history-result.open{
+  background:#211d0b;
+  color:#ffd85c;
+}
+
+.history-result.tp1{
+  background:#0e2938;
+  color:#5cc9ff;
+}
+
+.history-result.win{
+  background:#0d3023;
+  color:#49e39a;
+}
+
+.history-result.loss{
+  background:#35151c;
+  color:#ff7180;
+}
+
+.history-events{
+  margin-top:10px;
+  padding-top:9px;
+  border-top:1px solid #18303d;
+}
+
+.history-events-title{
+  font-size:10px;
+  font-weight:900;
+  color:#8da2b2;
+  margin-bottom:6px;
+}
+
+.history-event{
+  padding:8px 9px;
+  margin-top:6px;
+  border-radius:7px;
+  background:#071018;
+  font-size:10px;
+  line-height:1.5;
+}
+
+.history-event.tp1{
+  border-left:3px solid #5cc9ff;
+  color:#5cc9ff;
+}
+
+.history-event.tp2{
+  border-left:3px solid #49e39a;
+  color:#49e39a;
+}
+
+.history-event.sl{
+  border-left:3px solid #ff7180;
+  color:#ff7180;
+}
+
+.history-event-time{
+  color:#8296a6;
+}
+
+.history-extra{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+  color:#8296a6;
+  font-size:10px;
+}
+
+.history-empty{
+  text-align:center;
+  padding:22px 10px;
+  color:#8296a6;
+  font-size:12px;
 }
 
 .hint{
   color:#8da2b2;
   font-size:11px;
   line-height:1.5;
-  margin-top:10px
+  margin-top:10px;
 }
 
 .badge{
@@ -203,53 +470,81 @@ body{
   font-size:11px;
   font-weight:800;
   background:#122a39;
-  margin-top:7px
+  margin-top:7px;
 }
 
 @media(max-width:850px){
 
   .grid{
-    grid-template-columns:1fr
+    grid-template-columns:1fr;
   }
 
   .chart{
-    height:420px
+    height:420px;
   }
 
-  .row{
-    grid-template-columns:1fr 70px 80px
+  .history-stats{
+    grid-template-columns:repeat(2,1fr);
   }
 
-  .row span:last-child{
-    display:none
+  .history-grid{
+    grid-template-columns:repeat(2,1fr);
   }
 
   .logo{
-    font-size:18px
+    font-size:18px;
   }
 }
+
+@media(max-width:480px){
+
+  .history-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .history-stat{
+    padding:8px 5px;
+  }
+
+  .history-stat-value{
+    font-size:15px;
+  }
+
+}
+
 </style>
+
 </head>
 
+
 <body>
+
 
 <header class="top">
 
   <div class="brand">
 
     <div>
-      <div class="logo">Owajid AI • Swing Forecast</div>
+
+      <div class="logo">
+        Owajid AI • Swing Forecast
+      </div>
 
       <div class="muted">
         Closed candle confirmation → next candle OPEN entry
       </div>
+
     </div>
 
-    <div id="connection" class="muted">
+    <div
+      id="connection"
+      class="muted"
+    >
       Connecting…
     </div>
 
   </div>
+
 
   <nav class="nav">
 
@@ -261,7 +556,10 @@ body{
       💧 Swing Liquidity
     </a>
 
-    <a class="active" href="/forecast.html">
+    <a
+      class="active"
+      href="/forecast.html"
+    >
       📐 Swing Forecast
     </a>
 
@@ -271,6 +569,7 @@ body{
 
 
 <main class="wrap">
+
 
   <div class="controls">
 
@@ -282,9 +581,14 @@ body{
 
     <select id="interval">
 
-      <option value="5min">5M</option>
+      <option value="5min">
+        5M
+      </option>
 
-      <option value="15min" selected>
+      <option
+        value="15min"
+        selected
+      >
         15M
       </option>
 
@@ -307,16 +611,22 @@ body{
 
   <div class="grid">
 
+
     <section class="card">
 
-      <div class="title" id="chartTitle">
+      <div
+        class="title"
+        id="chartTitle"
+      >
         XAU/USD • 15M
       </div>
 
+
       <div
         class="chart"
-        id="chart">
-      </div>
+        id="chart"
+      ></div>
+
 
       <div class="hint">
 
@@ -331,6 +641,7 @@ body{
 
     <aside class="card">
 
+
       <div class="title">
         LIVE FORECAST
       </div>
@@ -338,26 +649,27 @@ body{
 
       <div
         id="signal"
-        class="signal wait">
+        class="signal wait"
+      >
 
         <div class="dir">
           WAIT
         </div>
 
+
         <div
           id="signalText"
-          class="muted">
-
+          class="muted"
+        >
           Waiting for a valid forecast setup…
-
         </div>
+
 
         <div
           id="triggerBadge"
-          class="badge">
-
+          class="badge"
+        >
           NO SIGNAL
-
         </div>
 
       </div>
@@ -428,6 +740,7 @@ body{
         <b>NEXT OPEN</b>
       </div>
 
+
     </aside>
 
   </div>
@@ -435,38 +748,224 @@ body{
 
   <section class="card history">
 
+
     <div class="title">
       RECENT SIGNALS
     </div>
 
-    <div id="history"></div>
+
+    <div class="history-toolbar">
+
+      <div
+        id="historyCount"
+        class="muted"
+      >
+        0 signals
+      </div>
+
+
+      <button
+        id="clearHistory"
+        class="clear-history"
+      >
+        CLEAR HISTORY
+      </button>
+
+    </div>
+
+
+    <div class="history-stats">
+
+      <div class="history-stat">
+
+        <div class="history-stat-label">
+          TOTAL
+        </div>
+
+        <div
+          id="historyTotal"
+          class="history-stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="history-stat">
+
+        <div class="history-stat-label">
+          WIN
+        </div>
+
+        <div
+          id="historyWins"
+          class="history-stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="history-stat">
+
+        <div class="history-stat-label">
+          LOSS
+        </div>
+
+        <div
+          id="historyLosses"
+          class="history-stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="history-stat">
+
+        <div class="history-stat-label">
+          OPEN
+        </div>
+
+        <div
+          id="historyOpen"
+          class="history-stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="history-stat">
+
+        <div class="history-stat-label">
+          WIN RATE
+        </div>
+
+        <div
+          id="historyWinRate"
+          class="history-stat-value"
+        >
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="historyFilters"
+      class="history-filters"
+    >
+
+      <button
+        class="history-filter active"
+        data-filter="ALL"
+      >
+        ALL
+      </button>
+
+      <button
+        class="history-filter"
+        data-filter="WIN"
+      >
+        WIN
+      </button>
+
+      <button
+        class="history-filter"
+        data-filter="LOSS"
+      >
+        LOSS
+      </button>
+
+      <button
+        class="history-filter"
+        data-filter="OPEN"
+      >
+        OPEN
+      </button>
+
+    </div>
+
+
+    <div
+      id="history"
+      class="history-list"
+    ></div>
+
 
   </section>
+
 
 </main>
 
 
 <script>
 
-const $ = id => document.getElementById(id);
 
-let chart;
-let series;
-let timer;
+/* =========================================================
+   BASIC STATE
+========================================================= */
+
+const $ =
+  id => document.getElementById(id);
+
+
+let chart = null;
+
+let series = null;
+
+let timer = null;
+
+let loading = false;
+
+let historyFilter = "ALL";
+
 
 const HISTORY_KEY =
-  "owajid_swing_forecast_history_v2";
+  "owajid_swing_forecast_history_v3";
 
+
+const MAX_HISTORY =
+  50;
+
+
+/* =========================================================
+   HISTORY STORAGE
+========================================================= */
 
 function loadHistory(){
 
   try{
 
-    return JSON.parse(
-      localStorage.getItem(HISTORY_KEY) || "[]"
-    );
+    const raw =
+      localStorage.getItem(
+        HISTORY_KEY
+      );
 
-  }catch{
+    if(!raw){
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(raw);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+
+  }catch(error){
+
+    console.warn(
+      "History load error:",
+      error
+    );
 
     return [];
 
@@ -475,681 +974,377 @@ function loadHistory(){
 }
 
 
-function saveHistory(data){
+function saveHistory(history){
 
-  localStorage.setItem(
-    HISTORY_KEY,
-    JSON.stringify(data.slice(0,50))
-  );
+  try{
+
+    localStorage.setItem(
+      HISTORY_KEY,
+      JSON.stringify(
+        history.slice(
+          0,
+          MAX_HISTORY
+        )
+      )
+    );
+
+  }catch(error){
+
+    console.warn(
+      "History save error:",
+      error
+    );
+
+  }
 
 }
 
 
+/* =========================================================
+   NUMBER FORMAT
+========================================================= */
+
 function fmt(value){
 
-  if(value === null || value === undefined)
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+
     return "—";
 
-  const n = Number(value);
+  }
 
-  if(!Number.isFinite(n))
+
+  const n =
+    Number(value);
+
+
+  if(!Number.isFinite(n)){
     return "—";
+  }
+
 
   return n.toFixed(3);
 
 }
 
 
-function renderHistory(){
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
 
-  const history = loadHistory();
+function escapeHtml(value){
 
-  if(!history.length){
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
-    $("history").innerHTML =
-      `<div class="muted" style="padding:12px 0">
-        No confirmed signals yet.
-      </div>`;
+}
 
-    return;
+
+/* =========================================================
+   TIME PARSER
+========================================================= */
+
+function historyTimeMs(value){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+
+    return NaN;
 
   }
 
 
-  $("history").innerHTML =
-    history.map(x => `
+  if(
+    typeof value === "number"
+  ){
 
-      <div class="row">
+    return value < 1e12
+      ? value * 1000
+      : value;
 
-        <span>
-          ${x.symbol}
-          <br>
-          <span class="muted">
-            ${x.time}
-          </span>
-        </span>
+  }
 
-        <span class="status">
-          ${x.direction}
-        </span>
 
-        <span>
-          ${fmt(x.entry)}
-        </span>
+  const numeric =
+    Number(value);
 
-        <span>
-          ${x.confidence}%
-        </span>
 
-      </div>
+  if(
+    Number.isFinite(numeric)
+  ){
 
-    `).join("");
+    return numeric < 1e12
+      ? numeric * 1000
+      : numeric;
+
+  }
+
+
+  let text =
+    String(value)
+      .trim()
+      .replace(" ","T");
+
+
+  let parsed =
+    Date.parse(text);
+
+
+  if(Number.isFinite(parsed)){
+    return parsed;
+  }
+
+
+  parsed =
+    Date.parse(
+      text + "Z"
+    );
+
+
+  return Number.isFinite(parsed)
+    ? parsed
+    : NaN;
 
 }
 
 
-function createChart(){
+/* =========================================================
+   DISPLAY TIME
+========================================================= */
 
-  chart =
-    LightweightCharts.createChart(
-      $("chart"),
+function displayTime(value){
+
+  const ms =
+    historyTimeMs(value);
+
+
+  if(!Number.isFinite(ms)){
+    return "—";
+  }
+
+
+  return new Date(ms)
+    .toLocaleString(
+      undefined,
       {
-
-        layout:{
-          background:{
-            type:"solid",
-            color:"#091722"
-          },
-          textColor:"#8ea3b2"
-        },
-
-        grid:{
-          vertLines:{
-            color:"#122733"
-          },
-          horzLines:{
-            color:"#122733"
-          }
-        },
-
-        rightPriceScale:{
-          borderColor:"#213744"
-        },
-
-        timeScale:{
-          borderColor:"#213744",
-          timeVisible:true,
-          secondsVisible:false
-        }
-
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+        hour:"2-digit",
+        minute:"2-digit"
       }
     );
-
-
-  series =
-    chart.addSeries(
-      LightweightCharts.CandlestickSeries,
-      {
-
-        upColor:"#35d98a",
-        downColor:"#ff5264",
-        borderVisible:false,
-        wickUpColor:"#35d98a",
-        wickDownColor:"#ff5264"
-
-      }
-    );
-
-
-  window.addEventListener(
-    "resize",
-    () => {
-
-      chart.applyOptions({
-        width:$("chart").clientWidth
-      });
-
-    }
-  );
 
 }
 
 
-function toTime(value){
+/* =========================================================
+   CHART TIME
+========================================================= */
 
-  if(typeof value === "number")
-    return value;
+function toChartTime(value){
 
-
-  const d =
-    new Date(
-      String(value).replace(" ","T") + "Z"
-    );
+  const ms =
+    historyTimeMs(value);
 
 
-  if(Number.isNaN(d.getTime()))
+  if(!Number.isFinite(ms)){
     return null;
+  }
 
 
   return Math.floor(
-    d.getTime() / 1000
+    ms / 1000
   );
 
 }
 
 
-async function load(){
-
-  $("connection").textContent =
-    "Loading…";
-
-
-  const symbol =
-    $("symbol").value.trim() || "XAU/USD";
-
-
-  const interval =
-    $("interval").value;
-
-
-  $("chartTitle").textContent =
-    `${symbol} • ${interval}`;
-
-
-  try{
-
-    const response =
-      await fetch(
-        `/api/forecast?symbol=${
-          encodeURIComponent(symbol)
-        }&interval=${
-          encodeURIComponent(interval)
-        }&outputsize=250`,
-        {
-          cache:"no-store"
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if(!response.ok || !data.success){
-
-      throw new Error(
-        data.error || "Request failed"
-      );
-
-    }
-
-
-    const candles =
-      data.candles || [];
-
-
-    const chartData =
-      candles
-        .map(c => ({
-
-          time:toTime(c.time),
-
-          open:Number(c.open),
-
-          high:Number(c.high),
-
-          low:Number(c.low),
-
-          close:Number(c.close)
-
-        }))
-        .filter(c =>
-
-          c.time &&
-          Number.isFinite(c.open) &&
-          Number.isFinite(c.high) &&
-          Number.isFinite(c.low) &&
-          Number.isFinite(c.close)
-
-        );
-
-
-    series.setData(chartData);
-
-    chart.timeScale().fitContent();
-
-
-    const forecast =
-      data.engine?.forecast || {};
-
-
-    const signal =
-      data.engine?.signal || null;
-
-
-    /*
-      SIGNAL DISPLAY
-    */
-
-
-    const signalBox =
-      $("signal");
-
-
-    signalBox.className =
-      "signal " +
-      (
-        signal?.direction === "BUY"
-          ? "buy"
-          : signal?.direction === "SELL"
-            ? "sell"
-            : "wait"
-      );
-
-
-    $("signalText").textContent =
-      signal
-
-        ? `Confirmed on closed candle → next candle OPEN entry @ ${fmt(signal.entry)}`
-
-        : (
-            forecast.reason ||
-            "Waiting for a valid forecast setup…"
-          );
-
-
-    $("signal").querySelector(
-      ".dir"
-    ).textContent =
-      signal?.direction || "WAIT";
-
-
-    $("triggerBadge").textContent =
-      signal
-        ? (
-            signal.triggerType === "NEW_SWING"
-              ? "NEW SWING"
-              : "FORECAST QUALITY"
-          )
-        : "NO SIGNAL";
-
-
-    /*
-      TRADE VALUES
-    */
-
-
-    $("entry").textContent =
-      fmt(signal?.entry);
-
-
-    $("sl").textContent =
-      fmt(signal?.stopLoss);
-
-
-    $("tp1").textContent =
-      fmt(signal?.tp1);
-
-
-    $("tp2").textContent =
-      fmt(signal?.tp2);
-
-
-    $("forecastTarget").textContent =
-      fmt(forecast.target);
-
-
-    $("forecastPct").textContent =
-      forecast.forecastPercent == null
-        ? "—"
-        : `${forecast.forecastPercent}%`;
-
-
-    $("confidence").textContent =
-      forecast.confidence == null
-        ? "—"
-        : `${forecast.confidence}%`;
-
-
-    $("uncertainty").textContent =
-      forecast.uncertaintyPercent == null
-        ? "—"
-        : `${forecast.uncertaintyPercent}%`;
-
-
-    $("atrMultiple").textContent =
-      forecast.atrMultiple == null
-        ? "—"
-        : `${forecast.atrMultiple}x`;
-
-
-    $("signalCandle").textContent =
-      signal?.signalCandleTime || "—";
-
-
-    $("connection").textContent =
-      `Live • ${new Date().toLocaleTimeString()}`;
-
-
-    /*
-      SAVE NEW SIGNAL
-    */
-
-
-    if(signal){
-
-      const history =
-        loadHistory();
-
-
-      const key =
-        `${symbol}|${interval}|` +
-        `${signal.direction}|` +
-        `${signal.signalCandleTime}|` +
-        `${signal.entry}`;
-
-
-      if(!history.some(x => x.key === key)){
-
-        history.unshift({
-
-          key,
-
-          symbol,
-
-          interval,
-
-          direction:signal.direction,
-
-          entry:signal.entry,
-
-          confidence:signal.confidence,
-
-          time:signal.signalCandleTime
-
-        });
-
-
-        saveHistory(history);
-
-      }
-
-    }
-
-
-    renderHistory();
-
-
-  }catch(error){
-
-    $("connection").textContent =
-      "Error";
-
-
-    $("signal").className =
-      "signal wait";
-
-
-    $("signal").querySelector(
-      ".dir"
-    ).textContent =
-      "ERROR";
-
-
-    $("triggerBadge").textContent =
-      "API ERROR";
-
-
-    $("signalText").textContent =
-      error.message;
-
-  }
-
-}
-
-
-$("load").addEventListener(
-  "click",
-  load
-);
-
-
-$("interval").addEventListener(
-  "change",
-  load
-);
-
-
-renderHistory();
-
-createChart();
-
-load();
-
-
-/*
-  Refresh every 30 seconds.
-  This allows the current candle to become
-  the next-entry candle when a new candle starts.
-*/
-
-timer =
-  setInterval(
-    load,
-    30000
-  );
-
-</script>
-
-</body>
-</html>
-<script>
 /* =========================================================
-   STRONG SD MAGNET — HISTORY V2 FIX
-
-   TP1 = OPEN EVENT
-   TP2 = WIN / TERMINAL
-   SL  = LOSS / TERMINAL
-   TP3 = INFORMATION ONLY
-
-   Conservative same-candle rule:
-   SL is checked before TP.
+   CREATE EVENT
 ========================================================= */
 
-(function(){
+function addHistoryEvent(
+  item,
+  type,
+  target,
+  candleTime,
+  candleExtreme
+){
 
-  function historyTimeMs(value){
-
-    if(value === null || value === undefined){
-      return NaN;
-    }
-
-    if(typeof value === "number"){
-      return value < 1e12
-        ? value * 1000
-        : value;
-    }
-
-    const n = Number(value);
-
-    if(Number.isFinite(n)){
-      return n < 1e12
-        ? n * 1000
-        : n;
-    }
-
-    const text =
-      String(value)
-        .trim()
-        .replace(" ","T");
-
-    const direct =
-      Date.parse(text);
-
-    if(Number.isFinite(direct)){
-      return direct;
-    }
-
-    const utc =
-      Date.parse(text + "Z");
-
-    return Number.isFinite(utc)
-      ? utc
-      : NaN;
-  }
-
-
-  function addHistoryEvent(
-    item,
-    type,
-    target,
-    hitPrice,
-    time
+  if(
+    !Array.isArray(
+      item.events
+    )
   ){
 
-    item.events =
-      Array.isArray(item.events)
-        ? item.events
-        : [];
+    item.events = [];
 
-    const already =
-      item.events.some(
-        e =>
-          e.type === type &&
-          String(e.time) === String(time)
-      );
-
-    if(already){
-      return false;
-    }
-
-    item.events.push({
-
-      type,
-
-      target:
-        Number(target),
-
-      hitPrice:
-        Number(hitPrice),
-
-      time
-
-    });
-
-    return true;
   }
 
 
-  /* =======================================================
-     CREATE NEW HISTORY RECORD
-  ======================================================= */
+  const exists =
+    item.events.some(
+      event =>
+        event.type === type
+    );
 
-  createHistoryRecord = function(){
 
-    const signal =
-      getFinalSignal();
+  if(exists){
+    return false;
+  }
 
-    if(!signal){
-      return null;
-    }
 
-    const e15 =
-      market15?.engine || {};
+  item.events.push({
 
-    const magnet =
-      signal.magnet ||
-      e15.magnets?.[0] ||
-      null;
+    type,
 
-    const signalTime =
-      e15.signalTime ||
-      new Date().toISOString();
+    target:
+      Number(target),
 
-    const signalKey =
-      e15.signalKey ||
-      getFinalSignalKey();
+    /*
+      This is the actual level that was hit.
+      Candle extreme is stored separately.
+    */
+    hitPrice:
+      Number(target),
 
+    candleExtreme:
+      Number(candleExtreme),
+
+    time:
+      candleTime
+
+  });
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   HISTORY KEY
+========================================================= */
+
+function makeSignalKey(
+  symbol,
+  interval,
+  signal
+){
+
+  return (
+
+    `${symbol}|` +
+    `${interval}|` +
+    `${signal.direction}|` +
+    `${signal.signalCandleTime}|` +
+    `${signal.entry}`
+
+  );
+
+}
+
+
+/* =========================================================
+   CREATE / ENRICH RECORD
+========================================================= */
+
+function createOrUpdateHistoryRecord(
+  history,
+  symbol,
+  interval,
+  signal,
+  forecast
+){
+
+  if(!signal){
     return {
+      item:null,
+      changed:false
+    };
+  }
 
-      id:
-        signalKey,
 
-      symbol:
-        currentSymbol,
+  const key =
+    makeSignalKey(
+      symbol,
+      interval,
+      signal
+    );
 
-      name:
-        currentName,
+
+  let item =
+    history.find(
+      x => x.key === key
+    );
+
+
+  let changed =
+    false;
+
+
+  if(!item){
+
+    item = {
+
+      key,
+
+      symbol,
+
+      interval,
 
       timeframe:
-        "15M + 5M",
+        interval,
 
       direction:
         signal.direction,
 
-      signalTime,
+      signalCandleTime:
+        signal.signalCandleTime,
 
-      entryLow:
-        Number(
-          signal.entry?.low
-        ),
+      time:
+        signal.signalCandleTime,
 
-      entryHigh:
-        Number(
-          signal.entry?.high
-        ),
+      entry:
+        Number(signal.entry),
 
       stopLoss:
-        Number(
-          signal.stopLoss
-        ),
+        Number(signal.stopLoss),
 
       tp1:
-        Number(
-          signal.tp1
-        ),
+        Number(signal.tp1),
 
       tp2:
+        Number(signal.tp2),
+
+      forecastTarget:
         Number(
-          signal.tp2
+          forecast?.target
         ),
 
-      tp3:
-        Number(
-          signal.tp3
-        ),
-
-      probability:
-        Number(
-          signal.probability || 0
-        ),
+      forecastOrigin:
+        signal.forecastOrigin ??
+        forecast?.origin ??
+        null,
 
       confidence:
         Number(
-          signal.confidence || 0
-        ),
-
-      sourceScore:
-        Number(
-          signal.sourceScore || 0
-        ),
-
-      sourceTouches:
-        Number(
-          signal.sourceTouches || 0
-        ),
-
-      magnetDirection:
-        magnet?.direction ||
-        (
-          signal.direction === "BUY"
-            ? "UP"
-            : "DOWN"
-        ),
-
-      pullScore:
-        Number(
-          magnet?.pullScore || 0
+          signal.confidence ??
+          forecast?.confidence ??
+          0
         ),
 
       status:
@@ -1158,22 +1353,19 @@ timer =
       result:
         null,
 
-      resultTime:
-        null,
-
       resultPrice:
         null,
 
-      hitTP1:
+      resultTime:
+        null,
+
+      tp1Hit:
         false,
 
-      hitTP2:
+      tp2Hit:
         false,
 
-      hitTP3:
-        false,
-
-      hitSL:
+      slHit:
         false,
 
       tp1HitPrice:
@@ -1193,456 +1385,1708 @@ timer =
 
     };
 
+
+    history.unshift(item);
+
+    changed = true;
+
+  }else{
+
+    /*
+      Upgrade old records without destroying
+      existing outcome state.
+    */
+
+    if(
+      !item.symbol
+    ){
+
+      item.symbol =
+        symbol;
+
+      changed = true;
+
+    }
+
+
+    if(
+      !item.interval
+    ){
+
+      item.interval =
+        interval;
+
+      changed = true;
+
+    }
+
+
+    if(
+      !item.timeframe
+    ){
+
+      item.timeframe =
+        interval;
+
+      changed = true;
+
+    }
+
+
+    if(
+      !item.signalCandleTime
+    ){
+
+      item.signalCandleTime =
+        signal.signalCandleTime;
+
+      changed = true;
+
+    }
+
+
+    if(
+      !item.time
+    ){
+
+      item.time =
+        signal.signalCandleTime;
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.entry === undefined ||
+      item.entry === null
+    ){
+
+      item.entry =
+        Number(signal.entry);
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.stopLoss === undefined ||
+      item.stopLoss === null ||
+      !Number.isFinite(
+        Number(item.stopLoss)
+      )
+    ){
+
+      item.stopLoss =
+        Number(signal.stopLoss);
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.tp1 === undefined ||
+      item.tp1 === null ||
+      !Number.isFinite(
+        Number(item.tp1)
+      )
+    ){
+
+      item.tp1 =
+        Number(signal.tp1);
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.tp2 === undefined ||
+      item.tp2 === null ||
+      !Number.isFinite(
+        Number(item.tp2)
+      )
+    ){
+
+      item.tp2 =
+        Number(signal.tp2);
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.forecastTarget === undefined ||
+      item.forecastTarget === null
+    ){
+
+      item.forecastTarget =
+        Number(
+          forecast?.target
+        );
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.forecastOrigin === undefined ||
+      item.forecastOrigin === null
+    ){
+
+      item.forecastOrigin =
+        signal.forecastOrigin ??
+        forecast?.origin ??
+        null;
+
+      changed = true;
+
+    }
+
+
+    if(
+      item.confidence === undefined ||
+      item.confidence === null
+    ){
+
+      item.confidence =
+        Number(
+          signal.confidence ??
+          forecast?.confidence ??
+          0
+        );
+
+      changed = true;
+
+    }
+
+
+    if(
+      !Array.isArray(
+        item.events
+      )
+    ){
+
+      item.events = [];
+
+      changed = true;
+
+    }
+
+
+    item.tp1Hit =
+      !!item.tp1Hit;
+
+    item.tp2Hit =
+      !!item.tp2Hit;
+
+    item.slHit =
+      !!item.slHit;
+
+  }
+
+
+  item.lastCheckedAt =
+    new Date().toISOString();
+
+
+  return {
+    item,
+    changed
   };
 
+}
 
-  /* =======================================================
-     OUTCOME ENGINE
-  ======================================================= */
 
-  evaluateHistory = function(){
+/* =========================================================
+   OUTCOME ENGINE
+
+   RULES:
+
+   NEW SIGNAL  = OPEN
+   TP1          = OPEN
+   TP2          = WIN
+   SL           = LOSS
+
+   Same candle:
+   SL is checked FIRST.
+
+========================================================= */
+
+function evaluateForecastHistory(
+  history,
+  candles,
+  symbol,
+  interval
+){
+
+  let changed =
+    false;
+
+
+  if(
+    !Array.isArray(candles) ||
+    !candles.length
+  ){
+
+    return changed;
+
+  }
+
+
+  for(
+    const item of history
+  ){
+
+    if(
+      item.symbol !== symbol ||
+      item.interval !== interval
+    ){
+
+      continue;
+
+    }
+
+
+    /*
+      WIN and LOSS are terminal.
+    */
+
+    if(
+      item.status === "WIN" ||
+      item.status === "LOSS"
+    ){
+
+      continue;
+
+    }
+
+
+    const signalTime =
+      historyTimeMs(
+        item.signalCandleTime ||
+        item.time
+      );
+
+
+    if(
+      !Number.isFinite(
+        signalTime
+      )
+    ){
+
+      continue;
+
+    }
+
+
+    const sl =
+      Number(item.stopLoss);
+
+    const tp1 =
+      Number(item.tp1);
+
+    const tp2 =
+      Number(item.tp2);
+
+
+    if(
+      !Number.isFinite(sl) ||
+      !Number.isFinite(tp1) ||
+      !Number.isFinite(tp2)
+    ){
+
+      continue;
+
+    }
+
+
+    if(
+      !Array.isArray(
+        item.events
+      )
+    ){
+
+      item.events = [];
+
+    }
+
+
+    item.tp1Hit =
+      !!item.tp1Hit;
+
+    item.tp2Hit =
+      !!item.tp2Hit;
+
+    item.slHit =
+      !!item.slHit;
+
+
+    /*
+      Only candles AFTER the signal candle.
+
+      The signal candle is the closed candle
+      used for confirmation.
+
+      The next candle is the execution candle.
+    */
+
+    const future =
+      candles
+        .filter(
+          candle => {
+
+            const candleMs =
+              historyTimeMs(
+                candle.time
+              );
+
+            return (
+              Number.isFinite(
+                candleMs
+              ) &&
+              candleMs > signalTime
+            );
+
+          }
+        )
+        .sort(
+          (a,b) =>
+            historyTimeMs(a.time) -
+            historyTimeMs(b.time)
+        );
+
+
+    for(
+      const candle of future
+    ){
+
+      const high =
+        Number(candle.high);
+
+      const low =
+        Number(candle.low);
+
+
+      if(
+        !Number.isFinite(high) ||
+        !Number.isFinite(low)
+      ){
+
+        continue;
+
+      }
+
+
+      const isBuy =
+        item.direction === "BUY";
+
+
+      /* ===================================================
+         BUY
+      =================================================== */
+
+      if(isBuy){
+
+        /*
+          1. SL FIRST
+
+          This is deliberately before TP.
+          If one candle touches both SL and TP,
+          result = LOSS.
+        */
+
+        if(
+          low <= sl
+        ){
+
+          if(!item.slHit){
+
+            item.slHit =
+              true;
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              candle.time,
+              low
+            );
+
+          }
+
+
+          item.status =
+            "LOSS";
+
+          item.result =
+            "SL HIT";
+
+          item.resultPrice =
+            sl;
+
+          item.resultTime =
+            candle.time;
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        /*
+          2. TP2 = TERMINAL WIN
+        */
+
+        if(
+          high >= tp2
+        ){
+
+          /*
+            If TP1 was not already recorded,
+            record it first because price had to
+            pass TP1 before reaching TP2.
+          */
+
+          if(!item.tp1Hit){
+
+            item.tp1Hit =
+              true;
+
+            item.tp1HitPrice =
+              tp1;
+
+            item.tp1HitTime =
+              candle.time;
+
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              candle.time,
+              high
+            );
+
+          }
+
+
+          if(!item.tp2Hit){
+
+            item.tp2Hit =
+              true;
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              candle.time,
+              high
+            );
+
+          }
+
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP2 HIT";
+
+          item.resultPrice =
+            tp2;
+
+          item.resultTime =
+            candle.time;
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        /*
+          3. TP1 = OPEN
+
+          TP1 NEVER closes the signal.
+        */
+
+        if(
+          high >= tp1 &&
+          !item.tp1Hit
+        ){
+
+          item.tp1Hit =
+            true;
+
+          item.tp1HitPrice =
+            tp1;
+
+          item.tp1HitTime =
+            candle.time;
+
+          addHistoryEvent(
+            item,
+            "TP1",
+            tp1,
+            candle.time,
+            high
+          );
+
+          item.status =
+            "OPEN";
+
+          item.result =
+            "TP1 HIT";
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+        }
+
+      }
+
+
+      /* ===================================================
+         SELL
+      =================================================== */
+
+      else if(
+        item.direction === "SELL"
+      ){
+
+        /*
+          1. SL FIRST
+        */
+
+        if(
+          high >= sl
+        ){
+
+          if(!item.slHit){
+
+            item.slHit =
+              true;
+
+            addHistoryEvent(
+              item,
+              "SL",
+              sl,
+              candle.time,
+              high
+            );
+
+          }
+
+
+          item.status =
+            "LOSS";
+
+          item.result =
+            "SL HIT";
+
+          item.resultPrice =
+            sl;
+
+          item.resultTime =
+            candle.time;
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        /*
+          2. TP2 = TERMINAL WIN
+        */
+
+        if(
+          low <= tp2
+        ){
+
+          if(!item.tp1Hit){
+
+            item.tp1Hit =
+              true;
+
+            item.tp1HitPrice =
+              tp1;
+
+            item.tp1HitTime =
+              candle.time;
+
+            addHistoryEvent(
+              item,
+              "TP1",
+              tp1,
+              candle.time,
+              low
+            );
+
+          }
+
+
+          if(!item.tp2Hit){
+
+            item.tp2Hit =
+              true;
+
+            addHistoryEvent(
+              item,
+              "TP2",
+              tp2,
+              candle.time,
+              low
+            );
+
+          }
+
+
+          item.status =
+            "WIN";
+
+          item.result =
+            "TP2 HIT";
+
+          item.resultPrice =
+            tp2;
+
+          item.resultTime =
+            candle.time;
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+          break;
+
+        }
+
+
+        /*
+          3. TP1 = OPEN
+        */
+
+        if(
+          low <= tp1 &&
+          !item.tp1Hit
+        ){
+
+          item.tp1Hit =
+            true;
+
+          item.tp1HitPrice =
+            tp1;
+
+          item.tp1HitTime =
+            candle.time;
+
+          addHistoryEvent(
+            item,
+            "TP1",
+            tp1,
+            candle.time,
+            low
+          );
+
+          item.status =
+            "OPEN";
+
+          item.result =
+            "TP1 HIT";
+
+          item.lastCheckedAt =
+            new Date().toISOString();
+
+          changed =
+            true;
+
+        }
+
+      }
+
+    }
+
+  }
+
+
+  return changed;
+
+}
+
+
+/* =========================================================
+   STATUS UI
+========================================================= */
+
+function getStatusInfo(item){
+
+  if(
+    item.status === "WIN"
+  ){
+
+    return {
+
+      className:
+        "win",
+
+      badge:
+        "🏆 WIN",
+
+      text:
+        "🏆 TP2 HIT • WIN"
+
+    };
+
+  }
+
+
+  if(
+    item.status === "LOSS"
+  ){
+
+    return {
+
+      className:
+        "loss",
+
+      badge:
+        "🔴 LOSS",
+
+      text:
+        "🔴 SL HIT • LOSS"
+
+    };
+
+  }
+
+
+  if(
+    item.tp1Hit
+  ){
+
+    return {
+
+      className:
+        "tp1",
+
+      badge:
+        "🟢 OPEN • TP1 HIT",
+
+      text:
+        "🟢 TP1 HIT • SIGNAL REMAINS OPEN • waiting for TP2 or SL"
+
+    };
+
+  }
+
+
+  return {
+
+    className:
+      "open",
+
+    badge:
+      "🟡 OPEN",
+
+    text:
+      "🟡 OPEN • WAITING FOR TP1 / TP2 / SL"
+
+  };
+
+}
+
+
+/* =========================================================
+   RENDER HISTORY
+========================================================= */
+
+function renderHistory(){
+
+  const history =
+    loadHistory();
+
+
+  /*
+    Statistics
+  */
+
+  const total =
+    history.length;
+
+
+  const wins =
+    history.filter(
+      x => x.status === "WIN"
+    ).length;
+
+
+  const losses =
+    history.filter(
+      x => x.status === "LOSS"
+    ).length;
+
+
+  const open =
+    history.filter(
+      x => x.status !== "WIN" &&
+           x.status !== "LOSS"
+    ).length;
+
+
+  const closed =
+    wins + losses;
+
+
+  const winRate =
+    closed > 0
+      ? `${(
+          wins /
+          closed *
+          100
+        ).toFixed(1)}%`
+      : "—";
+
+
+  $("historyTotal").textContent =
+    total;
+
+
+  $("historyWins").textContent =
+    wins;
+
+
+  $("historyLosses").textContent =
+    losses;
+
+
+  $("historyOpen").textContent =
+    open;
+
+
+  $("historyWinRate").textContent =
+    winRate;
+
+
+  $("historyCount").textContent =
+    `${total} signal${total === 1 ? "" : "s"}`;
+
+
+  /*
+    Filtering
+  */
+
+  let filtered =
+    history;
+
+
+  if(
+    historyFilter !== "ALL"
+  ){
+
+    filtered =
+      history.filter(
+        x => {
+
+          if(
+            historyFilter === "OPEN"
+          ){
+
+            return (
+              x.status !== "WIN" &&
+              x.status !== "LOSS"
+            );
+
+          }
+
+          return (
+            x.status === historyFilter
+          );
+
+        }
+      );
+
+  }
+
+
+  if(!filtered.length){
+
+    $("history").innerHTML = `
+      <div class="history-empty">
+        No signals found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  $("history").innerHTML =
+    filtered.map(
+      item => {
+
+        const directionClass =
+          item.direction === "BUY"
+            ? "buy"
+            : "sell";
+
+
+        const status =
+          getStatusInfo(
+            item
+          );
+
+
+        const events =
+          Array.isArray(
+            item.events
+          )
+            ? item.events
+            : [];
+
+
+        const eventHtml =
+          events.length
+
+            ? events.map(
+                event => {
+
+                  let eventClass =
+                    "tp1";
+
+                  let icon =
+                    "🟢";
+
+                  let label =
+                    "TP1 HIT";
+
+
+                  if(
+                    event.type === "TP2"
+                  ){
+
+                    eventClass =
+                      "tp2";
+
+                    icon =
+                      "🏆";
+
+                    label =
+                      "TP2 HIT • WIN";
+
+                  }
+
+
+                  if(
+                    event.type === "SL"
+                  ){
+
+                    eventClass =
+                      "sl";
+
+                    icon =
+                      "🔴";
+
+                    label =
+                      "SL HIT • LOSS";
+
+                  }
+
+
+                  return `
+
+                    <div
+                      class="history-event ${eventClass}"
+                    >
+
+                      <b>
+                        ${icon} ${label}
+                      </b>
+
+                      <br>
+
+                      Price:
+                      ${fmt(event.hitPrice)}
+
+                      <span class="history-event-time">
+
+                        •
+                        ${escapeHtml(
+                          displayTime(
+                            event.time
+                          )
+                        )}
+
+                      </span>
+
+                    </div>
+
+                  `;
+
+                }
+              ).join("")
+
+            : `
+
+              <div class="history-event-time">
+                Waiting for TP1 / TP2 / SL…
+              </div>
+
+            `;
+
+
+        return `
+
+          <div
+            class="history-item ${directionClass}"
+          >
+
+
+            <div class="history-head">
+
+
+              <div>
+
+                <div class="history-symbol">
+
+                  ${escapeHtml(
+                    item.symbol ||
+                    "XAU/USD"
+                  )}
+
+                  •
+                  ${escapeHtml(
+                    item.interval ||
+                    "15min"
+                  )}
+
+                </div>
+
+
+                <div class="history-time">
+
+                  Signal:
+                  ${escapeHtml(
+                    displayTime(
+                      item.signalCandleTime ||
+                      item.time
+                    )
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div
+                  class="history-direction ${directionClass}"
+                >
+                  ${
+                    item.direction === "BUY"
+                      ? "📈 BUY"
+                      : "📉 SELL"
+                  }
+                </div>
+
+
+                <div
+                  class="status-badge status-${status.className}"
+                >
+                  ${status.badge}
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+            <div class="history-grid">
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  ENTRY
+                </div>
+
+                <div class="history-price-value">
+                  ${fmt(item.entry)}
+                </div>
+
+              </div>
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  STOP LOSS
+                </div>
+
+                <div class="history-price-value">
+                  ${fmt(item.stopLoss)}
+                </div>
+
+              </div>
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  TP1
+                </div>
+
+                <div class="history-price-value">
+                  ${fmt(item.tp1)}
+                </div>
+
+              </div>
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  TP2
+                </div>
+
+                <div class="history-price-value">
+                  ${fmt(item.tp2)}
+                </div>
+
+              </div>
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  FORECAST
+                </div>
+
+                <div class="history-price-value">
+                  ${fmt(item.forecastTarget)}
+                </div>
+
+              </div>
+
+
+              <div class="history-price">
+
+                <div class="history-price-label">
+                  CONFIDENCE
+                </div>
+
+                <div class="history-price-value">
+                  ${
+                    Number.isFinite(
+                      Number(item.confidence)
+                    )
+                      ? Number(
+                          item.confidence
+                        ) + "%"
+                      : "—"
+                  }
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+            <div
+              class="history-result ${status.className}"
+            >
+              ${status.text}
+            </div>
+
+
+            <div class="history-events">
+
+              <div class="history-events-title">
+                TRADE EVENTS
+              </div>
+
+              ${eventHtml}
+
+            </div>
+
+
+            <div class="history-extra">
+
+              <span>
+                Entry Rule: NEXT OPEN
+              </span>
+
+              <span>
+                Signal Candle:
+                ${escapeHtml(
+                  displayTime(
+                    item.signalCandleTime ||
+                    item.time
+                  )
+                )}
+              </span>
+
+            </div>
+
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+function createChart(){
+
+  chart =
+    LightweightCharts.createChart(
+      $("chart"),
+      {
+
+        layout:{
+
+          background:{
+            type:"solid",
+            color:"#091722"
+          },
+
+          textColor:"#8ea3b2"
+
+        },
+
+
+        grid:{
+
+          vertLines:{
+            color:"#122733"
+          },
+
+          horzLines:{
+            color:"#122733"
+          }
+
+        },
+
+
+        rightPriceScale:{
+          borderColor:"#213744"
+        },
+
+
+        timeScale:{
+
+          borderColor:"#213744",
+
+          timeVisible:true,
+
+          secondsVisible:false
+
+        }
+
+      }
+    );
+
+
+  series =
+    chart.addSeries(
+      LightweightCharts.CandlestickSeries,
+      {
+
+        upColor:"#35d98a",
+
+        downColor:"#ff5264",
+
+        borderVisible:false,
+
+        wickUpColor:"#35d98a",
+
+        wickDownColor:"#ff5264"
+
+      }
+    );
+
+
+  window.addEventListener(
+    "resize",
+    () => {
+
+      if(!chart){
+        return;
+      }
+
+
+      chart.applyOptions({
+
+        width:
+          $("chart").clientWidth
+
+      });
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   DISPLAY LIVE SIGNAL
+========================================================= */
+
+function renderLiveSignal(
+  data
+){
+
+  const forecast =
+    data.engine?.forecast || {};
+
+
+  const signal =
+    data.engine?.signal || null;
+
+
+  const signalBox =
+    $("signal");
+
+
+  signalBox.className =
+    "signal " +
+    (
+      signal?.direction === "BUY"
+        ? "buy"
+        : signal?.direction === "SELL"
+          ? "sell"
+          : "wait"
+    );
+
+
+  $("signalText").textContent =
+    signal
+
+      ? `Confirmed on closed candle → next candle OPEN entry @ ${fmt(signal.entry)}`
+
+      : (
+          forecast.reason ||
+          "Waiting for a valid forecast setup…"
+        );
+
+
+  $("signal")
+    .querySelector(".dir")
+    .textContent =
+      signal?.direction ||
+      "WAIT";
+
+
+  $("triggerBadge").textContent =
+    signal
+
+      ? (
+          signal.triggerType === "NEW_SWING"
+            ? "NEW SWING"
+            : "FORECAST QUALITY"
+        )
+
+      : "NO SIGNAL";
+
+
+  $("entry").textContent =
+    fmt(signal?.entry);
+
+
+  $("sl").textContent =
+    fmt(signal?.stopLoss);
+
+
+  $("tp1").textContent =
+    fmt(signal?.tp1);
+
+
+  $("tp2").textContent =
+    fmt(signal?.tp2);
+
+
+  $("forecastTarget").textContent =
+    fmt(forecast.target);
+
+
+  $("forecastPct").textContent =
+    forecast.forecastPercent == null
+      ? "—"
+      : `${forecast.forecastPercent}%`;
+
+
+  $("confidence").textContent =
+    forecast.confidence == null
+      ? "—"
+      : `${forecast.confidence}%`;
+
+
+  $("uncertainty").textContent =
+    forecast.uncertaintyPercent == null
+      ? "—"
+      : `${forecast.uncertaintyPercent}%`;
+
+
+  $("atrMultiple").textContent =
+    forecast.atrMultiple == null
+      ? "—"
+      : `${forecast.atrMultiple}x`;
+
+
+  $("signalCandle").textContent =
+    signal?.signalCandleTime ||
+    "—";
+
+}
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+async function load(){
+
+  if(loading){
+    return;
+  }
+
+
+  loading =
+    true;
+
+
+  $("connection").textContent =
+    "Loading…";
+
+
+  const symbol =
+    $("symbol")
+      .value
+      .trim() ||
+    "XAU/USD";
+
+
+  const interval =
+    $("interval")
+      .value;
+
+
+  $("chartTitle").textContent =
+    `${symbol} • ${interval}`;
+
+
+  try{
+
+    const response =
+      await fetch(
+        `/api/forecast?symbol=${
+          encodeURIComponent(
+            symbol
+          )
+        }&interval=${
+          encodeURIComponent(
+            interval
+          )
+        }&outputsize=250`,
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      !data.success
+    ){
+
+      throw new Error(
+        data.error ||
+        "Forecast API request failed"
+      );
+
+    }
+
+
+    const candles =
+      Array.isArray(
+        data.candles
+      )
+        ? data.candles
+        : [];
+
+
+    /*
+      CHART
+    */
+
+    const chartData =
+      candles
+        .map(
+          candle => ({
+
+            time:
+              toChartTime(
+                candle.time
+              ),
+
+            open:
+              Number(candle.open),
+
+            high:
+              Number(candle.high),
+
+            low:
+              Number(candle.low),
+
+            close:
+              Number(candle.close)
+
+          })
+        )
+        .filter(
+          candle =>
+
+            candle.time &&
+            Number.isFinite(
+              candle.open
+            ) &&
+            Number.isFinite(
+              candle.high
+            ) &&
+            Number.isFinite(
+              candle.low
+            ) &&
+            Number.isFinite(
+              candle.close
+            )
+
+        );
+
+
+    if(series){
+
+      series.setData(
+        chartData
+      );
+
+      chart
+        .timeScale()
+        .fitContent();
+
+    }
+
+
+    /*
+      LIVE SIGNAL
+    */
+
+    renderLiveSignal(
+      data
+    );
+
+
+    /*
+      HISTORY
+    */
 
     let history =
       loadHistory();
 
-    if(!history.length){
-      return;
-    }
 
     let changed =
       false;
 
-    for(
-      const item of history
-    ){
 
-      /*
-       * Old TP3-WIN records are migrated
-       * back to OPEN and recalculated.
-       */
-      if(
-        item.status === "WIN" &&
-        item.result === "TP3"
-      ){
-
-        item.status =
-          "OPEN";
-
-        item.result =
-          null;
-
-        item.resultTime =
-          null;
-
-        item.resultPrice =
-          null;
-
-        item.hitTP3 =
-          false;
-
-        changed =
-          true;
-
-      }
+    const signal =
+      data.engine?.signal ||
+      null;
 
 
-      if(
-        item.status !== "OPEN"
-      ){
-
-        continue;
-
-      }
+    const forecast =
+      data.engine?.forecast ||
+      {};
 
 
-      item.events =
-        Array.isArray(item.events)
-          ? item.events
-          : [];
+    /*
+      Save current confirmed signal.
+    */
 
-      item.hitTP1 =
-        !!item.hitTP1;
+    if(signal){
 
-      item.hitTP2 =
-        !!item.hitTP2;
-
-      item.hitTP3 =
-        !!item.hitTP3;
-
-      item.hitSL =
-        !!item.hitSL;
-
-
-      const signalTime =
-        historyTimeMs(
-          item.signalTime
+      const result =
+        createOrUpdateHistoryRecord(
+          history,
+          symbol,
+          interval,
+          signal,
+          forecast
         );
 
-      if(
-        !Number.isFinite(
-          signalTime
-        )
-      ){
 
-        continue;
-
+      if(result.changed){
+        changed = true;
       }
 
+    }
 
-      const candles =
-        market5?.candles || [];
 
-      if(
-        !Array.isArray(candles) ||
-        !candles.length
-      ){
+    /*
+      Evaluate historical signals
+      using the SAME candle response.
 
-        continue;
+      No second API request.
+    */
 
-      }
+    const outcomeChanged =
+      evaluateForecastHistory(
+        history,
+        candles,
+        symbol,
+        interval
+      );
 
 
-      const futureCandles =
-        candles
-          .filter(
-            candle =>
-              historyTimeMs(
-                candle.time
-              ) > signalTime
-          )
-          .sort(
-            (a,b) =>
-              historyTimeMs(a.time) -
-              historyTimeMs(b.time)
-          );
-
-
-      for(
-        const candle of futureCandles
-      ){
-
-        const high =
-          Number(candle.high);
-
-        const low =
-          Number(candle.low);
-
-        if(
-          !Number.isFinite(high) ||
-          !Number.isFinite(low)
-        ){
-
-          continue;
-
-        }
-
-
-        const isBuy =
-          item.direction === "BUY";
-
-
-        const sl =
-          Number(item.stopLoss);
-
-        const tp1 =
-          Number(item.tp1);
-
-        const tp2 =
-          Number(item.tp2);
-
-
-        /* =================================================
-           BUY
-        ================================================= */
-
-        if(isBuy){
-
-          /*
-           * SL = terminal LOSS
-           */
-          if(
-            Number.isFinite(sl) &&
-            low <= sl
-          ){
-
-            item.hitSL =
-              true;
-
-            addHistoryEvent(
-              item,
-              "SL",
-              sl,
-              low,
-              candle.time
-            );
-
-            item.status =
-              "LOSS";
-
-            item.result =
-              "SL HIT";
-
-            item.resultPrice =
-              low;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /*
-           * TP2 = terminal WIN
-           */
-          if(
-            Number.isFinite(tp2) &&
-            high >= tp2
-          ){
-
-            /*
-             * If TP1 wasn't recorded yet,
-             * record it first because TP2
-             * necessarily passes TP1.
-             */
-            if(!item.hitTP1){
-
-              item.hitTP1 =
-                true;
-
-              item.tp1HitPrice =
-                high;
-
-              item.tp1HitTime =
-                candle.time;
-
-              addHistoryEvent(
-                item,
-                "TP1",
-                tp1,
-                high,
-                candle.time
-              );
-
-            }
-
-
-            item.hitTP2 =
-              true;
-
-            addHistoryEvent(
-              item,
-              "TP2",
-              tp2,
-              high,
-              candle.time
-            );
-
-            item.status =
-              "WIN";
-
-            item.result =
-              "TP2 HIT";
-
-            item.resultPrice =
-              high;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /*
-           * TP1 = OPEN EVENT
-           */
-          if(
-            Number.isFinite(tp1) &&
-            high >= tp1 &&
-            !item.hitTP1
-          ){
-
-            item.hitTP1 =
-              true;
-
-            item.tp1HitPrice =
-              high;
-
-            item.tp1HitTime =
-              candle.time;
-
-            addHistoryEvent(
-              item,
-              "TP1",
-              tp1,
-              high,
-              candle.time
-            );
-
-            changed =
-              true;
-
-          }
-
-        }
-
-
-        /* =================================================
-           SELL
-        ================================================= */
-
-        else if(
-          item.direction === "SELL"
-        ){
-
-          /*
-           * SL = terminal LOSS
-           */
-          if(
-            Number.isFinite(sl) &&
-            high >= sl
-          ){
-
-            item.hitSL =
-              true;
-
-            addHistoryEvent(
-              item,
-              "SL",
-              sl,
-              high,
-              candle.time
-            );
-
-            item.status =
-              "LOSS";
-
-            item.result =
-              "SL HIT";
-
-            item.resultPrice =
-              high;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /*
-           * TP2 = terminal WIN
-           */
-          if(
-            Number.isFinite(tp2) &&
-            low <= tp2
-          ){
-
-            if(!item.hitTP1){
-
-              item.hitTP1 =
-                true;
-
-              item.tp1HitPrice =
-                low;
-
-              item.tp1HitTime =
-                candle.time;
-
-              addHistoryEvent(
-                item,
-                "TP1",
-                tp1,
-                low,
-                candle.time
-              );
-
-            }
-
-
-            item.hitTP2 =
-              true;
-
-            addHistoryEvent(
-              item,
-              "TP2",
-              tp2,
-              low,
-              candle.time
-            );
-
-            item.status =
-              "WIN";
-
-            item.result =
-              "TP2 HIT";
-
-            item.resultPrice =
-              low;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /*
-           * TP1 = OPEN EVENT
-           */
-          if(
-            Number.isFinite(tp1) &&
-            low <= tp1 &&
-            !item.hitTP1
-          ){
-
-            item.hitTP1 =
-              true;
-
-            item.tp1HitPrice =
-              low;
-
-            item.tp1HitTime =
-              candle.time;
-
-            addHistoryEvent(
-              item,
-              "TP1",
-              tp1,
-              low,
-              candle.time
-            );
-
-            changed =
-              true;
-
-          }
-
-        }
-
-
-        item.lastCheckedAt =
-          new Date().toISOString();
-
-      }
-
+    if(outcomeChanged){
+      changed = true;
     }
 
 
@@ -1657,1013 +3101,193 @@ timer =
 
     renderHistory();
 
-  };
 
+    $("connection").textContent =
+      `Live • ${new Date().toLocaleTimeString()}`;
 
-  /* =======================================================
-     RESULT TEXT
-  ======================================================= */
 
-  getHistoryResult = function(
-    item
-  ){
+  }catch(error){
 
-    if(
-      item.status === "WIN"
-    ){
+    console.error(
+      "Swing Forecast error:",
+      error
+    );
 
-      return {
 
-        className:
-          "win",
+    $("connection").textContent =
+      "Error";
 
-        text:
-          "🏆 TP2 HIT • WIN"
 
-      };
+    $("signal").className =
+      "signal wait";
 
-    }
 
+    $("signal")
+      .querySelector(".dir")
+      .textContent =
+        "ERROR";
 
-    if(
-      item.status === "LOSS"
-    ){
 
-      return {
+    $("triggerBadge").textContent =
+      "API ERROR";
 
-        className:
-          "loss",
 
-        text:
-          "🔴 SL HIT • LOSS"
+    $("signalText").textContent =
+      error.message;
 
-      };
+  }finally{
 
-    }
+    loading =
+      false;
 
+  }
 
-    if(
-      item.hitTP1
-    ){
+}
 
-      return {
 
-        className:
-          "open",
+/* =========================================================
+   HISTORY FILTERS
+========================================================= */
 
-        text:
-          "🟢 TP1 HIT • STILL OPEN • waiting for TP2 or SL"
+document
+  .querySelectorAll(
+    ".history-filter"
+  )
+  .forEach(
+    button => {
 
-      };
+      button.addEventListener(
+        "click",
+        () => {
 
-    }
+          historyFilter =
+            button.dataset.filter;
 
 
-    return {
-
-      className:
-        "open",
-
-      text:
-        "🟡 OPEN • WAITING FOR TP1 / TP2 / SL"
-
-    };
-
-  };
-
-
-  /* =======================================================
-     HISTORY RENDER
-  ======================================================= */
-
-  renderHistory = function(){
-
-    const list =
-      $("historyList");
-
-    if(!list){
-      return;
-    }
-
-
-    const history =
-      loadHistory();
-
-
-    const total =
-      history.length;
-
-    const wins =
-      history.filter(
-        x => x.status === "WIN"
-      ).length;
-
-    const losses =
-      history.filter(
-        x => x.status === "LOSS"
-      ).length;
-
-    const open =
-      history.filter(
-        x => x.status === "OPEN"
-      ).length;
-
-
-    const closed =
-      wins + losses;
-
-    const winRate =
-      closed > 0
-        ? (
-            wins /
-            closed *
-            100
-          ).toFixed(1) + "%"
-        : "—";
-
-
-    $("historyTotal").textContent =
-      total;
-
-    $("historyWins").textContent =
-      wins;
-
-    $("historyLosses").textContent =
-      losses;
-
-    $("historyWinRate").textContent =
-      winRate;
-
-    $("historyOpenCount").textContent =
-      `Open: ${open}`;
-
-    $("historyCount").textContent =
-      `${total} signal${total === 1 ? "" : "s"}`;
-
-
-    let filtered =
-      history;
-
-
-    if(
-      historyFilter === "WIN"
-    ){
-
-      filtered =
-        history.filter(
-          x => x.status === "WIN"
-        );
-
-    }
-
-
-    if(
-      historyFilter === "LOSS"
-    ){
-
-      filtered =
-        history.filter(
-          x => x.status === "LOSS"
-        );
-
-    }
-
-
-    if(
-      historyFilter === "OPEN"
-    ){
-
-      filtered =
-        history.filter(
-          x => x.status === "OPEN"
-        );
-
-    }
-
-
-    if(!filtered.length){
-
-      list.innerHTML =
-        `<div class="history-empty">
-          No signals found.
-        </div>`;
-
-      return;
-
-    }
-
-
-    list.innerHTML =
-      filtered
-        .map(
-          item => {
-
-            const direction =
-              item.direction === "BUY"
-                ? "buy"
-                : "sell";
-
-
-            const result =
-              getHistoryResult(
-                item
-              );
-
-
-            const events =
-              Array.isArray(
-                item.events
-              )
-                ? item.events
-                : [];
-
-
-            const eventHtml =
-              events
-                .map(
-                  event => {
-
-                    const label =
-                      event.type === "TP1"
-                        ? "🟢 TP1 HIT"
-                        : event.type === "TP2"
-                          ? "🏆 TP2 HIT • WIN"
-                          : "🔴 SL HIT • LOSS";
-
-
-                    return `
-                      <div
-                        class="history-meta"
-                        style="
-                          margin-top:6px;
-                          padding:7px;
-                          border-radius:7px;
-                          background:#071018;
-                          color:${
-                            event.type === "SL"
-                              ? "#ff6370"
-                              : event.type === "TP2"
-                                ? "#19d19a"
-                                : "#e4a94b"
-                          };
-                        "
-                      >
-                        ${label}
-                        • ${formatPrice(event.hitPrice)}
-                        • ${escapeHtml(
-                            formatHistoryTime(
-                              event.time
-                            )
-                          )}
-                      </div>
-                    `;
-
-                  }
+          document
+            .querySelectorAll(
+              ".history-filter"
+            )
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "active"
                 )
-                .join("");
+            );
 
 
-            return `
+          button.classList.add(
+            "active"
+          );
 
-              <div
-                class="history-item ${direction}"
-              >
 
-                <div class="history-head">
+          renderHistory();
 
-                  <div class="history-symbol">
-                    ${escapeHtml(
-                      item.symbol
-                    )}
-                  </div>
+        }
+      );
 
-                  <div
-                    class="history-direction ${direction}"
-                  >
-                    ${escapeHtml(
-                      item.direction
-                    )}
-                  </div>
+    }
+  );
 
-                </div>
 
+/* =========================================================
+   CLEAR HISTORY
+========================================================= */
 
-                <div class="history-time">
+$("clearHistory")
+  .addEventListener(
+    "click",
+    () => {
 
-                  ${escapeHtml(
-                    formatHistoryTime(
-                      item.signalTime
-                    )
-                  )}
-
-                  • ${escapeHtml(
-                    item.timeframe ||
-                    "15M + 5M"
-                  )}
-
-                </div>
-
-
-                <div class="history-grid">
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      ENTRY
-                    </div>
-
-                    <div class="history-price-value">
-                      ${formatPrice(
-                        item.entryLow
-                      )}
-                      –
-                      ${formatPrice(
-                        item.entryHigh
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      SL
-                    </div>
-
-                    <div class="history-price-value">
-                      ${formatPrice(
-                        item.stopLoss
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      TP1
-                    </div>
-
-                    <div class="history-price-value">
-                      ${formatPrice(
-                        item.tp1
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      TP2
-                    </div>
-
-                    <div class="history-price-value">
-                      ${formatPrice(
-                        item.tp2
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      FORECAST
-                    </div>
-
-                    <div class="history-price-value">
-                      ${formatPrice(
-                        item.forecastTarget
-                      )}
-                    </div>
-
-                  </div>
-
-
-                  <div class="history-price">
-
-                    <div class="history-price-label">
-                      CONFIDENCE
-                    </div>
-
-                    <div class="history-price-value">
-                      ${Number(
-                        item.confidence || 0
-                      )}%
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                <div
-                  class="history-result ${result.className}"
-                >
-                  ${result.text}
-                </div>
-
-
-                ${eventHtml}
-
-
-                <div class="history-meta">
-
-                  <span>
-                    Forecast Origin:
-                    ${formatPrice(
-                      item.forecastOrigin
-                    )}
-                  </span>
-
-                  <span>
-                    ${item.interval || "15min"}
-                  </span>
-
-                </div>
-
-
-              </div>
-
-            `;
-
-          }
-        )
-        .join("");
-
-  };
-
-
-  /* =======================================================
-     FORECAST OUTCOME CHECK
-  ======================================================= */
-
-  async function fixForecastHistory(){
-
-    try{
-
-      const symbol =
-        $("symbol")
-          .value
-          .trim() ||
-        "XAU/USD";
-
-
-      const interval =
-        $("interval")
-          .value;
-
-
-      const response =
-        await fetch(
-          `/api/forecast?symbol=${
-            encodeURIComponent(symbol)
-          }&interval=${
-            encodeURIComponent(interval)
-          }&outputsize=250`,
-          {
-            cache:
-              "no-store"
-          }
+      const ok =
+        confirm(
+          "Clear all Swing Forecast history?"
         );
 
 
-      const data =
-        await response.json();
-
-
-      if(
-        !response.ok ||
-        !data.success
-      ){
-
+      if(!ok){
         return;
-
       }
 
 
-      const candles =
-        Array.isArray(
-          data.candles
-        )
-          ? data.candles
-          : [];
-
-
-      const signal =
-        data.engine?.signal ||
-        null;
-
-
-      const forecast =
-        data.engine?.forecast ||
-        {};
-
-
-      let history =
-        loadHistory();
-
-
-      let changed =
-        false;
-
-
-      /*
-       * If current API has a signal,
-       * create or complete its history record.
-       */
-
-      if(signal){
-
-        const key =
-          `${symbol}|${interval}|` +
-          `${signal.direction}|` +
-          `${signal.signalCandleTime}|` +
-          `${signal.entry}`;
-
-
-        let item =
-          history.find(
-            x => x.key === key
-          );
-
-
-        if(!item){
-
-          item = {
-
-            key,
-
-            symbol,
-
-            interval,
-
-            timeframe:
-              interval,
-
-            direction:
-              signal.direction,
-
-            signalTime:
-              signal.signalCandleTime,
-
-            time:
-              signal.signalCandleTime,
-
-            entry:
-              Number(signal.entry),
-
-            entryLow:
-              Number(signal.entry),
-
-            entryHigh:
-              Number(signal.entry),
-
-            stopLoss:
-              Number(signal.stopLoss),
-
-            tp1:
-              Number(signal.tp1),
-
-            tp2:
-              Number(signal.tp2),
-
-            forecastTarget:
-              Number(forecast.target),
-
-            forecastOrigin:
-              Number(
-                signal.forecastOrigin ??
-                forecast.origin
-              ),
-
-            confidence:
-              Number(
-                signal.confidence ||
-                forecast.confidence ||
-                0
-              ),
-
-            status:
-              "OPEN",
-
-            result:
-              null,
-
-            resultPrice:
-              null,
-
-            resultTime:
-              null,
-
-            events:
-              [],
-
-            tp1Hit:
-              false,
-
-            tp2Hit:
-              false,
-
-            slHit:
-              false
-
-          };
-
-
-          history.unshift(
-            item
-          );
-
-
-          changed =
-            true;
-
-        }
-        else{
-
-          item.signalTime =
-            item.signalTime ||
-            signal.signalCandleTime;
-
-          item.time =
-            item.time ||
-            signal.signalCandleTime;
-
-          item.stopLoss =
-            Number(
-              item.stopLoss ??
-              signal.stopLoss
-            );
-
-          item.tp1 =
-            Number(
-              item.tp1 ??
-              signal.tp1
-            );
-
-          item.tp2 =
-            Number(
-              item.tp2 ??
-              signal.tp2
-            );
-
-          item.forecastTarget =
-            Number(
-              item.forecastTarget ??
-              forecast.target
-            );
-
-          item.forecastOrigin =
-            Number(
-              item.forecastOrigin ??
-              signal.forecastOrigin ??
-              forecast.origin
-            );
-
-          item.confidence =
-            Number(
-              item.confidence ??
-              signal.confidence ??
-              forecast.confidence ??
-              0
-            );
-
-          item.events =
-            Array.isArray(item.events)
-              ? item.events
-              : [];
-
-          item.tp1Hit =
-            !!item.tp1Hit;
-
-          item.tp2Hit =
-            !!item.tp2Hit;
-
-          item.slHit =
-            !!item.slHit;
-
-        }
-
-      }
-
-
-      /*
-       * Evaluate all OPEN records for this
-       * symbol + interval.
-       */
-
-      for(
-        const item of history
-      ){
-
-        if(
-          item.status !== "OPEN"
-        ){
-
-          continue;
-
-        }
-
-
-        if(
-          item.symbol !== symbol ||
-          item.interval !== interval
-        ){
-
-          continue;
-
-        }
-
-
-        const signalMs =
-          historyTimeMs(
-            item.signalTime ||
-            item.time
-          );
-
-
-        if(
-          !Number.isFinite(
-            signalMs
-          )
-        ){
-
-          continue;
-
-        }
-
-
-        const future =
-          candles
-            .filter(
-              candle =>
-                historyTimeMs(
-                  candle.time
-                ) > signalMs
-            )
-            .sort(
-              (a,b) =>
-                historyTimeMs(a.time) -
-                historyTimeMs(b.time)
-            );
-
-
-        for(
-          const candle of future
-        ){
-
-          const high =
-            Number(candle.high);
-
-          const low =
-            Number(candle.low);
-
-          if(
-            !Number.isFinite(high) ||
-            !Number.isFinite(low)
-          ){
-
-            continue;
-
-          }
-
-
-          const isBuy =
-            item.direction === "BUY";
-
-
-          const sl =
-            Number(item.stopLoss);
-
-          const tp1 =
-            Number(item.tp1);
-
-          const tp2 =
-            Number(item.tp2);
-
-
-          item.events =
-            Array.isArray(item.events)
-              ? item.events
-              : [];
-
-
-          /* SL = terminal LOSS */
-
-          if(
-            isBuy
-              ? low <= sl
-              : high >= sl
-          ){
-
-            item.slHit =
-              true;
-
-            item.events.push({
-
-              type:
-                "SL",
-
-              target:
-                sl,
-
-              hitPrice:
-                isBuy
-                  ? low
-                  : high,
-
-              time:
-                candle.time
-
-            });
-
-
-            item.status =
-              "LOSS";
-
-            item.result =
-              "SL HIT";
-
-            item.resultPrice =
-              isBuy
-                ? low
-                : high;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /* TP2 = terminal WIN */
-
-          if(
-            isBuy
-              ? high >= tp2
-              : low <= tp2
-          ){
-
-            if(!item.tp1Hit){
-
-              item.tp1Hit =
-                true;
-
-              item.events.push({
-
-                type:
-                  "TP1",
-
-                target:
-                  tp1,
-
-                hitPrice:
-                  isBuy
-                    ? high
-                    : low,
-
-                time:
-                  candle.time
-
-              });
-
-            }
-
-
-            item.tp2Hit =
-              true;
-
-            item.events.push({
-
-              type:
-                "TP2",
-
-              target:
-                tp2,
-
-              hitPrice:
-                isBuy
-                  ? high
-                  : low,
-
-              time:
-                candle.time
-
-            });
-
-
-            item.status =
-              "WIN";
-
-            item.result =
-              "TP2 HIT";
-
-            item.resultPrice =
-              isBuy
-                ? high
-                : low;
-
-            item.resultTime =
-              candle.time;
-
-            changed =
-              true;
-
-            break;
-
-          }
-
-
-          /* TP1 = OPEN */
-
-          if(
-            !item.tp1Hit &&
-            (
-              isBuy
-                ? high >= tp1
-                : low <= tp1
-            )
-          ){
-
-            item.tp1Hit =
-              true;
-
-            item.events.push({
-
-              type:
-                "TP1",
-
-              target:
-                tp1,
-
-              hitPrice:
-                isBuy
-                  ? high
-                  : low,
-
-              time:
-                candle.time
-
-            });
-
-
-            changed =
-              true;
-
-          }
-
-        }
-
-      }
-
-
-      if(changed){
-
-        saveHistory(
-          history
-        );
-
-      }
+      localStorage.removeItem(
+        HISTORY_KEY
+      );
 
 
       renderHistory();
 
-    }catch(error){
+    }
+  );
 
-      console.warn(
-        "Forecast history update:",
-        error
-      );
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+$("load")
+  .addEventListener(
+    "click",
+    load
+  );
+
+
+$("interval")
+  .addEventListener(
+    "change",
+    load
+  );
+
+
+$("symbol")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key === "Enter"
+      ){
+
+        load();
+
+      }
 
     }
-
-  }
-
-
-  /*
-   * Run immediately.
-   */
-  fixForecastHistory();
+  );
 
 
-  /*
-   * Keep outcome tracking alive.
-   */
+/* =========================================================
+   START
+========================================================= */
+
+createChart();
+
+renderHistory();
+
+load();
+
+
+/*
+  One API request every 30 seconds.
+
+  This same response is used for:
+  - live forecast
+  - chart
+  - new signal
+  - history outcome evaluation
+
+  So we do NOT make a second history API request.
+*/
+
+timer =
   setInterval(
-    fixForecastHistory,
+    load,
     30000
   );
 
 
-})();
-            </script>
+</script>
+
+
+</body>
+</html>
