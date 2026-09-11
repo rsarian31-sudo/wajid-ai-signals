@@ -22,9 +22,9 @@ export default function PerformanceScreen() {
     {!query.isLoading && !query.isError && summary && <>
       <View style={styles.grid}><MetricCard label="Total Signals" value={String(summary.totalSignals)} /><MetricCard label="Wins" value={String(summary.wins)} tone="positive" /><MetricCard label="Losses" value={String(summary.losses)} tone="negative" /><MetricCard label="Win Rate" value={`${summary.winRate.toFixed(2)}%`} /></View>
       <SectionTitle title="Strategy Performance" />
-      <View style={styles.list}>{STRATEGIES.map((strategy) => <PerformanceBreakdownCard key={strategy.id} title={strategy.name} data={query.data.strategyPerformance[strategy.id]} />)}</View>
+      <View style={styles.list}>{STRATEGIES.map((strategy) => <PerformanceBreakdownCard key={strategy.id} title={strategy.name} data={summary.strategyPerformance[strategy.id]} />)}</View>
       <SectionTitle title="BUY vs SELL" />
-      <View style={styles.list}><PerformanceBreakdownCard title="BUY" data={query.data.directionPerformance.BUY} /><PerformanceBreakdownCard title="SELL" data={query.data.directionPerformance.SELL} /></View>
+      <View style={styles.list}><PerformanceBreakdownCard title="BUY" data={summary.directionPerformance.BUY} /><PerformanceBreakdownCard title="SELL" data={summary.directionPerformance.SELL} /></View>
     </>}
   </ScrollView>;
 }

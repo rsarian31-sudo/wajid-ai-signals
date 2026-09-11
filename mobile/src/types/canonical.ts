@@ -6,5 +6,6 @@ export interface CanonicalSignal { id: string; identityKey?: string; strategy: S
 export interface CanonicalSummary { totalSignals: number; wins: number; losses: number; open: number; pending: number; active: number; ambiguous: number; winRate: number; }
 export type PerformanceBreakdown = CanonicalSummary;
 export interface HistoryResponse { success: true; summary: CanonicalSummary; records: CanonicalSignal[]; }
-export interface PerformanceResponse { success: true; summary: CanonicalSummary; strategyPerformance: Record<StrategyId, PerformanceBreakdown>; directionPerformance: Record<Direction, PerformanceBreakdown>; }
+export interface PerformanceSummary extends CanonicalSummary { strategyPerformance: Record<StrategyId, PerformanceBreakdown>; directionPerformance: Record<Direction, PerformanceBreakdown>; }
+export interface PerformanceResponse { success: true; summary: PerformanceSummary; }
 export interface StrategyEndpointResponse { success: true; symbol: string; interval: string; canonicalSignal?: unknown; engine?: Record<string, unknown>; strategy?: Record<string, unknown>; market?: Record<string, unknown>; tradePlan?: Record<string, unknown> | null; signal?: Record<string, unknown> | null; nextCandle?: Record<string, unknown>; closedCandle?: Record<string, unknown>; }
