@@ -528,6 +528,95 @@ button{
   margin-top:14px;
 }
 
+/* =========================
+   HISTORY STATS
+========================= */
+
+.historyStats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:7px;
+  padding:10px;
+  border-bottom:1px solid #1b2d3a;
+}
+
+.historyStat{
+  background:#0e1c27;
+  border:1px solid #1e303d;
+  border-radius:9px;
+  padding:9px 7px;
+  min-width:0;
+}
+
+.historyStatLabel{
+  color:#718594;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  white-space:nowrap;
+}
+
+.historyStatValue{
+  margin-top:5px;
+  font-size:15px;
+  font-weight:900;
+}
+
+.historyStat.total .historyStatValue{
+  color:#dfe8ef;
+}
+
+.historyStat.win .historyStatValue{
+  color:#79dc8a;
+}
+
+.historyStat.loss .historyStatValue{
+  color:#ff7884;
+}
+
+.historyStat.open .historyStatValue{
+  color:#f0c96b;
+}
+
+.historyStat.rate .historyStatValue{
+  color:#8fd4ff;
+}
+
+/* =========================
+   HISTORY FILTERS
+========================= */
+
+.historyFilters{
+  display:flex;
+  gap:6px;
+  padding:10px;
+  border-bottom:1px solid #1b2d3a;
+  overflow-x:auto;
+}
+
+.historyFilter{
+  border:1px solid #203341;
+  background:#0c1822;
+  color:#899baa;
+  border-radius:8px;
+  padding:7px 10px;
+  font-size:9px;
+  font-weight:800;
+  white-space:nowrap;
+  transition:.15s ease;
+}
+
+.historyFilter:hover{
+  border-color:#365264;
+  color:#c8d4dd;
+}
+
+.historyFilter.active{
+  background:#173022;
+  border-color:#4d8b5c;
+  color:#9ee5a0;
+}
+
 .historyBody{
   padding:10px;
   max-height:500px;
@@ -640,6 +729,18 @@ button{
 
   .metric{
     padding:9px;
+  }
+
+  .historyStats{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .historyStat{
+    padding:8px 7px;
+  }
+
+  .historyStatValue{
+    font-size:14px;
   }
 
 }
@@ -1216,6 +1317,131 @@ button{
   </div>
 
 
+  <!-- ===================================================
+       HISTORY SUMMARY
+  ==================================================== -->
+
+  <div class="historyStats">
+
+    <div class="historyStat total">
+
+      <div class="historyStatLabel">
+        Total
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyTotal"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="historyStat win">
+
+      <div class="historyStatLabel">
+        Win
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyWins"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="historyStat loss">
+
+      <div class="historyStatLabel">
+        Loss
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyLosses"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="historyStat open">
+
+      <div class="historyStatLabel">
+        Open
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyOpen"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="historyStat rate">
+
+      <div class="historyStatLabel">
+        Win Rate
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyWinRate"
+      >
+        0%
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================
+       HISTORY FILTERS
+  ==================================================== -->
+
+  <div class="historyFilters">
+
+    <button
+      class="historyFilter active"
+      data-history-filter="ALL"
+    >
+      ALL
+    </button>
+
+    <button
+      class="historyFilter"
+      data-history-filter="WIN"
+    >
+      WIN
+    </button>
+
+    <button
+      class="historyFilter"
+      data-history-filter="LOSS"
+    >
+      LOSS
+    </button>
+
+    <button
+      class="historyFilter"
+      data-history-filter="OPEN"
+    >
+      OPEN
+    </button>
+
+  </div>
+
+
   <div
     class="historyBody"
     id="historyBody"
@@ -1269,6 +1495,8 @@ const state = {
   chartTimeframe:"15min",
 
   lastSignalKey:null,
+
+  historyFilter:"ALL",
 
   history:loadHistory()
 
@@ -3415,6 +3643,144 @@ function updateHistoryOutcomes(){
 
 
 /* =========================================================
+   HISTORY STATS
+========================================================= */
+
+function getHistoryStats(){
+
+  const total =
+    state.history.length;
+
+
+  const wins =
+    state.history.filter(
+      item=>
+        String(
+          item.status || ""
+        ).toUpperCase()==="WIN"
+    ).length;
+
+
+  const losses =
+    state.history.filter(
+      item=>
+        String(
+          item.status || ""
+        ).toUpperCase()==="LOSS"
+    ).length;
+
+
+  const open =
+    state.history.filter(
+      item=>
+        String(
+          item.status || ""
+        ).toUpperCase()==="OPEN"
+    ).length;
+
+
+  const completed =
+    wins + losses;
+
+
+  const winRate =
+    completed > 0
+      ? (wins / completed) * 100
+      : 0;
+
+
+  return {
+
+    total,
+
+    wins,
+
+    losses,
+
+    open,
+
+    completed,
+
+    winRate
+
+  };
+
+}
+
+
+/* =========================================================
+   UPDATE HISTORY STATS UI
+========================================================= */
+
+function updateHistoryStats(){
+
+  const stats =
+    getHistoryStats();
+
+
+  $("historyTotal").textContent =
+    String(
+      stats.total
+    );
+
+
+  $("historyWins").textContent =
+    String(
+      stats.wins
+    );
+
+
+  $("historyLosses").textContent =
+    String(
+      stats.losses
+    );
+
+
+  $("historyOpen").textContent =
+    String(
+      stats.open
+    );
+
+
+  $("historyWinRate").textContent =
+    `${stats.winRate.toFixed(1)}%`;
+
+}
+
+
+/* =========================================================
+   FILTER HISTORY
+========================================================= */
+
+function getFilteredHistory(){
+
+  const filter =
+    String(
+      state.historyFilter ||
+      "ALL"
+    ).toUpperCase();
+
+
+  if(
+    filter==="ALL"
+  ){
+
+    return state.history;
+
+  }
+
+
+  return state.history.filter(
+    item=>
+      String(
+        item.status || "OPEN"
+      ).toUpperCase()===filter
+  );
+
+}
+
+
+/* =========================================================
    RENDER HISTORY
 ========================================================= */
 
@@ -3424,10 +3790,22 @@ function renderHistory(){
     $("historyBody");
 
 
+  updateHistoryStats();
+
+
+  const filteredHistory =
+    getFilteredHistory();
+
+
   $("historyCount").textContent =
-    String(
-      state.history.length
-    );
+    state.history.length ===
+    filteredHistory.length
+
+      ? String(
+          state.history.length
+        )
+
+      : `${filteredHistory.length} / ${state.history.length}`;
 
 
   if(
@@ -3442,8 +3820,32 @@ function renderHistory(){
   }
 
 
+  if(
+    !filteredHistory.length
+  ){
+
+    body.innerHTML =
+      `
+
+        <div class="empty">
+
+          No ${
+            escapeHtml(
+              state.historyFilter
+            )
+          } signals found.
+
+        </div>
+
+      `;
+
+    return;
+
+  }
+
+
   body.innerHTML =
-    state.history
+    filteredHistory
       .slice(0,50)
       .map(
         item=>{
@@ -3677,6 +4079,58 @@ function renderHistory(){
       .join("");
 
 }
+
+
+/* =========================================================
+   HISTORY FILTER BUTTONS
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".historyFilter"
+  )
+  .forEach(
+    button=>{
+
+      button.addEventListener(
+        "click",
+        ()=>{
+
+          const filter =
+            String(
+              button.dataset.historyFilter ||
+              "ALL"
+            ).toUpperCase();
+
+
+          state.historyFilter =
+            filter;
+
+
+          document
+            .querySelectorAll(
+              ".historyFilter"
+            )
+            .forEach(
+              item=>
+                item.classList.remove(
+                  "active"
+                )
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          renderHistory();
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================================================
@@ -4262,4 +4716,4 @@ loadMarket();
 </script>
 
 </body>
-  </html>
+      </html>
