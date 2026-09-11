@@ -534,7 +534,7 @@ button{
 
 .historyStats{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(6,1fr);
   gap:7px;
   padding:10px;
   border-bottom:1px solid #1b2d3a;
@@ -580,6 +580,18 @@ button{
 
 .historyStat.rate .historyStatValue{
   color:#8fd4ff;
+}
+
+.historyStat.netR .historyStatValue{
+  color:#d9d9d9;
+}
+
+.historyStat.netR.positive .historyStatValue{
+  color:#79dc8a;
+}
+
+.historyStat.netR.negative .historyStatValue{
+  color:#ff7884;
 }
 
 /* =========================
@@ -650,6 +662,48 @@ button{
   font-size:11px;
 }
 
+/* =========================
+   R RESULT
+========================= */
+
+.rResult{
+  margin-top:9px;
+  padding:8px 9px;
+  border-radius:8px;
+  background:#09141d;
+  border:1px solid #1d303c;
+  font-size:10px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.rResultLabel{
+  color:#718594;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+.rValue{
+  font-family:monospace;
+  font-size:12px;
+  font-weight:900;
+}
+
+.rProfit{
+  color:#79dc8a;
+}
+
+.rLoss{
+  color:#ff7884;
+}
+
+.rOpen{
+  color:#f0c96b;
+}
+
 .eventLine{
   margin-top:5px;
   padding:5px 7px;
@@ -697,6 +751,14 @@ button{
 
   .grid{
     grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:750px){
+
+  .historyStats{
+    grid-template-columns:repeat(3,1fr);
   }
 
 }
@@ -1398,6 +1460,25 @@ button{
         id="historyWinRate"
       >
         0%
+      </div>
+
+    </div>
+
+
+    <div
+      class="historyStat netR"
+      id="historyNetRCard"
+    >
+
+      <div class="historyStatLabel">
+        Net R
+      </div>
+
+      <div
+        class="historyStatValue"
+        id="historyNetR"
+      >
+        0.00R
       </div>
 
     </div>
@@ -3194,6 +3275,123 @@ function recordSignal(signal){
 
 
 /* =========================================================
+   R-MULTIPLE CALCULATOR
+========================================================= */
+
+function calculateRMultiple(item){
+
+  if(!item){
+
+    return 0;
+
+  }
+
+
+  /*
+    Terminal outcomes:
+    TP2 = +2R
+    SL  = -1R
+
+    Open:
+    TP1 hit = +1R progress
+    No TP1 = 0R
+  */
+
+  const status =
+    String(
+      item.status || "OPEN"
+    ).toUpperCase();
+
+
+  if(status==="WIN"){
+
+    return 2;
+
+  }
+
+
+  if(status==="LOSS"){
+
+    return -1;
+
+  }
+
+
+  if(
+    status==="OPEN" &&
+    item.tp1Hit
+  ){
+
+    return 1;
+
+  }
+
+
+  return 0;
+
+}
+
+
+/* =========================================================
+   FORMAT R
+========================================================= */
+
+function formatR(value){
+
+  const n =
+    Number(value);
+
+
+  if(
+    !Number.isFinite(n)
+  ){
+
+    return "0.00R";
+
+  }
+
+
+  const sign =
+    n>0
+      ? "+"
+      : "";
+
+
+  return `${sign}${n.toFixed(2)}R`;
+
+}
+
+
+/* =========================================================
+   R RESULT CLASS
+========================================================= */
+
+function getRClass(value){
+
+  const n =
+    Number(value);
+
+
+  if(n>0){
+
+    return "rProfit";
+
+  }
+
+
+  if(n<0){
+
+    return "rLoss";
+
+  }
+
+
+  return "rOpen";
+
+}
+
+
+/* =========================================================
    HISTORY OUTCOME ENGINE
 
    TP1 = OPEN
@@ -3689,6 +3887,28 @@ function getHistoryStats(){
       : 0;
 
 
+  /*
+    NET R only counts terminal
+    WIN / LOSS trades.
+
+    OPEN trades are excluded.
+  */
+
+  const netR =
+    state.history
+      .filter(
+        item=>
+          item.status==="WIN" ||
+          item.status==="LOSS"
+      )
+      .reduce(
+        (sum,item)=>
+          sum +
+          calculateRMultiple(item),
+        0
+      );
+
+
   return {
 
     total,
@@ -3701,7 +3921,9 @@ function getHistoryStats(){
 
     completed,
 
-    winRate
+    winRate,
+
+    netR
 
   };
 
@@ -3744,6 +3966,40 @@ function updateHistoryStats(){
 
   $("historyWinRate").textContent =
     `${stats.winRate.toFixed(1)}%`;
+
+
+  $("historyNetR").textContent =
+    formatR(
+      stats.netR
+    );
+
+
+  const netRCard =
+    $("historyNetRCard");
+
+
+  netRCard.classList.remove(
+    "positive",
+    "negative"
+  );
+
+
+  if(stats.netR>0){
+
+    netRCard.classList.add(
+      "positive"
+    );
+
+  }
+
+
+  else if(stats.netR<0){
+
+    netRCard.classList.add(
+      "negative"
+    );
+
+  }
 
 }
 
@@ -3870,6 +4126,32 @@ function renderHistory(){
             )
               ? item.events
               : [];
+
+
+          /*
+            Current R result.
+          */
+
+          const currentR =
+            calculateRMultiple(item);
+
+
+          const rClass =
+            getRClass(currentR);
+
+
+          /*
+            R label based on status.
+          */
+
+          const rLabel =
+            item.status==="WIN"
+              ? "TP2 TARGET"
+              : item.status==="LOSS"
+                ? "STOP LOSS"
+                : item.tp1Hit
+                  ? "TP1 HIT • STILL OPEN"
+                  : "CURRENT R";
 
 
           let eventHtml="";
@@ -4056,6 +4338,25 @@ function renderHistory(){
                 ${formatPrice(
                   item.tp3
                 )}
+
+              </div>
+
+
+              <!-- ================================
+                   R:R RESULT
+              ================================= -->
+
+              <div class="rResult">
+
+                <span class="rResultLabel">
+                  ${escapeHtml(rLabel)}
+                </span>
+
+                <span
+                  class="rValue ${rClass}"
+                >
+                  ${formatR(currentR)}
+                </span>
 
               </div>
 
@@ -4716,4 +5017,4 @@ loadMarket();
 </script>
 
 </body>
-      </html>
+  </html>
