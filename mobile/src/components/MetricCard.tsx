@@ -1,0 +1,4 @@
+import { StyleSheet, Text, View } from "react-native";
+import { colors, radius, spacing } from "@/constants/theme";
+export function MetricCard({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "positive" | "negative" }) { const valueColor = tone === "positive" ? colors.buy : tone === "negative" ? colors.sell : colors.text; return <View style={styles.card}><Text style={styles.label}>{label}</Text><Text style={[styles.value, { color: valueColor }]}>{value}</Text></View>; }
+const styles = StyleSheet.create({ card: { width: "48%", minHeight: 88, backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, borderRadius: radius.md, padding: spacing.md }, label: { color: colors.muted, fontSize: 10, fontWeight: "800", textTransform: "uppercase" }, value: { fontSize: 20, fontWeight: "900", marginTop: 8 } });

@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Wajid AI Signals",
+    "slug": "wajid-ai-signals",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "wajid-ai-signals",
+    "plugins": ["expo-router"],
+    "experiments": { "typedRoutes": true }
+  }
+}
