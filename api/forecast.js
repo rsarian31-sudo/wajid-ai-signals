@@ -1,3 +1,8 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { persistCandidate, syncOpenSignals } = require("./_lib/canonical-strategy.js");
+
 export default async function handler(req, res) {
   try {
     const apiKey = process.env.TWELVE_DATA_API_KEY;
@@ -223,15 +228,29 @@ export default async function handler(req, res) {
     const signal =
       forecast.signalTriggered &&
       nextCandle
-
-        ? buildSignal(
-            forecast,
-            lastClosed,
-            nextCandle.open,
-            nextCandle.time
-          )
-
+        ? buildSignal(forecast, lastClosed, nextCandle.open, nextCandle.time)
         : null;
+
+    let canonical = null;
+    try {
+      await syncOpenSignals({ strategy: "swing_forecast", symbol, timeframe: interval, candles });
+      if (signal && lastClosed && nextCandle) {
+        const candidate = {
+          strategy: "swing_forecast",
+          symbol,
+          timeframe: interval,
+          direction: signal.direction,
+          signalTime: signal.signalCandleTime,
+          candleTime: signal.signalCandleTime,
+          stopLoss: signal.stopLoss,
+          takeProfit: [signal.tp1, signal.tp2],
+          metadata: { source: "api/forecast", entryRule: signal.entryRule, quality: signal.quality, confidence: signal.confidence, forecast }
+        };
+        canonical = (await persistCandidate(candidate, lastClosed, nextCandle)).signal;
+      }
+    } catch (canonicalError) {
+      canonical = { error: canonicalError.code || canonicalError.message || "CANONICAL_SYNC_FAILED" };
+    }
 
     // =====================================================
     // FINAL RESPONSE
@@ -260,6 +279,8 @@ export default async function handler(req, res) {
             : "WAIT",
 
         signal,
+
+        canonicalSignal: canonical,
 
         forecast
       }

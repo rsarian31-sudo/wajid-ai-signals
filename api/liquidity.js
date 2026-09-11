@@ -42,6 +42,11 @@ const CONFIG = {
    VERCEL HANDLER
 ========================================================= */
 
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { persistCandidate, syncOpenSignals } = require("./_lib/canonical-strategy.js");
+
 export default async function handler(req, res) {
 
   res.setHeader(
@@ -130,10 +135,29 @@ export default async function handler(req, res) {
       });
     }
 
-    const analysis =
-      analyzeSwingLiquidity(
-        candles
-      );
+    const nextCandle = candles[candles.length - 1];
+    const closedCandles = candles.slice(0, -1);
+    const analysis = analyzeSwingLiquidity(closedCandles);
+    let canonical = null;
+    try {
+      await syncOpenSignals({ strategy: "swing_liquidity", symbol, timeframe: interval, candles });
+      if (analysis.signal?.direction && nextCandle && closedCandles.length) {
+        const candidate = {
+          strategy: "swing_liquidity",
+          symbol,
+          timeframe: interval,
+          direction: analysis.signal.direction,
+          signalTime: analysis.signal.time,
+          candleTime: analysis.signal.time,
+          stopLoss: analysis.tradePlan?.stopLoss,
+          takeProfit: [analysis.tradePlan?.tp1, analysis.tradePlan?.tp2, analysis.tradePlan?.tp3],
+          metadata: { source: "api/liquidity", strategy: "Swing Liquidity", signal: analysis.signal, tradePlan: analysis.tradePlan }
+        };
+        canonical = (await persistCandidate(candidate, closedCandles[closedCandles.length - 1], nextCandle)).signal;
+      }
+    } catch (canonicalError) {
+      canonical = { error: canonicalError.code || canonicalError.message || "CANONICAL_SYNC_FAILED" };
+    }
 
     return res.status(200).json({
 
@@ -179,7 +203,9 @@ export default async function handler(req, res) {
         analysis.tradePlan,
 
       diagnostics:
-        analysis.diagnostics
+        analysis.diagnostics,
+
+      canonicalSignal: canonical
 
     });
 

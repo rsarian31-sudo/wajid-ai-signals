@@ -1,3 +1,8 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { persistCandidate, syncOpenSignals } = require("./_lib/canonical-strategy.js");
+
 export default async function handler(req, res) {
   try {
     const apiKey = process.env.TWELVE_DATA_API_KEY;
@@ -42,7 +47,30 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({ success:true, symbol, interval, count:candles.length, candles, engine:calculateSDMagnet(candles) });
+    const nextCandle = candles[candles.length - 1];
+    const closedCandles = candles.slice(0, -1);
+    const engine = calculateSDMagnet(closedCandles);
+    let canonical = null;
+    try {
+      await syncOpenSignals({ strategy: "strong_sd_magnet", symbol, timeframe: interval, candles });
+      if (engine.signal && nextCandle) {
+        const candidate = {
+          strategy: "strong_sd_magnet",
+          symbol,
+          timeframe: interval,
+          direction: engine.signal.direction,
+          signalTime: engine.signalTime,
+          candleTime: engine.signalTime,
+          stopLoss: engine.signal.stopLoss,
+          takeProfit: [engine.signal.tp1, engine.signal.tp2, engine.signal.tp3],
+          metadata: { source: "api/market", rules: engine.rules, signal: engine.signal, resultTargetIndex: 2 }
+        };
+        canonical = (await persistCandidate(candidate, closedCandles[closedCandles.length - 1], nextCandle)).signal;
+      }
+    } catch (canonicalError) {
+      canonical = { error: canonicalError.code || canonicalError.message || "CANONICAL_SYNC_FAILED" };
+    }
+    return res.status(200).json({ success:true, symbol, interval, count:candles.length, candles, engine: { ...engine, canonicalSignal: canonical } });
   } catch (error) {
     return res.status(500).json({ success:false, error:error.message || "Server error" });
   }
