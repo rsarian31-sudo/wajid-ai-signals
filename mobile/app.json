@@ -7,6 +7,9 @@
     "userInterfaceStyle": "dark",
     "scheme": "wajid-ai-signals",
     "plugins": ["expo-router"],
-    "experiments": { "typedRoutes": true }
+    "experiments": { "typedRoutes": true },
+    "android": {
+      "package": "com.owajid.wajidaisignals"
+    }
   }
 }
