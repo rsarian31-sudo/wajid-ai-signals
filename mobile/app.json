@@ -8,6 +8,7 @@
     "scheme": "wajid-ai-signals",
     "plugins": ["expo-router"],
     "experiments": { "typedRoutes": true },
+    "icon": "./assets/icon.png",
     "android": {
       "package": "com.owajid.wajidaisignals"
     },
