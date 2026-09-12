@@ -1,0 +1,14 @@
+name: Android APK Preview
+
+on:
+  push:
+    branches:
+      - feature/canonical-signal-backend-wiring
+
+jobs:
+  build_android:
+    name: Build Android APK
+    type: build
+    params:
+      platform: android
+      profile: preview
