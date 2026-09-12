@@ -1,3 +1,5 @@
+require('./twelve-data-cache.cjs').installTwelveDataFetchCache();
+
 const {
   createLockedSignal,
   registerEntry,
