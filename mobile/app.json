@@ -10,6 +10,11 @@
     "experiments": { "typedRoutes": true },
     "android": {
       "package": "com.owajid.wajidaisignals"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a41fda5f-7230-4cda-8ab1-73741a1a072b"
+      }
     }
   }
 }
