@@ -289,20 +289,24 @@ function detectLiquiditySweeps(candles, swings) {
 function confirmSweep(candles, sweep) {
   if (!sweep) return { confirmed: false };
 
-  const start = sweep.index + 1;
-  const end = Math.min(candles.length - 1, sweep.index + CONFIG.confirmationBars);
+  /*
+    STRICT NEXT-CANDLE CONFIRMATION:
+    The sweep candle is the setup candle.
+    Only the immediately following completed candle can confirm it.
+    This prevents late entries 2-6 candles after the sweep.
+  */
+  const index = sweep.index + 1;
+  if (index >= candles.length) return { confirmed: false };
 
-  for (let i = start; i <= end; i++) {
-    const current = candles[i];
-    const previous = candles[i - 1];
+  const current = candles[index];
+  const previous = candles[sweep.index];
 
-    if (sweep.type === "BULLISH" && current.close > current.open && current.close > previous.high) {
-      return { confirmed: true, direction: "BUY", index: i, time: current.time, price: current.close };
-    }
+  if (sweep.type === "BULLISH" && current.close > current.open && current.close > previous.high) {
+    return { confirmed: true, direction: "BUY", index, time: current.time, price: current.close };
+  }
 
-    if (sweep.type === "BEARISH" && current.close < current.open && current.close < previous.low) {
-      return { confirmed: true, direction: "SELL", index: i, time: current.time, price: current.close };
-    }
+  if (sweep.type === "BEARISH" && current.close < current.open && current.close < previous.low) {
+    return { confirmed: true, direction: "SELL", index, time: current.time, price: current.close };
   }
 
   return { confirmed: false };
@@ -338,7 +342,8 @@ function buildTradePlan(candles, signal, atr) {
     return { plan: null, rejected: false, reason: null, risk: null, maxRisk: null, structuralRisk: null };
   }
 
-  const entry = signal.price;
+  // signal.price is the NEXT CANDLE OPEN, never the confirmation close.
+  const entry = Number(signal.price);
   const sweepPrice = signal.sweep?.level?.price;
 
   let structuralSL;
@@ -388,6 +393,9 @@ function buildTradePlan(candles, signal, atr) {
   return {
     plan: {
       entry,
+      entryTime: signal.entryTime || null,
+      entryRule: "NEXT_CANDLE_OPEN",
+      confirmationTime: signal.confirmation?.time || null,
       stopLoss: sl,
       tp1,
       tp2,
@@ -404,12 +412,21 @@ function buildTradePlan(candles, signal, atr) {
 }
 
 function analyzeSwingLiquidity(candles) {
-  const atr = calculateATR(candles);
-  const swings = findSwingPoints(candles);
-  const liquidityLevels = buildLiquidityLevels(candles, swings);
-  const sweeps = detectLiquiditySweeps(candles, swings);
+  /*
+    Signal generation uses COMPLETED candles only.
+    The final candle is treated as the current execution candle.
+    Therefore:
+      sweep (closed) -> next closed candle confirms -> current candle OPEN entry
+    This enforces the requested next-candle execution lifecycle.
+  */
+  const closedCandles = candles.length > 1 ? candles.slice(0, -1) : candles;
+
+  const atr = calculateATR(closedCandles);
+  const swings = findSwingPoints(closedCandles);
+  const liquidityLevels = buildLiquidityLevels(closedCandles, swings);
+  const sweeps = detectLiquiditySweeps(closedCandles, swings);
   const latestSweep = sweeps.length ? sweeps[sweeps.length - 1] : null;
-  const confirmation = confirmSweep(candles, latestSweep);
+  const confirmation = confirmSweep(closedCandles, latestSweep);
 
   let signal = {
     value: "WAIT",
@@ -417,6 +434,7 @@ function analyzeSwingLiquidity(candles) {
     probability: 0,
     score: 0,
     time: null,
+    entryTime: null,
     price: null,
     sweep: null,
     confirmation: null,
@@ -434,45 +452,58 @@ function analyzeSwingLiquidity(candles) {
   };
 
   if (latestSweep && confirmation.confirmed) {
-    const age = candles.length - 1 - confirmation.index;
+    /*
+      Confirmation must be the latest completed candle.
+      Otherwise the entry candle has already passed.
+    */
+    const confirmationAge = closedCandles.length - 1 - confirmation.index;
 
-    if (age <= 3) {
-      const strength = calculateSignalScore(candles, latestSweep, confirmation);
-      const candidateSignal = {
-        value: confirmation.direction,
-        direction: confirmation.direction,
-        probability: strength.probability,
-        score: strength.score,
-        time: confirmation.time,
-        price: confirmation.price,
-        sweep: latestSweep,
-        confirmation,
-        rejection: null
-      };
+    if (confirmationAge === 0) {
+      const entryIndex = confirmation.index + 1;
+      const entryCandle = candles[entryIndex];
 
-      const planResult = buildTradePlan(candles, candidateSignal, atr);
+      /*
+        The next candle must exist. Its OPEN is the executable entry.
+      */
+      if (entryCandle && Number.isFinite(Number(entryCandle.open))) {
+        const strength = calculateSignalScore(closedCandles, latestSweep, confirmation);
 
-      riskFilter = {
-        passed: !planResult.rejected,
-        rejected: planResult.rejected,
-        reason: planResult.reason,
-        structuralRisk: planResult.structuralRisk,
-        maxRisk: planResult.maxRisk,
-        maxStopAtr: CONFIG.maxStopAtr
-      };
-
-      if (planResult.rejected) {
-        // Technically valid liquidity setup, but not tradable at acceptable risk.
-        signal = {
-          ...candidateSignal,
-          value: "WAIT",
-          direction: "WAIT",
-          rejection: planResult.reason
+        const candidateSignal = {
+          value: confirmation.direction,
+          direction: confirmation.direction,
+          probability: strength.probability,
+          score: strength.score,
+          time: confirmation.time,
+          entryTime: entryCandle.time,
+          price: Number(entryCandle.open),
+          sweep: latestSweep,
+          confirmation,
+          rejection: null
         };
-        tradePlan = null;
-      } else {
-        signal = candidateSignal;
-        tradePlan = planResult.plan;
+
+        const planResult = buildTradePlan(candles, candidateSignal, atr);
+
+        riskFilter = {
+          passed: !planResult.rejected,
+          rejected: planResult.rejected,
+          reason: planResult.reason,
+          structuralRisk: planResult.structuralRisk,
+          maxRisk: planResult.maxRisk,
+          maxStopAtr: CONFIG.maxStopAtr
+        };
+
+        if (planResult.rejected) {
+          signal = {
+            ...candidateSignal,
+            value: "WAIT",
+            direction: "WAIT",
+            rejection: planResult.reason
+          };
+          tradePlan = null;
+        } else {
+          signal = candidateSignal;
+          tradePlan = planResult.plan;
+        }
       }
     }
   }
@@ -480,7 +511,7 @@ function analyzeSwingLiquidity(candles) {
   const latestHigh = swings.highs.length ? swings.highs[swings.highs.length - 1] : null;
   const latestLow = swings.lows.length ? swings.lows[swings.lows.length - 1] : null;
   const lastCandle = candles[candles.length - 1];
-  const volume = volumeConfirmation(candles, candles.length - 1);
+  const volume = volumeConfirmation(closedCandles, Math.max(0, closedCandles.length - 1));
 
   return {
     swings,
@@ -495,6 +526,8 @@ function analyzeSwingLiquidity(candles) {
       latestSwingLow: latestLow?.price || null,
       latestSweep: latestSweep?.type || "NONE",
       confirmation: confirmation.confirmed ? confirmation.direction : "NONE",
+      entryTime: signal.entryTime || null,
+      entryRule: "NEXT_CANDLE_OPEN",
       volumeAvailable: volume.available,
       volumeConfirmed: volume.strong,
       riskFilter
