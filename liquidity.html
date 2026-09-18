@@ -1559,6 +1559,8 @@ button{
    STATE
 ========================================================= */
 
+const HISTORY_STORAGE_KEY = "ob_swing_liquidity_history_v2";
+
 const state = {
 
   symbol:"XAU/USD",
@@ -1990,6 +1992,41 @@ function getSignal(data){
    with existing trade-plan/history system.
 ========================================================= */
 
+function getStructureDirection(data){
+
+  const directSignal =
+    getSignal(data);
+
+  if(
+    directSignal.direction==="BUY" ||
+    directSignal.direction==="SELL"
+  ){
+    return directSignal.direction;
+  }
+
+  /*
+    A 15M liquidity sweep remains the active directional
+    structure until a newer opposite sweep appears.
+    This lets 5M entries align with 15M structure without
+    requiring a fresh 15M entry signal at the exact same time.
+  */
+  const sweeps =
+    Array.isArray(data?.liquidity?.sweeps)
+      ? data.liquidity.sweeps
+      : [];
+
+  const latest =
+    sweeps.length
+      ? sweeps[sweeps.length - 1]
+      : null;
+
+  if(latest?.type==="BULLISH") return "BUY";
+  if(latest?.type==="BEARISH") return "SELL";
+
+  return "WAIT";
+}
+
+
 function buildFinalSignal(){
 
   if(
@@ -1998,48 +2035,25 @@ function buildFinalSignal(){
   ){
 
     return {
-
       direction:"WAIT",
-
       probability:0,
-
       score:0,
-
-      a15:{
-        direction:"WAIT",
-        probability:0,
-        score:0
-      },
-
-      a5:{
-        direction:"WAIT",
-        probability:0,
-        score:0
-      },
-
+      a15:{direction:"WAIT",probability:0,score:0},
+      a5:{direction:"WAIT",probability:0,score:0},
       structureDirection:"WAIT",
-
       entryDirection:"WAIT",
-
       reason:"DATA NOT READY"
-
     };
 
   }
 
-
-  const s15 =
-    getSignal(state.data15);
-
-
-  const s5 =
-    getSignal(state.data5);
-
+  const s15 = getSignal(state.data15);
+  const s5 = getSignal(state.data5);
+  const structureDirection = getStructureDirection(state.data15);
 
   const tradePlan =
     state.data5?.tradePlan ||
     null;
-
 
   const price =
     state.data5?.market?.price ??
@@ -2047,87 +2061,56 @@ function buildFinalSignal(){
     state.data5?.candles?.at(-1)?.close ??
     null;
 
+  /*
+    5M execution is valid only in the same direction as
+    the current 15M directional structure.
+  */
+  const aligned =
+    s5.direction!=="WAIT" &&
+    s5.direction===structureDirection &&
+    !!tradePlan?.entry;
 
   let reason =
-    "Waiting for independent 15M structure / 5M entry setup.";
+    "Waiting for 15M structure + 5M next-candle entry.";
 
-
-  if(
-    s15.direction!=="WAIT" &&
-    s5.direction==="WAIT"
-  ){
-
-    reason =
-      `15M ${s15.direction} structure active • 5M entry waiting`;
-
+  if(!structureDirection || structureDirection==="WAIT"){
+    reason = "Waiting for 15M liquidity structure.";
+  }else if(s5.direction==="WAIT"){
+    reason = `15M ${structureDirection} structure • 5M entry waiting`;
+  }else if(s5.direction!==structureDirection){
+    reason = `5M ${s5.direction} rejected • 15M structure is ${structureDirection}`;
+  }else if(!tradePlan?.entry){
+    reason = `15M ${structureDirection} structure • 5M plan not ready`;
+  }else{
+    reason = `15M ${structureDirection} structure • 5M ${s5.direction} NEXT-CANDLE OPEN`;
   }
-
-
-  else if(
-    s15.direction==="WAIT" &&
-    s5.direction!=="WAIT"
-  ){
-
-    reason =
-      `5M ${s5.direction} entry active • 15M structure waiting`;
-
-  }
-
-
-  else if(
-    s15.direction!=="WAIT" &&
-    s5.direction!=="WAIT"
-  ){
-
-    reason =
-      `15M ${s15.direction} structure • 5M ${s5.direction} entry`;
-
-  }
-
 
   return {
-
-    direction:s5.direction,
-
-    probability:s5.probability,
-
-    score:s5.score,
-
+    direction:aligned ? s5.direction : "WAIT",
+    probability:aligned ? s5.probability : 0,
+    score:aligned ? s5.score : 0,
     price,
-
-    entry:tradePlan?.entry ?? null,
-
-    sl:tradePlan?.stopLoss ?? null,
-
-    tp1:tradePlan?.tp1 ?? null,
-
-    tp2:tradePlan?.tp2 ?? null,
-
-    tp3:tradePlan?.tp3 ?? null,
-
-    risk:tradePlan?.risk ?? null,
-
+    entry:aligned ? tradePlan.entry : null,
+    sl:aligned ? tradePlan.stopLoss : null,
+    tp1:aligned ? tradePlan.tp1 : null,
+    tp2:aligned ? tradePlan.tp2 : null,
+    tp3:aligned ? tradePlan.tp3 : null,
+    risk:aligned ? tradePlan.risk : null,
+    entryTime:aligned ? (tradePlan.entryTime || state.data5?.signal?.entryTime || null) : null,
+    confirmationTime:aligned ? (tradePlan.confirmationTime || s5.time || null) : null,
     a15:s15,
-
     a5:s5,
-
-    structureDirection:s15.direction,
-
-    entryDirection:s5.direction,
-
+    structureDirection,
+    entryDirection:aligned ? s5.direction : "WAIT",
     structureProbability:s15.probability,
-
-    entryProbability:s5.probability,
-
+    entryProbability:aligned ? s5.probability : 0,
     signalTime:
-      s5.time ||
-      state.data5?.market?.lastCandleTime ||
-      null,
-
+      aligned
+        ? (s5.time || state.data5?.market?.lastCandleTime || null)
+        : null,
     timeframe:"5min",
-
+    entryRule:"NEXT_CANDLE_OPEN",
     reason
-
   };
 
 }
@@ -3062,7 +3045,7 @@ function loadHistory(){
 
     const raw =
       localStorage.getItem(
-        "ob_swing_liquidity_history"
+        HISTORY_STORAGE_KEY
       );
 
 
@@ -3099,7 +3082,7 @@ function saveHistory(){
   try{
 
     localStorage.setItem(
-      "ob_swing_liquidity_history",
+      HISTORY_STORAGE_KEY,
       JSON.stringify(
         state.history.slice(
           0,
@@ -3129,6 +3112,8 @@ function signalKey(signal){
     signal.direction,
 
     signal.signalTime,
+
+    signal.entryTime,
 
     Number(
       signal.entry || 0
@@ -3219,6 +3204,15 @@ function recordSignal(signal){
       Math.floor(
         Date.now()/1000
       ),
+
+    entryTime:
+      signal.entryTime ||
+      null,
+
+    confirmationTime:
+      signal.confirmationTime ||
+      signal.signalTime ||
+      null,
 
     direction:
       signal.direction,
@@ -3481,13 +3475,20 @@ function updateHistoryOutcomes(){
     }
 
 
+    const entryTime =
+      timeMs(item.entryTime);
+
+    const useEntryTime =
+      Number.isFinite(entryTime);
+
     const futureCandles =
       candles
 
         .filter(
           c=>
-            timeMs(c.time) >
-            signalTime
+            useEntryTime
+              ? timeMs(c.time) >= entryTime
+              : timeMs(c.time) > signalTime
         )
 
         .sort(
