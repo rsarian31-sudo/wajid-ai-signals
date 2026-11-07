@@ -1,0 +1,182 @@
+/* WAJID AI SIGNALS — Premium Black & Gold presentation layer
+   UI-only overrides. No trading calculations, API contracts or DOM IDs changed.
+   Design references: 21st.dev (dashboard composition), React Bits/Magic UI
+   (subtle motion and glow), Uiverse (controls), Mobbin (mobile UX patterns).
+*/
+:root{
+  color-scheme:dark;
+  --wajid-bg:#08090b;
+  --wajid-panel:#111317;
+  --wajid-panel-2:#171a20;
+  --wajid-panel-3:#0d0f12;
+  --wajid-line:rgba(212,175,55,.20);
+  --wajid-line-soft:rgba(255,255,255,.075);
+  --wajid-gold:#d4af37;
+  --wajid-gold-bright:#f2d477;
+  --wajid-gold-soft:#9f812c;
+  --wajid-text:#f5f5f2;
+  --wajid-muted:#96989f;
+  --wajid-green:#32d296;
+  --wajid-red:#ff6576;
+  --wajid-radius:16px;
+  --wajid-shadow:0 18px 48px rgba(0,0,0,.28);
+}
+html,body{
+  background:
+    radial-gradient(ellipse at 12% -8%,rgba(212,175,55,.10),transparent 34%),
+    radial-gradient(ellipse at 92% 12%,rgba(212,175,55,.045),transparent 28%),
+    var(--wajid-bg)!important;
+  color:var(--wajid-text)!important;
+}
+body{
+  min-height:100vh;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  letter-spacing:.005em;
+}
+::selection{background:rgba(212,175,55,.30);color:#fff}
+a{color:var(--wajid-gold-bright)}
+.app,.wrap{max-width:1540px!important;padding:clamp(12px,2vw,26px)!important}
+.header,.topbar,.top{
+  background:rgba(10,11,13,.88)!important;
+  border-bottom:1px solid var(--wajid-line)!important;
+  backdrop-filter:blur(18px);
+}
+.header{padding:12px 0}
+.topbar,.top{box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.brand h1,.brand .logo,.brand p,.brand small{color:var(--wajid-text)}
+.brand h1{letter-spacing:-.035em;font-weight:850}
+.brand small,.brand p,.muted{color:var(--wajid-muted)!important}
+.logo{
+  background:linear-gradient(145deg,#f5df91 0%,#d4af37 46%,#8e6b16 100%)!important;
+  color:#17130a!important;
+  border:1px solid rgba(255,232,160,.48);
+  box-shadow:0 8px 28px rgba(212,175,55,.18)!important;
+}
+.connection{
+  background:rgba(20,22,26,.88)!important;
+  border:1px solid var(--wajid-line)!important;
+  color:#d7d0bb!important;
+}
+.dot.online{background:var(--wajid-green)!important}
+.strategy-nav,.strategybar,.nav{
+  background:rgba(16,18,22,.92)!important;
+  border:1px solid var(--wajid-line)!important;
+  border-radius:var(--wajid-radius)!important;
+  padding:10px!important;
+  box-shadow:var(--wajid-shadow);
+}
+.strategy-nav-title{color:var(--wajid-gold-soft)!important;letter-spacing:.16em}
+.strategy-link,.strategybar a,.nav a{
+  background:#17191e!important;
+  border:1px solid var(--wajid-line-soft)!important;
+  color:#c7c5bd!important;
+  border-radius:11px!important;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
+}
+.strategy-link:hover,.strategybar a:hover,.nav a:hover{
+  background:#242017!important;border-color:rgba(212,175,55,.48)!important;
+  color:var(--wajid-gold-bright)!important;transform:translateY(-1px);
+}
+.strategy-link.active,.strategybar a.active,.nav a.active{
+  background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(212,175,55,.08))!important;
+  border-color:rgba(212,175,55,.62)!important;
+  color:var(--wajid-gold-bright)!important;
+  box-shadow:inset 0 0 0 1px rgba(212,175,55,.08),0 5px 20px rgba(212,175,55,.08);
+}
+.search-panel,.card,.history-card,.section,.diagnostics{
+  background:linear-gradient(155deg,rgba(24,26,31,.97),rgba(15,17,21,.98))!important;
+  border:1px solid var(--wajid-line-soft)!important;
+  border-radius:var(--wajid-radius)!important;
+  box-shadow:var(--wajid-shadow);
+}
+.card,.search-panel,.history-card{position:relative}
+.card-header,.cardHeader{
+  border-bottom:1px solid var(--wajid-line-soft)!important;
+}
+.card-title,.cardHeader h2,.title,.sectionTitle{color:var(--wajid-text)!important;font-weight:800}
+.card-subtitle,.cardHeader small,.history-stat-label,.historyStatLabel,.metric-label,.muted{color:var(--wajid-muted)!important}
+.chart-wrap,.chartWrap,.chart{
+  background:#090b0e!important;
+  border-radius:0 0 var(--wajid-radius) var(--wajid-radius);
+}
+.search-input,.search input,.controls input,.controls select,input,select,textarea{
+  background:#0b0d10!important;color:var(--wajid-text)!important;
+  border:1px solid rgba(255,255,255,.12)!important;border-radius:11px!important;
+}
+.search-input:focus,.search input:focus,.controls input:focus,.controls select:focus,input:focus,select:focus,textarea:focus{
+  outline:none!important;border-color:rgba(212,175,55,.72)!important;
+  box-shadow:0 0 0 3px rgba(212,175,55,.10)!important;
+}
+button,.search-btn,.category-btn,.cat,.tf,.tf-btn,.history-filter,.history-filter button,.clear-history,.controls button{
+  border-radius:10px!important;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+button:hover,.search-btn:hover,.category-btn:hover,.cat:hover,.tf:hover,.tf-btn:hover,.history-filter:hover,.history-filter button:hover,.controls button:hover{
+  transform:translateY(-1px);
+}
+.search-btn,.controls button{
+  background:linear-gradient(135deg,#f0d77e,#bd9225)!important;
+  border:1px solid #f1d77e!important;color:#181307!important;font-weight:850!important;
+  box-shadow:0 7px 22px rgba(212,175,55,.15);
+}
+.category-btn,.cat,.tf,.tf-btn,.history-filter,.history-filter button{
+  background:#17191e!important;border:1px solid var(--wajid-line-soft)!important;color:#c5c3bb!important;
+}
+.category-btn.active,.cat.active,.tf.active,.tf-btn.active,.history-filter.active,.history-filter button.active{
+  background:rgba(212,175,55,.16)!important;border-color:rgba(212,175,55,.62)!important;
+  color:var(--wajid-gold-bright)!important;
+}
+.signal-card,.signalCard,.signalStatus,.signal,.signal-status{
+  background:linear-gradient(145deg,rgba(212,175,55,.075),rgba(17,19,23,.96))!important;
+  border:1px solid rgba(212,175,55,.22)!important;border-radius:14px!important;
+}
+.signal-value,.direction,.dir{letter-spacing:-.04em}
+.buy,.win,.up{color:var(--wajid-green)!important}
+.sell,.loss{color:var(--wajid-red)!important}
+.wait,.open{color:var(--wajid-gold-bright)!important}
+.metric,.infoRow,.history-item,.historyItem,.history-stat,.historyStat,.diag,.zone-box{
+  border-color:var(--wajid-line-soft)!important;
+}
+.history-item,.historyItem,.history-stat,.historyStat,.diag,.zone-box{
+  background:rgba(10,12,15,.72)!important;border-radius:12px!important;
+}
+.history-stat-value,.historyStatValue,.diag-value,.metric-value{color:var(--wajid-text)}
+.history-list,.historyBody,.historyBody tr{color:var(--wajid-text)}
+table{border-collapse:separate;border-spacing:0}
+th{color:var(--wajid-gold-bright)!important}
+td,th{border-color:var(--wajid-line-soft)!important}
+.result-item:hover,.searchItem:hover{background:rgba(212,175,55,.08)!important}
+.result-type,.badge,.status-badge{
+  border-color:var(--wajid-line)!important;
+}
+.footer{color:var(--wajid-muted)!important;border-color:var(--wajid-line-soft)!important}
+:focus-visible{outline:2px solid var(--wajid-gold)!important;outline-offset:2px}
+@media(max-width:900px){
+  .main-grid,.grid{grid-template-columns:minmax(0,1fr)!important}
+  .chart-wrap,.chartWrap{height:clamp(300px,55vw,480px)!important}
+  .chart{height:clamp(300px,55vw,480px)!important}
+}
+@media(max-width:650px){
+  .app,.wrap{padding:10px!important}
+  .header{align-items:flex-start;flex-wrap:wrap}
+  .brand h1{font-size:17px!important}
+  .connection{font-size:10px;padding:7px 10px}
+  .strategy-nav,.strategybar,.nav{padding:8px!important;border-radius:13px!important}
+  .strategy-link,.strategybar a,.nav a{font-size:10px!important;padding:9px 10px!important}
+  .search-panel,.card,.history-card,.section{border-radius:13px!important}
+  .chart-wrap,.chartWrap{height:340px!important}
+  .chart{height:340px!important}
+  .history-stats,.historyStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .history-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .history-stat,.historyStat{min-width:0;padding:9px!important}
+  .history-stat-value,.historyStatValue{font-size:15px!important}
+  button{min-height:38px}
+}
+@media(max-width:390px){
+  .brand h1{font-size:15px!important}
+  .chart-wrap,.chartWrap,.chart{height:300px!important}
+  .history-grid{grid-template-columns:1fr 1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
